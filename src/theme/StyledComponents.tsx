@@ -85,3 +85,9 @@ export const StyledInfoSection = styled.div`
     }
   }
 `
+
+export const StyledRecipeCard = styled.div`
+  > p {
+    white-space: pre-line;
+  }
+`
