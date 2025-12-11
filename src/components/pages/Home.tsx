@@ -1,6 +1,39 @@
 import '@/theme/GlobalStyles.css'
 import { Hero } from '@/components/Hero'
 import { StyledInfoSection } from '@/theme/StyledComponents'
+import { MenuCard, type Menu } from '../MenuCard'
+
+const menuList: Menu[] = [
+  {
+    title: 'CAFÉ DE OLLA',
+    subtitle: 'Piloncillo | Cinnamon | Orange',
+    description: `Steeped with aromatic spices, this
+  
+  latte captures the soul of traditional Mexican coffee.Inspired by
+  
+  the clay pot brews shared in rural kitchens, it’s warm, spiced, &
+    deeply rooted in heritage.`,
+  },
+  {
+    title: 'EL NOGÁL',
+    subtitle: 'Toasted Pecan | Brown Sugar | Mexican Vanilla',
+    description: `Combining the warmth of toasted pecans with the smooth 
+  
+  sweetness of Mexican vanilla. Inspired by the flavors of southern 
+  
+  Mexico & cozy fall desserts, it’s comfort in a cup`,
+  },
+  {
+    title: 'Horchata Latte',
+    subtitle: 'Cinnamon | Vanilla | Rice',
+    description: `Creamy, spiced, & full of nostalgia
+  
+  this drink reimagines a Mexican classic. Inspired by homemade 
+  
+  horchata shared on 
+  warm afternoons, it’s smooth, comforting, and deeply familiar.`,
+  },
+]
 
 export const Home = () => {
   return (
@@ -18,6 +51,15 @@ export const Home = () => {
       </StyledInfoSection>
 
       {/* <img></img> */}
+
+      {menuList.map((menuItem, index) => (
+        <MenuCard
+          key={index}
+          title={menuItem.title}
+          subtitle={menuItem.subtitle}
+          description={menuItem.description}
+        />
+      ))}
     </>
   )
 }

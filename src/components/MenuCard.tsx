@@ -1,16 +1,17 @@
-import { StyledRecipeCard } from '@/theme/StyledComponents'
+import { StyledDottedLine, StyledMenuCard } from '@/theme/StyledComponents'
 
-interface RecipeCardProps {
+export type Menu = {
   title: string
   subtitle: string
   description: string
 }
-export const RecipeCard = ({ title, subtitle, description }: RecipeCardProps) => {
+export const MenuCard = ({ title, subtitle, description }: Menu) => {
   return (
-    <StyledRecipeCard>
+    <StyledMenuCard>
       <h1 data-testid={'CardTitle'}>{title}</h1>
       <h3 data-testid={'CardSubtitle'}>{subtitle}</h3>
+      <StyledDottedLine />
       <p data-testid={'CardDescription'}>{description}</p>
-    </StyledRecipeCard>
+    </StyledMenuCard>
   )
 }

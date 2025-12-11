@@ -86,8 +86,19 @@ export const StyledInfoSection = styled.div`
   }
 `
 
-export const StyledRecipeCard = styled.div`
+export const StyledMenuCard = styled.div`
   > p {
     white-space: pre-line;
   }
+`
+
+export const StyledDottedLine = styled.div`
+  flex-frow: 1;
+  margin: 0 8px;
+  width: 75%;
+  height: 1px;
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 7px 7px;
+  background-repeat: repeat-x;
+  background-positionL left center;
 `
