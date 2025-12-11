@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import heroImage from '@/assets/hero-bg.jpg'
 
 export const StyledHeader = styled.div`
   position: relative;
@@ -34,10 +35,32 @@ export const StyledHeader = styled.div`
 `
 
 export const StyledHero = styled.div`
-  background-image: url('');
-  height: 60vh;
+  background-image: url(${heroImage});
+  height: 85vh;
   width: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+
+  .heroContainer {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+
+    > h1 {
+      font-size: 75px;
+      font-weight: 400;
+      font-family: 'Loved by the King', cursive;
+      margin: 0;
+      letter-spacing: 5px;
+    }
+
+    > p {
+      font-size: 17.5;
+      letter-spacing: 5px;
+    }
+  }
 `
