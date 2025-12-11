@@ -67,3 +67,21 @@ export const StyledHero = styled.div`
     }
   }
 `
+
+export const StyledInfoSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 20em;
+
+  .textWrapper {
+    text-align: center;
+    width: 65%;
+    margin: 20em 0;
+
+    > p {
+      white-space: pre-line;
+    }
+  }
+`
