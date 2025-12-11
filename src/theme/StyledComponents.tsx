@@ -37,20 +37,22 @@ export const StyledHeader = styled.div`
 export const StyledHero = styled.div`
   background-image: url(${heroImage});
   height: 85vh;
+  min-height: 50em;
   width: 100%;
-  background-position: center;
+  background-position: center 75%;
   background-repeat: no-repeat;
   background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 
   .heroContainer {
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     color: white;
+    width: 100%;
 
     > h1 {
+      text-wrap: nowrap;
       font-size: 75px;
       font-weight: 400;
       font-family: 'Loved by the King', cursive;
@@ -59,8 +61,9 @@ export const StyledHero = styled.div`
     }
 
     > p {
-      font-size: 17.5;
+      font-size: 17.5px;
       letter-spacing: 5px;
+      margin-top: 8px;
     }
   }
 `
