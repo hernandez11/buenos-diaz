@@ -7,14 +7,14 @@ export const StyledHeader = styled.div`
   align-items: center;
   background-color: #ece7dc;
   color: #1e1e1e;
-  padding: 0 1em;
-  height: 5em;
+  padding: 0 3em;
+  height: 7em;
 
   .navMenu {
     display: flex;
 
     > p {
-      padding-right: 1em;
+      padding-right: 3em;
     }
   }
 
@@ -22,6 +22,14 @@ export const StyledHeader = styled.div`
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    font-family: 'Loved by the King', cursive;
+    font-size: 30px;
+  }
+
+  @media (max-width: 320px) {
+    .navMenu {
+      display: none;
+    }
   }
 `
 
@@ -32,8 +40,4 @@ export const StyledHero = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-
-  // @media (max-width: 768px) {
-  // ...styled
-  // }
 `
