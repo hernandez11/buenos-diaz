@@ -1,0 +1,26 @@
+.instagram-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: transparent;
+  color: #405de6; /* default icon color */
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.instagram-icon:hover {
+  color: white;
+  box-shadow: 3px 2px 45px 0px rgb(0 0 0 / 12%);
+}
+
+.instagram-icon:hover svg {
+  fill: #fff; /* optional: make SVG white on hover */
+}
+
+.icon-svg {
+  width: 30px;
+  height: 30px;
+}
