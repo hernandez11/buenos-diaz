@@ -2,13 +2,13 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render } from '@testing-library/react'
 import App from '@/App'
 import { Header } from '@/components/Header'
-import { Hero } from '@/components/Hero'
+import { Home } from '@/components/pages/Home'
 
 vi.mock('@/components/Header', () => ({
   Header: vi.fn(),
 }))
-vi.mock('@/components/Hero', () => ({
-  Hero: vi.fn(),
+vi.mock('@/components/pages/Home', () => ({
+  Home: vi.fn(),
 }))
 
 describe('App', () => {
@@ -16,10 +16,10 @@ describe('App', () => {
     vi.restoreAllMocks()
   })
 
-  it('renders header and visual components', () => {
+  it('renders header and pages', () => {
     render(<App />)
 
     expect(Header).toHaveBeenCalledOnce()
-    expect(Hero).toHaveBeenCalledOnce()
+    expect(Home).toHaveBeenCalledOnce()
   })
 })

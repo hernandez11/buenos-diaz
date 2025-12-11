@@ -1,12 +1,12 @@
 import '@/theme/GlobalStyles.css'
 import { Header } from '@/components/Header'
-import { Hero } from './components/Hero'
+import { Home } from './components/pages/Home'
 
 export default function App() {
   return (
     <>
       <Header />
-      <Hero />
+      <Home />
     </>
   )
 }
