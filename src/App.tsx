@@ -1,3 +1,9 @@
+import { Header } from '@/components/Header'
+
 export default function App() {
-  return <>Hello world</>
+  return (
+    <>
+      <Header />
+    </>
+  )
 }

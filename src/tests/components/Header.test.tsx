@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import Header from '@/Header'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { Header } from '@/components/Header'
 import { render, screen } from '@testing-library/react'
 
 vi.mock('react-router-dom', async () => {
@@ -11,6 +11,10 @@ vi.mock('react-router-dom', async () => {
 })
 
 describe('Header', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('renders navlinks, logo, and social icon', () => {
     render(<Header />)
 

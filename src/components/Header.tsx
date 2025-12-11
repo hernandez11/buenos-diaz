@@ -1,6 +1,6 @@
-export default function Header() {
+export const Header = () => {
   return (
-    <>
+    <div className='Header'>
       <p data-testid={'InfoNavLink'}>INFO.</p>
       <p data-testid={'MenuNavLink'}>MENU.</p>
       <p data-testid={'LogoNavLink'}>BUENOS DIAZ</p>
@@ -12,6 +12,6 @@ export default function Header() {
       >
         INSTA
       </a>
-    </>
+    </div>
   )
 }
