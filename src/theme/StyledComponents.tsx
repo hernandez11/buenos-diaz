@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import heroImage from '@/assets/hero-bg.jpg'
+import bodyImage from '@/assets/body-img.jpg'
 
 export const StyledHeader = styled.div`
   position: relative;
@@ -27,9 +28,11 @@ export const StyledHeader = styled.div`
     font-size: 30px;
   }
 
-  @media (max-width: 320px) {
+  @media (max-width: 767px) {
     .navMenu {
-      display: none;
+      > p {
+        display: none;
+      }
     }
   }
 `
@@ -81,6 +84,16 @@ export const StyledHome = styled.div`
     white-space: pre-line;
   }
 
+  .centerImageContainer {
+    width: 95%;
+    height: 250px;
+    backgroundcolor: #1e1e1e;
+    background-image: url(${bodyImage});
+    background-position: center 60%;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
   .menuWrapper {
     width: 50%;
     background-color: bue;
@@ -118,6 +131,7 @@ export const StyledTooltip = styled.div`
   @media (max-width: 767px) {
     --purple: #720c8f;
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
     margin-top: -200px;
 
@@ -146,6 +160,7 @@ export const StyledTooltip = styled.div`
       margin: auto;
       position: relative;
       text-decoration: none;
+      text-align: center;
     }
 
     .hint-radius {

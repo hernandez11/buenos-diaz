@@ -48,8 +48,7 @@ export const Home = () => {
         Curabitur sed venenatis quam. Nam arcu ligula, tincidunt ar imperdiet sed, dignissim sed metus. Suspendisse potenti. In hac habitasse platea dictumst. Phasellus rhoncus diam sed justo cursus fermentum. Aenean vel leo vel leo fermentum facilisis. Nullam tempus augue ac metus cursus, et auctor neque tempor.
         Nam vel mattis purus, commodo accumsan quam. Mauris tempor mauris erat, vitae convallis velit pharetra sed. Nunc tempus ut tortor vitae vestibulum. Ut at ex elit. Ut convallis erat vel arcu euismod ullamcorper sed gravida sem. Ut auctor augue velit, in sagittis velit lobortis at. Vivamus maximus tortor eros, at mollis ipsum mattis vitae. Pellentesque faucibus nisl non fringilla facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam tellus, aliquet eu nulla at, rhoncus porttitor nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent et nisl sit amet metus eleifend viverra. Mauris aliquet elit eu diam consequat ornare. Vivamus a magna vitae dolor bibendum consequat a non purus. Mauris lorem tortor, eleifend at purus sollicitudin, imperdiet viverra ligula.`}</p>
       </div>
-
-      <div style={{ width: '95%', height: '250px', backgroundColor: 'black' }}>...</div>
+      <div className='centerImageContainer'></div>
       <TooltipButton />
       <div className={'menuWrapper'}>
         {menuList.map((menuItem, index) => (
