@@ -109,3 +109,103 @@ export const StyledDottedLine = styled.div`
   background-repeat: repeat-x;
   background-position: left center;
 `
+
+export const StyledTooltip = styled.div`
+  --purple: #720c8f;
+  display: flex;
+  justify-content: flex-start;
+
+  .hint {
+    margin: 150px auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .tooltipButton {
+    z-index: 3;
+    border: 2px solid #ece7dc;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    background-color: #9f3433;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transform: translate(-0%, -0%) scale(0.95);
+    margin: auto;
+    position: relative;
+  }
+
+  .hint-radius {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -125px 0 0 -125px;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0);
+  }
+
+  .tooltipContent {
+    width: 300px;
+    position: absolute;
+    z-index: 5;
+    padding: 35px 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.7s ease,
+      visibility 0.7s ease;
+    color: #fff;
+    text-align: end;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: -44px;
+      left: 0;
+      width: 80px;
+      height: 1px;
+      background-color: #fff;
+      transform-origin: 0 50%;
+      transform: rotate(45deg);
+      transition: opacity 0.5s ease;
+      opacity: 1;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 56px;
+      width: 0;
+      height: 1px;
+      background-color: #fff;
+      transition: width 0.4s ease;
+    }
+  }
+
+  /* Tooltip shows only on dot hover */
+  .tooltipButton:hover + .tooltipContent {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .tooltipButton:hover + .tooltipContent::before {
+    width: 250px;
+  }
+
+  /* Position 4 */
+  .hint[data-position='4'] .tooltipContent {
+    top: 120px;
+    left: 50%;
+    margin-left: 40px;
+  }
+`
