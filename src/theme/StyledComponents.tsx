@@ -68,21 +68,29 @@ export const StyledHero = styled.div`
   }
 `
 
-export const StyledInfoSection = styled.div`
+export const StyledHome = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-width: 20em;
+  width: 100%;
 
-  .textWrapper {
-    text-align: center;
+  .infoSection {
     width: 65%;
     margin: 20em 0;
+    text-align: center;
+    white-space: pre-line;
+  }
 
-    > p {
-      white-space: pre-line;
-    }
+  .menuWrapper {
+    width: 50%;
+    background-color: bue;
+    margin: 10em 0;
+    text-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 `
 
@@ -100,5 +108,5 @@ export const StyledDottedLine = styled.div`
   background-image: radial-gradient(currentColor 1px, transparent 1px);
   background-size: 7px 7px;
   background-repeat: repeat-x;
-  background-positionL left center;
+  background-position: left center;
 `
