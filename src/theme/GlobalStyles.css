@@ -8,6 +8,29 @@ body {
 
   /* Font styles */
   font-family: 'Arimo', sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   color: 0000;
+}
+
+.primaryTextLarge {
+  font-size: 1.5em;
+  font-weight: 400;
+  letter-spacing: 5px;
+}
+
+.primaryTextMedium {
+  font-size: 1em;
+  letter-spacing: 5px;
+}
+
+.primaryTextSmall {
+  font-size: 0.75em;
+}
+
+.primaryTextSmallSpaced {
+  letter-spacing: 5px;
+}
+
+.primaryTextExtraSmall {
+  font-size: 0.5em;
 }

@@ -8,10 +8,16 @@ export type Menu = {
 export const MenuCard = ({ title, subtitle, description }: Menu) => {
   return (
     <StyledMenuCard>
-      <h1 data-testid={'CardTitle'}>{title}</h1>
-      <h3 data-testid={'CardSubtitle'}>{subtitle}</h3>
+      <h1 className='primaryTextLarge' data-testid={'CardTitle'}>
+        {title}
+      </h1>
+      <h3 className='primaryTextExtraSmall' data-testid={'CardSubtitle'}>
+        {subtitle}
+      </h3>
       <StyledDottedLine />
-      <p data-testid={'CardDescription'}>{description}</p>
+      <p className='primaryTextSmall' data-testid={'CardDescription'}>
+        {description}
+      </p>
     </StyledMenuCard>
   )
 }

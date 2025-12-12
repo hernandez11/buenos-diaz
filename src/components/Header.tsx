@@ -5,11 +5,15 @@ export const Header = () => {
   return (
     <StyledHeader>
       <div className='navMenu'>
-        <p data-testid={'InfoNavLink'}>INFO.</p>
-        <p data-testid={'MenuNavLink'}>MENU.</p>
+        <p className='primaryTextSmall' data-testid={'InfoNavLink'}>
+          INFO.
+        </p>
+        <p className='primaryTextSmall' data-testid={'MenuNavLink'}>
+          MENU.
+        </p>
       </div>
 
-      <p className={'primaryLogo'} data-testid={'PrimaryLogo'}>
+      <p className={'headerLogo'} data-testid={'PrimaryLogo'}>
         BUENOS DIAZ
       </p>
 

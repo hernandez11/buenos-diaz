@@ -19,7 +19,7 @@ export const StyledHeader = styled.div`
     }
   }
 
-  .primaryLogo {
+  .headerLogo {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -61,8 +61,6 @@ export const StyledHero = styled.div`
     }
 
     > p {
-      font-size: 17.5px;
-      letter-spacing: 5px;
       margin-top: 8px;
     }
   }
@@ -95,6 +93,7 @@ export const StyledHome = styled.div`
 `
 
 export const StyledMenuCard = styled.div`
+  padding: 2em 0;
   > p {
     white-space: pre-line;
   }
