@@ -72,6 +72,7 @@ export const StyledHome = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  overflow-x: hidden;
 
   .infoSection {
     width: 65%;
@@ -111,101 +112,93 @@ export const StyledDottedLine = styled.div`
 `
 
 export const StyledTooltip = styled.div`
-  --purple: #720c8f;
-  display: flex;
-  justify-content: flex-start;
+  /* hide on desktop */
+  display: none;
 
-  .hint {
-    margin: 150px auto;
-    position: relative;
+  @media (max-width: 767px) {
+    --purple: #720c8f;
     display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    justify-content: flex-start;
+    margin-top: -200px;
 
-  .tooltipButton {
-    z-index: 3;
-    border: 2px solid #ece7dc;
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    background-color: #9f3433;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    cursor: pointer;
-    transform: translate(-0%, -0%) scale(0.95);
-    margin: auto;
-    position: relative;
-  }
-
-  .hint-radius {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -125px 0 0 -125px;
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(0);
-  }
-
-  .tooltipContent {
-    width: 300px;
-    position: absolute;
-    z-index: 5;
-    padding: 35px 0;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition:
-      opacity 0.7s ease,
-      visibility 0.7s ease;
-    color: #fff;
-    text-align: end;
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: -44px;
-      left: 0;
-      width: 80px;
-      height: 1px;
-      background-color: #fff;
-      transform-origin: 0 50%;
-      transform: rotate(45deg);
-      transition: opacity 0.5s ease;
-      opacity: 1;
+    .hint {
+      margin-top: 150px;
+      // margin: 150px auto;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 12px;
-      left: 56px;
-      width: 0;
-      height: 1px;
-      background-color: #fff;
-      transition: width 0.4s ease;
+    .tooltipButton {
+      z-index: 3;
+      border: 2px solid #ece7dc;
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      background-color: #9f3433;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      cursor: pointer;
+      transform: translate(0, 0) scale(0.95);
+      margin: auto;
+      position: relative;
+      text-decoration: none;
     }
-  }
 
-  /* Tooltip shows only on dot hover */
-  .tooltipButton:hover + .tooltipContent {
-    opacity: 1;
-    visibility: visible;
-  }
+    .hint-radius {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -125px 0 0 -125px;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0);
+    }
 
-  .tooltipButton:hover + .tooltipContent::before {
-    width: 250px;
-  }
+    .tooltipContent {
+      display: none;
 
-  /* Position 4 */
-  .hint[data-position='4'] .tooltipContent {
-    top: 120px;
-    left: 50%;
-    margin-left: 40px;
+      width: 300px;
+      position: absolute;
+      z-index: 5;
+      padding: 35px 0;
+      pointer-events: auto;
+      color: #1e1e1e;
+      text-align: end;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: -44px;
+        left: 0;
+        width: 80px;
+        height: 1px;
+        background-color: #1e1e1e;
+        transform-origin: 0 50%;
+        transform: rotate(60deg);
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 40px;
+        width: 250px; /* always extended */
+        height: 1px;
+        background-color: #1e1e1e;
+      }
+    }
+
+    /* Position 4 */
+    .hint[data-position='4'] .tooltipContent {
+      top: 143px;
+      left: 10%;
+      margin-left: 40px;
+    }
   }
 `
