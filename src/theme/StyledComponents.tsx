@@ -62,6 +62,7 @@ export const StyledHero = styled.div`
       margin: 0;
       letter-spacing: 5px;
     }
+
     > p {
       margin-top: 8px;
     }
