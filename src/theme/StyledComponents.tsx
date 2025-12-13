@@ -38,6 +38,10 @@ export const StyledHeader = styled.div`
 `
 
 export const StyledHero = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   background-image: url(${heroImage});
   height: 85vh;
   min-height: 50em;
@@ -45,10 +49,6 @@ export const StyledHero = styled.div`
   background-position: center 75%;
   background-repeat: no-repeat;
   background-size: cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
 
   .heroContainer {
     color: white;
