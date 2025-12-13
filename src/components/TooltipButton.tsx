@@ -6,7 +6,7 @@ export const TooltipButton = () => {
       <div className='hint' data-position='4'>
         <span className='hint-radius' />
         <a
-          href='venmo://paycharge?txn=charge&recipients=Joshua-diaz_822'
+          href='venmo://paycharge?txn=pay&recipients=Joshua-diaz_822'
           target='_blank'
           rel='noopener noreferrer'
           data-testid='TooltipButton'
