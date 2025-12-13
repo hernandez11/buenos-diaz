@@ -124,6 +124,38 @@ export const StyledDottedLine = styled.div`
   background-position: left center;
 `
 
+export const StyledIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  .icon-content {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    overflow: hidden;
+    background: linear-gradient(45deg, #405de6, #5b51db, #b33ab4, #c135b4, #e1306c, #fd1f1f);
+
+    svg {
+      width: 30px;
+      height: 30px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Optional hover effect */
+    &:hover {
+      box-shadow: 3px 2px 45px 0px rgb(0 0 0 / 12%);
+    }
+  }
+`
+
 export const StyledTooltip = styled.div`
   /* hide on desktop */
   display: none;

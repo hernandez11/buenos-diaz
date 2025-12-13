@@ -1,6 +1,6 @@
 import '@/theme/GlobalStyles.css'
 import { Hero } from '@/components/Hero'
-import { HintWrapper, StyledHome, Tooltip } from '@/theme/StyledComponents'
+import { StyledHome } from '@/theme/StyledComponents'
 import { MenuCard, type Menu } from '../MenuCard'
 import { TooltipButton } from '../TooltipButton'
 
