@@ -95,19 +95,19 @@ export const StyledHome = styled.div`
   }
 
   .menuWrapper {
-    width: 50%;
-    background-color: bue;
-    margin: 10em 0;
-    text-align: start;
+    margin: 10em auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    align-items: stretch;
+    width: fit-content;
+    max-width: 700px;
   }
 `
 
 export const StyledMenuCard = styled.div`
+  text-align: start;
   padding: 2em 0;
+
   > p {
     white-space: pre-line;
   }

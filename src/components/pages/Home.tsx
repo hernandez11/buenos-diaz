@@ -6,33 +6,47 @@ import { TooltipButton } from '../TooltipButton'
 
 const menuList: Menu[] = [
   {
-    title: 'CAFÉ DE OLLA',
+    title: 'CARAMELO LATTE',
+    subtitle: 'Goat-milk caramel | Brown sugar | Vanilla',
+    description: `
+    Slow-cooked and deeply comforting, this latte highlights 
+    the warmth of cajeta, a 
+
+    classic Mexican caramel made from goat’s milk. 
+    Smooth and nostalgic, it’s a 
+
+    festive sip that feels both familiar and special.`,
+  },
+  {
+    title: 'PONCHE NAVIDEÑO LATTE',
+    subtitle: 'Guava | Orange | Sugarcane',
+    description: `A tribute to the Christmas season in 
+
+    Mexico, this latte draws from the flavors of traditional 
+    ponche enjoyed on cold nights. 
+    Aromatic, fruity, and warming, it’s 
+    
+    festive without being sweet-heavy, and deeply tied to holiday ritual.`,
+  },
+  {
+    title: 'ROMPOPE LATTE',
+    subtitle: 'Homemade eggnog | Cinnamon | Brown sugar',
+    description: `Inspired by traditional rompope shared during the 
+    
+    holidays, this latte is rich, smooth, 
+    
+    and deeply comforting. A festive drink rooted in warmth, 
+    tradition, and celebration.`,
+  },
+  {
+    title: 'CAFÉ DE OLLA LATTE',
     subtitle: 'Piloncillo | Cinnamon | Orange',
     description: `Steeped with aromatic spices, this
   
   latte captures the soul of traditional Mexican coffee.Inspired by
   
   the clay pot brews shared in rural kitchens, it’s warm, spiced, &
-    deeply rooted in heritage.`,
-  },
-  {
-    title: 'EL NOGÁL',
-    subtitle: 'Toasted Pecan | Brown Sugar | Mexican Vanilla',
-    description: `Combining the warmth of toasted pecans with the smooth 
-  
-  sweetness of Mexican vanilla. Inspired by the flavors of southern 
-  
-  Mexico & cozy fall desserts, it’s comfort in a cup`,
-  },
-  {
-    title: 'HORCHATA LATTE',
-    subtitle: 'Cinnamon | Vanilla | Rice',
-    description: `Creamy, spiced, & full of nostalgia
-  
-  this drink reimagines a Mexican classic. Inspired by homemade 
-  
-  horchata shared on 
-  warm afternoons, it’s smooth, comforting, and deeply familiar.`,
+  deeply rooted in heritage.`,
   },
 ]
 
