@@ -2,7 +2,7 @@ import { StyledTooltip } from '@/theme/StyledComponents'
 
 export const TooltipButton = () => {
   return (
-    <StyledTooltip role='HELLO-WORLD'>
+    <StyledTooltip>
       <div className='hint' data-position='4'>
         <span className='hint-radius' />
         <a

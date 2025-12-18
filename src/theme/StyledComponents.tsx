@@ -61,6 +61,11 @@ export const StyledHero = styled.div`
       font-family: 'Loved by the King', cursive;
       margin: 0;
       letter-spacing: 5px;
+
+      @media (max-width: 480px) {
+        font-size: 60px;
+        letter-spacing: 5px;
+      }
     }
 
     > p {
@@ -78,7 +83,7 @@ export const StyledHome = styled.div`
   overflow-x: hidden;
 
   .infoSection {
-    width: 65%;
+    width: 75%;
     margin: 20em 0;
     text-align: center;
     white-space: pre-line;
@@ -165,6 +170,7 @@ export const StyledTooltip = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    text-align: center;
     margin-top: -200px;
 
     .hint {
