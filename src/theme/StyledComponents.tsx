@@ -46,7 +46,7 @@ export const StyledHero = styled.div`
   height: 85vh;
   min-height: 50em;
   width: 100%;
-  background-position: center 75%;
+  background-position: right 50% bottom 10%;
   background-repeat: no-repeat;
   background-size: cover;
 
