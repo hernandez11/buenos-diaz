@@ -58,6 +58,7 @@ export const StyledHero = styled.div`
       text-wrap: nowrap;
       font-size: 75px;
       font-weight: 400;
+      color: #ef452a;
       font-family: 'Loved by the King', cursive;
       margin: 0;
       letter-spacing: 5px;
@@ -188,7 +189,7 @@ export const StyledTooltip = styled.div`
       border-radius: 50%;
       width: 100px;
       height: 100px;
-      background-color: #9f3433;
+      background-color: #8fa9a0;
       display: flex;
       align-items: center;
       justify-content: center;

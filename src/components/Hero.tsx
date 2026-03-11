@@ -7,7 +7,7 @@ export const Hero = () => {
       <div className='heroContainer'>
         <h1 data-testid={'HeroTitle'}>BUENOS DIAZ</h1>
         <p className={'primaryTextSmallSpaced'} data-testid={'HeroSubtitle'}>
-          NYC | espresso popup
+          MOBILE <strong>ESPRESSO</strong> BAR
         </p>
       </div>
     </StyledHero>
