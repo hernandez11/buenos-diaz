@@ -85,6 +85,7 @@ export const StyledHome = styled.div`
 
   .infoSection {
     width: 75%;
+    max-width: 40em;
     margin: 20em 0;
     text-align: center;
     white-space: pre-line;
@@ -93,15 +94,14 @@ export const StyledHome = styled.div`
   .centerImageContainer {
     width: 95%;
     height: 250px;
-    backgroundcolor: #1e1e1e;
     background-image: url(${bodyImage});
-    background-position: center 60%;
+    background-position: center 50%;
     background-repeat: no-repeat;
     background-size: cover;
   }
 
   .menuWrapper {
-    margin: 10em auto;
+    margin: 15em auto;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -187,19 +187,18 @@ export const StyledTooltip = styled.div`
       z-index: 3;
       border: 2px solid #ece7dc;
       border-radius: 50%;
-      width: 100px;
-      height: 100px;
+      width: 125px;
+      height: 125px;
       background-color: #8fa9a0;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
       cursor: pointer;
       transform: translate(0, 0) scale(0.95);
-      margin: auto;
-      position: relative;
-      text-decoration: none;
-      text-align: center;
+      text-wrap: nowrap;
+      font-size: 40px;
+      color: #ef452a;
+      font-family: 'Loved by the King', cursive;
     }
 
     .hint-radius {
