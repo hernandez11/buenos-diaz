@@ -5,14 +5,14 @@ import { MenuCard, type Menu } from '../MenuCard'
 import { TooltipButton } from '../TooltipButton'
 
 const menuList: Menu[] = [
-  {
-    title: 'HORCHATA LATTE',
-    subtitle: 'Piloncillo | Cinnamon | Orange',
-    description: `Steeped with aromatic spices,
-    this latte captures the soul of traditional Mexican coffee
-    Inspired by the clay pot brews shared in rural kitchens, it’s warm, spiced, &
-  deeply rooted in heritage`,
-  },
+  // {
+  //   title: 'HORCHATA LATTE',
+  //   subtitle: 'Piloncillo | Cinnamon | Orange',
+  //   description: `Steeped with aromatic spices,
+  //   this latte captures the soul of traditional Mexican coffee
+  //   Inspired by the clay pot brews shared in rural kitchens, it’s warm, spiced, &
+  // deeply rooted in heritage`,
+  // },
 ]
 
 export const Home = () => {

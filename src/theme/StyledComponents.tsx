@@ -101,7 +101,10 @@ export const StyledHome = styled.div`
   }
 
   .menuWrapper {
-    margin: 15em auto;
+    @media (max-width: 767px) {
+      margin: 15em auto;
+    }
+    margin: 10em auto;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -176,7 +179,6 @@ export const StyledTooltip = styled.div`
 
     .hint {
       margin-top: 150px;
-      // margin: 150px auto;
       position: relative;
       display: flex;
       justify-content: center;
