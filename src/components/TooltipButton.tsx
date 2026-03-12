@@ -18,7 +18,7 @@ export const TooltipButton = () => {
           <p>Your support helps Buenos Diaz keep serving amazing coffee. Venmo available!</p>
         </div>
       </div>
-      <p className='primaryTextSmall'>Support Buenos Díaz's summer launch!</p>
+      <p className='primaryTextSmall'>Support Buenos Díaz&apos;s summer launch!</p>
     </StyledTooltip>
   )
 }
