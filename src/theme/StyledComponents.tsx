@@ -198,7 +198,7 @@ export const StyledTooltip = styled.div`
       cursor: pointer;
       transform: translate(0, 0) scale(0.95);
       text-wrap: nowrap;
-      font-size: 40px;
+      font-size: 75px;
       color: #ef452a;
       font-family: 'Loved by the King', cursive;
     }

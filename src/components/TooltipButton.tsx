@@ -14,9 +14,9 @@ export const TooltipButton = () => {
         >
           TIP
         </a>
-        <div data-testid='Tooltip' className='tooltipContent do--split-children'>
+        {/* <div data-testid='Tooltip' className='tooltipContent do--split-children'>
           <p>Your support helps Buenos Diaz keep serving amazing coffee. Venmo available!</p>
-        </div>
+        </div> */}
       </div>
       <p className='primaryTextSmall'>Support Buenos Díaz&apos;s summer launch!</p>
     </StyledTooltip>
