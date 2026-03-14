@@ -34,7 +34,7 @@ const menuList: Menu[] = [
   },
   {
     title: 'GUAVA ROJA',
-    subtitle: 'Guava | Hibiscus',
+    subtitle: '(NOT-COFFEE) Guava | Hibiscus',
     description: `Tropical guava layered with the vibrant tang of hibiscus 
     
     tea and subtle warming spices. Inspired by the refreshing aguas frescas de 
