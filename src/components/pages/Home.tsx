@@ -1,33 +1,33 @@
 import '@/theme/GlobalStyles.css'
 import { Hero } from '@/components/Hero'
 import { StyledHome } from '@/theme/StyledComponents'
-import { MenuCard, type Menu } from '../MenuCard'
-import { TooltipButton } from '../TooltipButton'
+// import { MenuCard, type Menu } from '../MenuCard'
+// import { TooltipButton } from '../TooltipButton'
 
-const menuList: Menu[] = [
-  // },
-  //   title: 'FRESA HORCHATA LATTE',
-  //   subtitle: 'Straweberry | cinnamon | Oat milk horchata',
-  //   description: `Sweet strawberry blended with
-  //   creamy oatmilk horchata and warm cinnamon.
-  //   Inspired by the classic horchata served in Mexican mercados, it's smooth
-  //   and gently spiced.`,
-  // },
-  // {
-  //   title: 'GUAVA CREAM TOP',
-  //   subtitle: 'Guava | Cream',
-  //   description: `Bright guava and strawberry layered beneath a silky
-  //   cream top. Inspired by vibrant fruit-forward cafe
-  //   drinks, it's creamy and lightly sweet.`,
-  // },
-  // {
-  //   title: 'GUAVA ROJA',
-  //   subtitle: '(NOT-COFFEE) Guava | Hibiscus',
-  //   description: `Tropical guava layered with the vibrant tang of hibiscus
-  //   tea and subtle warming spices. Inspired by the refreshing aguas frescas de
-  //   jamaica found across Mexico, it's bold, floral, and refreshing`,
-  // },
-]
+// const menuList: Menu[] = [
+// },
+//   title: 'FRESA HORCHATA LATTE',
+//   subtitle: 'Straweberry | cinnamon | Oat milk horchata',
+//   description: `Sweet strawberry blended with
+//   creamy oatmilk horchata and warm cinnamon.
+//   Inspired by the classic horchata served in Mexican mercados, it's smooth
+//   and gently spiced.`,
+// },
+// {
+//   title: 'GUAVA CREAM TOP',
+//   subtitle: 'Guava | Cream',
+//   description: `Bright guava and strawberry layered beneath a silky
+//   cream top. Inspired by vibrant fruit-forward cafe
+//   drinks, it's creamy and lightly sweet.`,
+// },
+// {
+//   title: 'GUAVA ROJA',
+//   subtitle: '(NOT-COFFEE) Guava | Hibiscus',
+//   description: `Tropical guava layered with the vibrant tang of hibiscus
+//   tea and subtle warming spices. Inspired by the refreshing aguas frescas de
+//   jamaica found across Mexico, it's bold, floral, and refreshing`,
+// },
+// ]
 
 export const Home = () => {
   return (
@@ -43,7 +43,7 @@ export const Home = () => {
 
         At Buenos Díaz, we specialize in specialty coffee and crafting experiences that go beyond the cup. From thoughtfully sourced beans to homemade syrups and flavors grounded in Mexican traditions, every drink tells a story—one of care, culture, and the joy of sharing coffee with others.`}</p>
       </div>
-      <div className='centerImageContainer'></div>
+      {/* <div className='centerImageContainer'></div>
       <TooltipButton />
       <div className={'menuWrapper'}>
         {menuList.map((menuItem, index) => (
@@ -54,7 +54,7 @@ export const Home = () => {
             description={menuItem.description}
           />
         ))}
-      </div>
+      </div> */}
     </StyledHome>
   )
 }

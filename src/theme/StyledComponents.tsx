@@ -46,7 +46,7 @@ export const StyledHero = styled.div`
   height: 85vh;
   min-height: 50em;
   width: 100%;
-  background-position: right 50% bottom 10%;
+  background-position: right 35% bottom 40%;
   background-repeat: no-repeat;
   background-size: cover;
 
@@ -58,7 +58,6 @@ export const StyledHero = styled.div`
       text-wrap: nowrap;
       font-size: 75px;
       font-weight: 400;
-      color: #ef452a;
       font-family: 'Loved by the King', cursive;
       margin: 0;
       letter-spacing: 5px;
@@ -71,6 +70,7 @@ export const StyledHero = styled.div`
 
     > p {
       margin-top: 8px;
+      color: #ef452a;
     }
   }
 `
