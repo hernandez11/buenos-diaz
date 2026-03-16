@@ -13,34 +13,27 @@ const menuList: Menu[] = [
   //   Inspired by the clay pot brews shared in rural kitchens, it’s warm, spiced, &
   // deeply rooted in heritage`,
   // },
-  {
-    title: 'FRESA HORCHATA LATTE',
-    subtitle: 'Straweberry | cinnamon | Oat milk horchata',
-    description: `Sweet strawberry blended with 
-    
-    creamy oatmilk horchata and warm cinnamon. 
-    Inspired by the classic horchata served in Mexican mercados, it's smooth 
-    
-    and gently spiced.`,
-  },
-  {
-    title: 'GUAVA CREAM TOP',
-    subtitle: 'Guava | Cream',
-    description: `Bright guava and strawberry layered beneath a silky 
-    
-    cream top. Inspired by vibrant fruit-forward cafe 
-    
-    drinks, it's creamy and lightly sweet.`,
-  },
-  {
-    title: 'GUAVA ROJA',
-    subtitle: '(NOT-COFFEE) Guava | Hibiscus',
-    description: `Tropical guava layered with the vibrant tang of hibiscus 
-    
-    tea and subtle warming spices. Inspired by the refreshing aguas frescas de 
-    
-    jamaica found across Mexico, it's bold, floral, and refreshing`,
-  },
+  //   title: 'FRESA HORCHATA LATTE',
+  //   subtitle: 'Straweberry | cinnamon | Oat milk horchata',
+  //   description: `Sweet strawberry blended with
+  //   creamy oatmilk horchata and warm cinnamon.
+  //   Inspired by the classic horchata served in Mexican mercados, it's smooth
+  //   and gently spiced.`,
+  // },
+  // {
+  //   title: 'GUAVA CREAM TOP',
+  //   subtitle: 'Guava | Cream',
+  //   description: `Bright guava and strawberry layered beneath a silky
+  //   cream top. Inspired by vibrant fruit-forward cafe
+  //   drinks, it's creamy and lightly sweet.`,
+  // },
+  // {
+  //   title: 'GUAVA ROJA',
+  //   subtitle: '(NOT-COFFEE) Guava | Hibiscus',
+  //   description: `Tropical guava layered with the vibrant tang of hibiscus
+  //   tea and subtle warming spices. Inspired by the refreshing aguas frescas de
+  //   jamaica found across Mexico, it's bold, floral, and refreshing`,
+  // },
 ]
 
 export const Home = () => {
