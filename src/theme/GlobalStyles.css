@@ -34,3 +34,8 @@ body {
 .primaryTextExtraSmall {
   font-size: 0.5em;
 }
+
+.headerLink {
+  text-decoration: none;
+  color: #000;
+}

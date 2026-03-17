@@ -7,7 +7,7 @@ export const StyledHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ece7dc;
+  background-color: #fffdfa;
   color: #1e1e1e;
   padding: 0 3em;
   height: 7em;
@@ -30,9 +30,6 @@ export const StyledHeader = styled.div`
 
   @media (max-width: 767px) {
     .navMenu {
-      > p {
-        display: none;
-      }
     }
   }
 `
