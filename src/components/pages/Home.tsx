@@ -1,6 +1,8 @@
 import '@/theme/GlobalStyles.css'
-import { Hero } from '@/components/Hero'
 import { StyledHome } from '@/theme/StyledComponents'
+import Hero from '@/components/Hero'
+import MenuDisplay from '@/components/MenuDisplay'
+import UpcomingEventsSection from '@/components/UpcomingEventsSection'
 // import { MenuCard, type Menu } from '../MenuCard'
 // import { TooltipButton } from '../TooltipButton'
 
@@ -31,30 +33,22 @@ import { StyledHome } from '@/theme/StyledComponents'
 
 export const Home = () => {
   return (
-    <StyledHome>
+    <>
       <Hero />
-      <div className='infoSection' data-testid='InfoSection'>
-        <p className='primaryTextMedium'>
-          <strong>BUENOS DíAZ</strong> | CHIS, MX
-        </p>
-        <p className='primaryTextSmall'>{`I come from a family of coffee farmers in Chiapas, Mexico, where coffee is more than just a morning pick-me-up—it’s a way of life. In Chiapas, coffee puts food on tables and is grown with care, patience, and pride. Families there savor the fruits of their labor every day, after growing, harvesting, and roasting their own beans. As the largest coffee-producing region in Mexico, Chiapas is steeped in a tradition of quality and passion that has shaped the way coffee is enjoyed and celebrated.
+      <StyledHome>
+        <div className='infoSection' data-testid='InfoSection'>
+          <p className='primaryTextMedium'>
+            <strong>BUENOS DíAZ</strong> | CHIS, MX
+          </p>
+          <p className='primaryTextSmall'>{`I come from a family of coffee farmers in Chiapas, Mexico, where coffee is more than just a morning pick-me-up—it’s a way of life. In Chiapas, coffee puts food on tables and is grown with care, patience, and pride. Families there savor the fruits of their labor every day, after growing, harvesting, and roasting their own beans. As the largest coffee-producing region in Mexico, Chiapas is steeped in a tradition of quality and passion that has shaped the way coffee is enjoyed and celebrated.
 
         My family has carried on this tradition for generations, cultivating and harvesting coffee with the same care and dedication. Growing up surrounded by these practices instilled in me a deep respect for the craft and a desire to share its warmth, richness, and cultural significance.
 
         At Buenos Díaz, we specialize in specialty coffee and crafting experiences that go beyond the cup. From thoughtfully sourced beans to homemade syrups and flavors grounded in Mexican traditions, every drink tells a story—one of care, culture, and the joy of sharing coffee with others.`}</p>
-      </div>
-      {/* <div className='centerImageContainer'></div>
-      <TooltipButton />
-      <div className={'menuWrapper'}>
-        {menuList.map((menuItem, index) => (
-          <MenuCard
-            key={index}
-            title={menuItem.title}
-            subtitle={menuItem.subtitle}
-            description={menuItem.description}
-          />
-        ))}
-      </div> */}
-    </StyledHome>
+        </div>
+      </StyledHome>
+      <MenuDisplay />
+      <UpcomingEventsSection />
+    </>
   )
 }

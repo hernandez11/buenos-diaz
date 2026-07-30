@@ -2,38 +2,6 @@ import styled from 'styled-components'
 import heroImage from '@/assets/hero-bg.jpg'
 import bodyImage from '@/assets/body-img.jpg'
 
-export const StyledHeader = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fffdfa;
-  color: #1e1e1e;
-  padding: 0 3em;
-  height: 7em;
-
-  .navMenu {
-    display: flex;
-
-    > p {
-      padding-right: 3em;
-    }
-  }
-
-  .headerLogo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: 'Loved by the King', cursive;
-    font-size: 30px;
-  }
-
-  @media (max-width: 767px) {
-    .navMenu {
-    }
-  }
-`
-
 export const StyledHero = styled.div`
   display: flex;
   justify-content: center;
@@ -83,7 +51,7 @@ export const StyledHome = styled.div`
   .infoSection {
     width: 75%;
     max-width: 40em;
-    margin: 20em 0;
+    margin-top: 20em;
     text-align: center;
     white-space: pre-line;
   }
