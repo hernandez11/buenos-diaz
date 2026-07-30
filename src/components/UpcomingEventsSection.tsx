@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-
+import EventCard from '@/assets/EventCard.jpg'
 interface EventData {
   id: string
   title: string
@@ -253,7 +253,7 @@ const UpcomingEventsSection = ({ event = defaultEvent }: UpcomingEventsSectionPr
       <EventDescription>{event.description}</EventDescription>
 
       <ImageAndButtonRow>
-        <ImageCard src={event.image} alt={event.title} />
+        <ImageCard src={EventCard} alt={event.title} />
         <RsvpButton
           href='https://partiful.com/e/kFfHCucijBKoxfG6LSRp?c=ZJ8JG7bl'
           target='_blank'

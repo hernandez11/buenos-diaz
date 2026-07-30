@@ -1,4 +1,6 @@
 import styled from 'styled-components'
+import MenuCard1 from '@/assets/MenuCard_1.jpg'
+import MenuCard2 from '@/assets/MenuCard_2.jpg'
 
 interface MenuCard {
   id: string
@@ -78,11 +80,11 @@ const Card = styled.img`
 const defaultCards: MenuCard[] = [
   {
     id: 'non-coffee',
-    image: '/src/assets/MenuCard_1.jpg',
+    image: MenuCard1,
   },
   {
     id: 'specialty',
-    image: '/src/assets/MenuCard_2.jpg',
+    image: MenuCard2,
   },
 ]
 

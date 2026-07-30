@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import heroClip from '@/assets/HeroClip.mp4'
 
 const HeroContainer = styled.section`
   position: relative;
@@ -51,7 +52,7 @@ const HeroText = styled.p`
 
 const Hero = () => (
   <HeroContainer data-testid='hero'>
-    <HeroVideo src={'/src/assets/HeroClip.mp4'} autoPlay loop muted playsInline preload='auto' />
+    <HeroVideo src={heroClip} autoPlay loop muted playsInline preload='auto' />
     <HeroOverlay />
     <HeroContent>
       <HeroText>MADE FOR COMMUNITY.</HeroText>
