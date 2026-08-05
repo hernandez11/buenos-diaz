@@ -1,62 +1,134 @@
 import styled from 'styled-components'
-import heroClip from '@/assets/HeroClip.mp4'
+import heroImage from '@/assets/HeroBg.png'
 
 const HeroContainer = styled.section`
   position: relative;
-  height: 85vh;
-  min-height: 50em;
   width: 100%;
+  aspect-ratio: 1728 / 961;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  container-type: inline-size;
+  background-color: #fffdfa;
+
+  @media (max-width: 767px) {
+    aspect-ratio: 3 / 4;
+  }
 `
 
-const HeroVideo = styled.video`
+const HeroImage = styled.img`
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: right 35% bottom 40%;
+  opacity: 0.8;
   z-index: 0;
 `
 
-const HeroOverlay = styled.div`
+const Label = styled.span<{
+  $left: string
+  $top: string
+  $anchor?: 'left' | 'center' | 'right'
+  $size?: 'lg' | 'sm'
+  $width?: string
+}>`
   position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-  z-index: 1;
-`
-
-const HeroContent = styled.div`
-  position: relative;
+  left: ${(props) => props.$left};
+  top: ${(props) => props.$top};
+  width: ${(props) => props.$width ?? 'auto'};
+  transform: translateY(-50%)
+    ${(props) =>
+      props.$anchor === 'center'
+        ? 'translateX(-50%)'
+        : props.$anchor === 'right'
+          ? 'translateX(-100%)'
+          : 'none'};
+  text-align: ${(props) => props.$anchor ?? 'left'};
   z-index: 2;
-  color: white;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  white-space: ${(props) => (props.$width ? 'normal' : 'nowrap')};
+  line-height: 1.3;
+  letter-spacing: -0.04em;
+  font-weight: ${(props) => (props.$size === 'lg' ? 500 : 400)};
+  font-size: ${(props) =>
+    props.$size === 'lg' ? 'clamp(13px, 1.157cqw, 20px)' : 'clamp(10px, 0.868cqw, 15px)'};
+
+  @media (max-width: 767px) {
+    display: none;
+  }
 `
 
-const HeroText = styled.p`
-  margin: 0;
-  color: white;
-  font-size: 1em;
-  letter-spacing: -0.48px;
-  text-transform: uppercase;
+const Divider = styled.span`
+  position: absolute;
+  left: 73.15%;
+  top: 46.1%;
+  width: 2.9%;
+  height: 1px;
+  background-color: #ffffff;
+  z-index: 2;
+
+  @media (max-width: 767px) {
+    display: none;
+  }
+`
+
+const MobileContent = styled.div`
+  display: none;
+
+  @media (max-width: 767px) {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 0 2rem;
+    text-align: center;
+    color: #ffffff;
+  }
 `
 
 const Hero = () => (
   <HeroContainer data-testid='hero'>
-    <HeroVideo src={heroClip} autoPlay loop muted playsInline preload='auto' />
-    <HeroOverlay />
-    <HeroContent>
-      <HeroText>MADE FOR COMMUNITY.</HeroText>
-    </HeroContent>
+    <HeroImage src={heroImage} alt='Buenos Díaz' />
+
+    <Label $left='65.05%' $top='46.1%' $size='lg'>
+      Made
+    </Label>
+    <Divider />
+    <Label $left='80.9%' $top='46.1%' $size='lg'>
+      For
+    </Label>
+
+    <Label $left='36.69%' $top='46.41%' $anchor='center'>
+      Heritage
+    </Label>
+    <Label $left='62.5%' $top='72.74%' $anchor='right'>
+      Culture
+    </Label>
+    <Label $left='8.04%' $top='79.29%'>
+      New York City
+    </Label>
+    <Label $left='84.84%' $top='82.83%'>
+      Community
+    </Label>
+
+    <Label $left='38.89%' $top='93.44%' $anchor='right' $width='17.71%'>
+      Mexican heritage, poured in New York. Specialty coffee with a purpose.
+    </Label>
+
+    <MobileContent>
+      <p className='primaryTextLarge'>MADE FOR COMMUNITY</p>
+
+      <p className='primaryTextSmall'>
+        Mexican heritage, poured in New York.
+        <br />
+        Specialty coffee with a purpose.
+      </p>
+    </MobileContent>
   </HeroContainer>
 )
 

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import heroImage from '@/assets/hero-bg.jpg'
+import heroImage from '@/assets/HeroBg.png'
 import bodyImage from '@/assets/body-img.jpg'
 
 export const StyledHero = styled.div`
@@ -51,7 +51,7 @@ export const StyledHome = styled.div`
   .infoSection {
     width: 75%;
     max-width: 40em;
-    margin-top: 20em;
+    margin: 20em 0;
     text-align: center;
     white-space: pre-line;
   }

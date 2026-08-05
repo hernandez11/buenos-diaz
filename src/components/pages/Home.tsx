@@ -2,7 +2,7 @@ import '@/theme/GlobalStyles.css'
 import { StyledHome } from '@/theme/StyledComponents'
 import Hero from '@/components/Hero'
 import MenuDisplay from '@/components/MenuDisplay'
-import UpcomingEventsSection from '@/components/UpcomingEventsSection'
+import Footer from '@/components/Footer'
 // import { MenuCard, type Menu } from '../MenuCard'
 // import { TooltipButton } from '../TooltipButton'
 
@@ -48,7 +48,7 @@ export const Home = () => {
         </div>
       </StyledHome>
       <MenuDisplay />
-      <UpcomingEventsSection />
+      <Footer />
     </>
   )
 }

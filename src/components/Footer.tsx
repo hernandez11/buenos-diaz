@@ -1,0 +1,169 @@
+import styled from 'styled-components'
+import IgIcon from '@/assets/IgIcon.png'
+import EmailIcon from '@/assets/EmailIcon.png'
+
+interface FooterLink {
+  id: string
+  label: string
+  href: string
+}
+
+interface FooterProps {
+  location?: string
+  copyright?: string
+  links?: [FooterLink, FooterLink, FooterLink, FooterLink]
+  igIcon?: string
+  emailIcon?: string
+}
+
+const Wrapper = styled.footer`
+  position: relative;
+  width: 100%;
+  background-color: #fffdfa;
+  container-type: inline-size;
+`
+
+const TopRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 2.6cqw 11.98cqw 2cqw 11.98cqw;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 0.75rem;
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+  }
+`
+
+const Location = styled.span`
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(11px, 0.868cqw, 15px);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  color: #000000;
+  white-space: nowrap;
+
+  @media (max-width: 1024px) {
+    font-size: 0.9em;
+    order: 2;
+  }
+`
+
+const Copyright = styled.span`
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(11px, 0.868cqw, 15px);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  color: #000000;
+  text-align: right;
+  white-space: nowrap;
+
+  @media (max-width: 1024px) {
+    font-size: 0.9em;
+    text-align: center;
+    order: 3;
+  }
+`
+
+const LogoMark = styled.span`
+  font-family: 'Loved by the King', cursive;
+  font-size: clamp(28px, 3.078cqw, 53.19px);
+  color: #1e1e1e;
+  text-align: center;
+  line-height: 1;
+
+  @media (max-width: 1024px) {
+    order: 1;
+    font-size: 2.4em;
+  }
+`
+
+const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid #1e1e1e;
+  opacity: 0.5;
+  margin: 0 5.56cqw;
+`
+
+const BottomRow = styled.nav`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2.6cqw 11.98cqw;
+
+  @media (max-width: 1024px) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+  }
+`
+
+const NavLink = styled.a`
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(11px, 0.868cqw, 15px);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  color: #000000;
+  text-decoration: none;
+  white-space: nowrap;
+
+  @media (max-width: 1024px) {
+    font-size: 0.95em;
+  }
+`
+
+const SocialIconsBox = styled.div`
+  width: clamp(48px, 4.4cqw, 76px);
+  aspect-ratio: 38 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+`
+
+const defaultLinks: [FooterLink, FooterLink, FooterLink, FooterLink] = [
+  { id: 'home', label: 'HOME', href: '#home' },
+  { id: 'services', label: 'SERVICES', href: '#services' },
+  { id: 'events', label: 'EVENTS', href: '#events' },
+  { id: 'contact', label: 'CONTACT', href: '#contact' },
+]
+
+const Footer = ({
+  location = 'Mobile Espresso Bar | NYC',
+  copyright = '@ Buenos Díaz Coffee, 2026',
+  links = defaultLinks,
+  igIcon = IgIcon,
+  emailIcon = EmailIcon,
+}: FooterProps) => (
+  <Wrapper data-testid='footer'>
+    <TopRow>
+      <Location>{location}</Location>
+      <LogoMark>BD</LogoMark>
+      <Copyright>{copyright}</Copyright>
+    </TopRow>
+
+    <Divider />
+
+    <BottomRow>
+      <NavLink href={links[0].href}>{links[0].label}</NavLink>
+      {/* <NavLink href={links[1].href}>{links[1].label}</NavLink> */}
+      <SocialIconsBox>
+        <img src={igIcon} alt='Buenos Diaz instagram channels' />
+        <img src={emailIcon} alt='Buenos Diaz email channels' />
+      </SocialIconsBox>
+      {/* <NavLink href={links[2].href}>{links[2].label}</NavLink> */}
+      {/* <NavLink href={links[3].href}>{links[3].label}</NavLink> */}
+    </BottomRow>
+  </Wrapper>
+)
+
+export default Footer
