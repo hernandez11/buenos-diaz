@@ -1,6 +1,6 @@
 import styled from 'styled-components'
+import IgIcon from '@/assets/IgIcon.png'
 import EmailIcon from '@/assets/EmailIcon.png'
-import InstagramIcon from '@/assets/InstagramIcon.png'
 import PrimaryLogo from '@/assets/PrimaryLogo.png'
 
 const StyledHeader = styled.div`
@@ -18,10 +18,6 @@ const StyledHeader = styled.div`
     display: flex;
     align-items: center;
     gap: 3em;
-
-    > p {
-      margin: 0;
-    }
   }
 
   .headerLogo {
@@ -98,6 +94,25 @@ const StyledHeader = styled.div`
   }
 `
 
+const SocialIconsBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1cqw, 16px);
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  img {
+    width: clamp(14px, 1.8cqw, 22px);
+    height: clamp(14px, 1.8cqw, 22px);
+    object-fit: contain;
+  }
+`
+
 export const Header = () => {
   return (
     <StyledHeader>
@@ -111,26 +126,14 @@ export const Header = () => {
         <img src={PrimaryLogo} alt='Email' />
       </a>
 
-      <div className='iconMenu'>
-        <a
-          href='mailto:hello@buenosdiaznyc.com'
-          className='iconLink'
-          aria-label='Email Buenos Díaz'
-          data-testid={'EmailLink'}
-        >
+      <SocialIconsBox>
+        <a href='mailto:hello@buenosdiaznyc.com' aria-label='Email Buenos Díaz'>
           <img src={EmailIcon} alt='Email' />
         </a>
-        <a
-          href='https://www.instagram.com/buenosdiaznyc/'
-          target='_blank'
-          rel='noreferrer'
-          className='iconLink'
-          aria-label='Buenos Díaz on Instagram'
-          data-testid={'InstagramLink'}
-        >
-          <img src={InstagramIcon} alt='Instagram' />
+        <a href='https://www.instagram.com/buenosdiaznyc/' target='_blank' rel='noreferrer'>
+          <img src={IgIcon} alt='Instagram' />
         </a>
-      </div>
+      </SocialIconsBox>
     </StyledHeader>
   )
 }

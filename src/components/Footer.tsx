@@ -12,8 +12,6 @@ interface FooterProps {
   location?: string
   copyright?: string
   links?: [FooterLink, FooterLink, FooterLink, FooterLink]
-  igIcon?: string
-  emailIcon?: string
 }
 
 const Wrapper = styled.footer`
@@ -103,15 +101,20 @@ const BottomRow = styled.nav`
 `
 
 const SocialIconsBox = styled.div`
-  width: clamp(48px, 4.4cqw, 76px);
-  aspect-ratio: 38 / 10;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: clamp(8px, 1cqw, 16px);
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   img {
-    width: 100%;
-    height: 100%;
+    width: clamp(14px, 1.8cqw, 22px);
+    height: clamp(14px, 1.8cqw, 22px);
     object-fit: contain;
   }
 `
@@ -127,8 +130,6 @@ const Footer = ({
   location = 'Mobile Espresso Bar | NYC',
   copyright = '© Buenos Díaz Coffee, 2026',
   links = defaultLinks,
-  igIcon = IgIcon,
-  emailIcon = EmailIcon,
 }: FooterProps) => (
   <Wrapper data-testid='footer'>
     <TopRow>
@@ -147,12 +148,16 @@ const Footer = ({
         {links[1].label}
       </a> */}
       <SocialIconsBox>
-        <img src={igIcon} alt='Buenos Diaz instagram channels' />
-        <img src={emailIcon} alt='Buenos Diaz email channels' />
+        <a href='mailto:hello@buenosdiaznyc.com' aria-label='Email Buenos Díaz'>
+          <img src={EmailIcon} alt='Email' />
+        </a>
+        <a href='https://www.instagram.com/buenosdiaznyc/' target='_blank' rel='noreferrer'>
+          <img src={IgIcon} alt='Instagram' />
+        </a>
       </SocialIconsBox>
-      <a className='navigationLink' href={links[2].href}>
+      {/* <a className='navigationLink' href={links[2].href}>
         {links[2].label}
-      </a>
+      </a> */}
       {/* <a className='navigationLink' href={links[3].href}>{links[3].label}</a> */}
     </BottomRow>
   </Wrapper>
