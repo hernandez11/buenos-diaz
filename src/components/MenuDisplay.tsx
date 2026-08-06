@@ -115,7 +115,7 @@ const Title = styled.h2`
   line-height: 1;
   letter-spacing: -0.04em;
   font-weight: 600;
-  font-size: clamp(1.6em, 2.164cqw, 2em);
+  font-size: clamp(1.5em, 2.164cqw, 2em);
 `
 
 const Divider = styled.span`

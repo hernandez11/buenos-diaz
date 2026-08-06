@@ -143,14 +143,16 @@ const Footer = ({
       <a className='navigationLink' href={links[0].href}>
         {links[0].label}
       </a>
-      <a className='navigationLink' href={links[1].href}>
+      {/* <a className='navigationLink' href={links[1].href}>
         {links[1].label}
-      </a>
+      </a> */}
       <SocialIconsBox>
         <img src={igIcon} alt='Buenos Diaz instagram channels' />
         <img src={emailIcon} alt='Buenos Diaz email channels' />
       </SocialIconsBox>
-      {/* <a className='navigationLink' href={links[2].href}>{links[2].label}</a> */}
+      <a className='navigationLink' href={links[2].href}>
+        {links[2].label}
+      </a>
       {/* <a className='navigationLink' href={links[3].href}>{links[3].label}</a> */}
     </BottomRow>
   </Wrapper>
