@@ -61,9 +61,9 @@ const Label = styled.span<{
 
 const Divider = styled.span`
   position: absolute;
-  left: 73.15%;
-  top: 46.1%;
-  width: 2.9%;
+  left: 72%;
+  top: 47%;
+  width: 5%;
   height: 1px;
   background-color: #ffffff;
   z-index: 2;
@@ -84,7 +84,7 @@ const MobileContent = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.25rem;
+    gap: 3rem;
     padding: 0 2rem;
     text-align: center;
     color: #ffffff;
@@ -95,33 +95,33 @@ const Hero = () => (
   <HeroContainer data-testid='hero'>
     <HeroImage src={heroImage} alt='Buenos Díaz' />
 
-    <Label $left='65.05%' $top='46.1%' $size='lg'>
+    <Label $left='65%' $top='46%' $size='lg'>
       Made
     </Label>
     <Divider />
-    <Label $left='80.9%' $top='46.1%' $size='lg'>
+    <Label $left='80%' $top='46%' $size='lg'>
       For
     </Label>
 
-    <Label $left='36.69%' $top='46.41%' $anchor='center'>
+    <Label $left='37%' $top='55%' $anchor='center'>
       Heritage
     </Label>
-    <Label $left='62.5%' $top='72.74%' $anchor='right'>
+    <Label $left='62%' $top='73%' $anchor='right'>
       Culture
     </Label>
-    <Label $left='8.04%' $top='79.29%'>
+    <Label $left='8%' $top='79%'>
       New York City
     </Label>
-    <Label $left='84.84%' $top='82.83%'>
+    <Label $left='85%' $top='83%'>
       Community
     </Label>
 
-    <Label $left='38.89%' $top='93.44%' $anchor='right' $width='17.71%'>
+    <Label $left='39%' $top='92%' $anchor='right' $width='18%'>
       Mexican heritage, poured in New York. Specialty coffee with a purpose.
     </Label>
 
     <MobileContent>
-      <p className='primaryTextLarge'>MADE FOR COMMUNITY</p>
+      <p className='secondaryTitle'>MADE FOR COMMUNITY</p>
 
       <p className='primaryTextSmall'>
         Mexican heritage, poured in New York.

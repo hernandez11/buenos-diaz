@@ -60,7 +60,7 @@ const Content = styled.div`
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
-  gap: clamp(1.5rem, 6cqw, 4rem);
+  gap: clamp(1.5rem, 7cqw, 4rem);
   padding: 2em;
   box-sizing: border-box;
 
