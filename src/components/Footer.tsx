@@ -125,7 +125,7 @@ const defaultLinks: [FooterLink, FooterLink, FooterLink, FooterLink] = [
 
 const Footer = ({
   location = 'Mobile Espresso Bar | NYC',
-  copyright = '@ Buenos Díaz Coffee, 2026',
+  copyright = '© Buenos Díaz Coffee, 2026',
   links = defaultLinks,
   igIcon = IgIcon,
   emailIcon = EmailIcon,
@@ -143,7 +143,9 @@ const Footer = ({
       <a className='navigationLink' href={links[0].href}>
         {links[0].label}
       </a>
-      {/* <a className='navigationLink' href={links[1].href}>{links[1].label}</a> */}
+      <a className='navigationLink' href={links[1].href}>
+        {links[1].label}
+      </a>
       <SocialIconsBox>
         <img src={igIcon} alt='Buenos Diaz instagram channels' />
         <img src={emailIcon} alt='Buenos Diaz email channels' />
