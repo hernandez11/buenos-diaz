@@ -49,6 +49,13 @@ export const StyledHome = styled.div`
   overflow-x: hidden;
 
   .infoSection {
+    @media (max-width: 767px) {
+      width: 50%;
+
+      p:first-child {
+        margin-bottom: 1em;
+      }
+    }
     width: 75%;
     max-width: 40em;
     margin: 20em 0;

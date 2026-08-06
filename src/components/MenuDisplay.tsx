@@ -59,7 +59,8 @@ const Content = styled.div`
   z-index: 1;
   display: flex;
   flex-wrap: nowrap;
-  justify-content: center;
+  width: 100%;
+  justify-content: space-evenly;
   gap: clamp(1.5rem, 7cqw, 4rem);
   padding: 2em;
   box-sizing: border-box;
@@ -70,6 +71,8 @@ const Content = styled.div`
   }
 
   @media (max-width: 767px) {
+    width: auto;
+    justify-content: center;
     flex-direction: column;
     flex-wrap: wrap;
     padding: 3rem 1.75rem;
