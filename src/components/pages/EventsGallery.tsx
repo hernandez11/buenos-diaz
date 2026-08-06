@@ -31,15 +31,28 @@ const GalleryRow = styled.div`
   flex-wrap: nowrap;
   width: 100%;
   height: clamp(220px, 28.588cqw, 560px);
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    height: auto;
+    gap: 0.5rem;
+  }
 `
 
-const Tile = styled.div<{ $grow: number; $clickable?: boolean }>`
+const Tile = styled.div<{ $grow: number; $clickable?: boolean; $featured?: boolean }>`
   position: relative;
   flex: ${(props) => props.$grow} 1 0;
   min-width: 0;
   overflow: hidden;
   border: 0.5px solid #ffffff;
   cursor: ${(props) => (props.$clickable ? 'pointer' : 'default')};
+
+  @media (max-width: 767px) {
+    flex: none;
+    width: 100%;
+    aspect-ratio: ${(props) => (props.$featured ? '4 / 3' : '16 / 9')};
+    order: ${(props) => (props.$featured ? -1 : 0)};
+  }
 `
 
 const TileImage = styled.img`
@@ -200,6 +213,7 @@ const EventsGallery = ({
             key={tile.id}
             $grow={tileGrow[index] ?? 1}
             $clickable={tile.featured}
+            $featured={tile.featured}
             onClick={() => handleTileClick(tile)}
           >
             <TileImage src={tile.image} alt={tile.alt} />

@@ -50,7 +50,7 @@ export const StyledHome = styled.div`
 
   .infoSection {
     @media (max-width: 767px) {
-      width: 50%;
+      width: 65%;
 
       p:first-child {
         margin-bottom: 1em;

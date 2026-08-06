@@ -122,7 +122,7 @@ export const Header = () => {
         </p>
       </div>
 
-      <a className={'headerLogo'} aria-label='Buenos Díaz logo'>
+      <a href='/' className={'headerLogo'} aria-label='Buenos Díaz logo'>
         <img src={PrimaryLogo} alt='Email' />
       </a>
 
