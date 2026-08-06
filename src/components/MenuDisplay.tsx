@@ -24,23 +24,18 @@ const Section = styled.section`
   position: relative;
   width: 80%;
   margin: 0 auto 20em auto;
-  aspect-ratio: 1386 / 790;
-  overflow: hidden;
+  aspect-ratio: 1386 / 850;
   container-type: inline-size;
-  background-color: #1e1e1e;
+  padding: 2em;
 
   @media (max-width: 1024px) {
     width: 88%;
     margin-bottom: 8em;
-    aspect-ratio: auto;
-    padding: 4rem 3rem;
     box-sizing: border-box;
   }
 
   @media (max-width: 767px) {
     width: 90%;
-    margin-bottom: 5em;
-    padding: 3rem 1.75rem;
   }
 `
 
@@ -69,6 +64,15 @@ const Column = styled.div<{ $left: string }>`
   }
 `
 
+const StackedCategory = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    align-items: center;
+  }
+`
+
 const ColumnStack = styled.div`
   display: none;
 
@@ -79,17 +83,13 @@ const ColumnStack = styled.div`
     grid-template-columns: 1fr 1fr;
     gap: 2.5rem;
     color: #ffffff;
+    justify-items: center;
   }
 
   @media (max-width: 767px) {
     grid-template-columns: 1fr;
     gap: 2.75rem;
   }
-`
-
-const StackedCategory = styled.div`
-  display: flex;
-  flex-direction: column;
 `
 
 const TitleRow = styled.div`
@@ -99,25 +99,6 @@ const TitleRow = styled.div`
 
   @media (max-width: 1024px) {
     gap: 0.75rem;
-  }
-`
-
-const Title = styled.h2`
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(17px, 2.164cqw, 30px);
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  text-transform: uppercase;
-  white-space: nowrap;
-
-  @media (max-width: 1024px) {
-    font-size: 1.4em;
-  }
-
-  @media (max-width: 767px) {
-    font-size: 1.55em;
   }
 `
 
@@ -133,25 +114,6 @@ const Divider = styled.span`
 
   @media (max-width: 767px) {
     width: 2.75rem;
-  }
-`
-
-const Subtitle = styled.p`
-  margin: 0.5cqw 0 0 0;
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(12px, 1.443cqw, 20px);
-  font-weight: 400;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  text-transform: uppercase;
-
-  @media (max-width: 1024px) {
-    margin-top: 0.4rem;
-    font-size: 0.95em;
-  }
-
-  @media (max-width: 767px) {
-    font-size: 1.05em;
   }
 `
 
@@ -182,40 +144,34 @@ const Item = styled.div`
   }
 `
 
-const ItemName = styled.h3`
-  margin: 0;
+const Title = styled.h2`
   font-family: 'Inter', sans-serif;
-  font-size: clamp(12px, 1.443cqw, 20px);
-  font-weight: 500;
-  letter-spacing: -0.04em;
-  line-height: 1;
   text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  font-size: clamp(17px, 2.164cqw, 2.1em);
+`
 
-  @media (max-width: 1024px) {
-    font-size: 0.95em;
-  }
-
-  @media (max-width: 767px) {
-    font-size: 1.05em;
-  }
+const Subtitle = styled.p`
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 400;
+  font-size: clamp(12px, 1.443cqw, 20px);
 `
 
 const ItemDescription = styled.p`
-  margin: 0;
   font-family: 'Inter', sans-serif;
-  font-size: clamp(9px, 1.082cqw, 15px);
-  font-weight: 400;
+  margin: 0;
+  line-height: 1;
   letter-spacing: -0.04em;
-  line-height: 1.35;
-
-  @media (max-width: 1024px) {
-    font-size: 0.8em;
-    line-height: 1.45;
-  }
-
-  @media (max-width: 767px) {
-    font-size: 0.85em;
-  }
+  font-weight: 300;
+  font-size: clamp(9px, 1.082cqw, 15px);
+  max-width: 25cqw;
 `
 
 const defaultCategories: [MenuCategory, MenuCategory] = [
@@ -278,7 +234,7 @@ const CategoryBlock = ({ category }: { category: MenuCategory }) => (
     <ItemList>
       {category.items.map((item) => (
         <Item key={item.id}>
-          <ItemName>{item.name}</ItemName>
+          <Subtitle>{item.name}</Subtitle>
           <ItemDescription>{item.description}</ItemDescription>
         </Item>
       ))}

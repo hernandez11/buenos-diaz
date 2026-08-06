@@ -37,8 +37,8 @@ export const Home = () => {
       <Hero />
       <StyledHome>
         <div className='infoSection' data-testid='InfoSection'>
-          <p className='primaryTextMedium'>
-            <strong>BUENOS DíAZ</strong> | CHIS, MX
+          <p className='secondaryTitle'>
+            <strong>BUENOS DÍAZ</strong> | CHIS, MX
           </p>
           <p className='primaryTextSmall'>{`I come from a family of coffee farmers in Chiapas, Mexico, where coffee is more than just a morning pick-me-up—it’s a way of life. In Chiapas, coffee puts food on tables and is grown with care, patience, and pride. Families there savor the fruits of their labor every day, after growing, harvesting, and roasting their own beans. As the largest coffee-producing region in Mexico, Chiapas is steeped in a tradition of quality and passion that has shaped the way coffee is enjoyed and celebrated.
 

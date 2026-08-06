@@ -102,20 +102,6 @@ const BottomRow = styled.nav`
   }
 `
 
-const NavLink = styled.a`
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(11px, 0.868cqw, 15px);
-  font-weight: 400;
-  letter-spacing: -0.04em;
-  color: #000000;
-  text-decoration: none;
-  white-space: nowrap;
-
-  @media (max-width: 1024px) {
-    font-size: 0.95em;
-  }
-`
-
 const SocialIconsBox = styled.div`
   width: clamp(48px, 4.4cqw, 76px);
   aspect-ratio: 38 / 10;
@@ -131,10 +117,10 @@ const SocialIconsBox = styled.div`
 `
 
 const defaultLinks: [FooterLink, FooterLink, FooterLink, FooterLink] = [
-  { id: 'home', label: 'HOME', href: '#home' },
-  { id: 'services', label: 'SERVICES', href: '#services' },
-  { id: 'events', label: 'EVENTS', href: '#events' },
-  { id: 'contact', label: 'CONTACT', href: '#contact' },
+  { id: 'home', label: 'HOME', href: '/' },
+  { id: 'services', label: 'SERVICES', href: '/services' },
+  { id: 'events', label: 'EVENTS', href: '/events' },
+  { id: 'contact', label: 'CONTACT', href: '/contact' },
 ]
 
 const Footer = ({
@@ -154,14 +140,16 @@ const Footer = ({
     <Divider />
 
     <BottomRow>
-      <NavLink href={links[0].href}>{links[0].label}</NavLink>
-      {/* <NavLink href={links[1].href}>{links[1].label}</NavLink> */}
+      <a className='navigationLink' href={links[0].href}>
+        {links[0].label}
+      </a>
+      {/* <a className='navigationLink' href={links[1].href}>{links[1].label}</a> */}
       <SocialIconsBox>
         <img src={igIcon} alt='Buenos Diaz instagram channels' />
         <img src={emailIcon} alt='Buenos Diaz email channels' />
       </SocialIconsBox>
-      {/* <NavLink href={links[2].href}>{links[2].label}</NavLink> */}
-      {/* <NavLink href={links[3].href}>{links[3].label}</NavLink> */}
+      {/* <a className='navigationLink' href={links[2].href}>{links[2].label}</a> */}
+      {/* <a className='navigationLink' href={links[3].href}>{links[3].label}</a> */}
     </BottomRow>
   </Wrapper>
 )
