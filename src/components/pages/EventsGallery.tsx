@@ -1,24 +1,30 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import obscureEvent from '@/assets/obscureEvent.jpg'
+import HeroBg from '@/assets/HeroBg.png'
+import EventCard from '@/assets/EventCard.jpg'
+import MenuBg from '@/assets/MenuBg.jpg'
+import bodyImg from '@/assets/body-img.jpg'
 
 interface GalleryTile {
   id: string
   image: string
   alt: string
-  overlayOpacity: number
-  featured?: boolean
-}
-
-interface EventDetails {
   title: string
   date: string
-  location: string
+  location?: string
 }
 
 interface EventsGalleryProps {
   tiles?: GalleryTile[]
-  event?: EventDetails
-  onImageClick?: (tile: GalleryTile) => void
+}
+
+const getTileStyle = (distance: number) => {
+  if (distance === 0) return { grow: 746, overlay: 0 }
+  if (distance === 1) return { grow: 177, overlay: 0.5 }
+  if (distance === 2) return { grow: 177, overlay: 0.6 }
+  return { grow: 137, overlay: 0.75 }
 }
 
 const Section = styled.section`
@@ -33,25 +39,32 @@ const GalleryRow = styled.div`
   height: clamp(220px, 28.588cqw, 560px);
 
   @media (max-width: 767px) {
-    flex-direction: column;
-    height: auto;
-    gap: 0.5rem;
+    height: clamp(280px, 90cqw, 420px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `
 
-const Tile = styled.div<{ $grow: number; $clickable?: boolean; $featured?: boolean }>`
+const Tile = styled.div<{ $grow: number; $featured?: boolean }>`
   position: relative;
   flex: ${(props) => props.$grow} 1 0;
   min-width: 0;
   overflow: hidden;
   border: 0.5px solid #ffffff;
-  cursor: ${(props) => (props.$clickable ? 'pointer' : 'default')};
+  cursor: pointer;
+  transition: flex 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
   @media (max-width: 767px) {
     flex: none;
-    width: 100%;
-    aspect-ratio: ${(props) => (props.$featured ? '4 / 3' : '16 / 9')};
-    order: ${(props) => (props.$featured ? -1 : 0)};
+    width: ${(props) => (props.$featured ? '85%' : '38%')};
+    scroll-snap-align: center;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 `
 
@@ -61,27 +74,61 @@ const TileImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scale(1);
+  transition: transform 0.5s ease;
+
+  ${Tile}:hover & {
+    transform: scale(1.06);
+  }
 `
 
 const TileOverlay = styled.div<{ $opacity: number }>`
   position: absolute;
   inset: 0;
-  background-color: rgba(30, 30, 30, ${(props) => props.$opacity});
+  background-color: rgb(30, 30, 30);
+  opacity: ${(props) => props.$opacity};
   pointer-events: none;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+  ${Tile}:hover & {
+    opacity: 0;
+  }
+
+  @media (max-width: 767px) {
+    opacity: ${(props) => Math.min(props.$opacity, 0.35)};
+  }
+`
+
+const ScrollHint = styled.div`
+  display: none;
+
+  @media (max-width: 767px) {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+`
+
+const ScrollDot = styled.span<{ $active?: boolean }>`
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #1e1e1e;
+  opacity: ${(props) => (props.$active ? 1 : 0.25)};
 `
 
 const EventInfo = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 2cqw 4cqw;
+  gap: 1.2cqw;
+  padding: 2.8cqw 4cqw;
+  text-align: center;
 
   @media (max-width: 767px) {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1.5rem;
+    gap: 0.75rem;
+    padding: 2rem 1.5rem;
   }
 `
 
@@ -95,16 +142,20 @@ const EventTitle = styled.h3`
   text-transform: uppercase;
 `
 
-const EventMeta = styled.div`
+const EventMeta = styled.div<{ $hasLocation: boolean }>`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2cqw;
+  justify-content: ${(props) => (props.$hasLocation ? 'space-between' : 'center')};
+  width: 43.17cqw;
+  min-width: 280px;
+  gap: 1rem 2cqw;
 
   @media (max-width: 767px) {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
     gap: 0.5rem;
-    flex-direction: column;
-    align-items: flex-start;
   }
 `
 
@@ -126,118 +177,178 @@ const EventLocation = styled.span`
   white-space: nowrap;
 `
 
-/* Placeholder click interaction — swap this out once the redot.fr
-   reference behavior is confirmed. Currently a simple full-screen
-   fade-in lightbox. */
-const LightboxOverlay = styled.div<{ $open: boolean }>`
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: ${(props) => (props.$open ? 'flex' : 'none')};
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.9);
-`
-
-const LightboxImage = styled.img`
-  max-width: 90vw;
-  max-height: 90vh;
-  object-fit: contain;
-`
-
-const LightboxClose = styled.button`
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
-  background: none;
-  border: none;
-  color: #ffffff;
-  font-family: 'Inter', sans-serif;
-  font-size: 1.5rem;
-  cursor: pointer;
-`
-
 const defaultTiles: GalleryTile[] = [
-  { id: 'tile-1', image: '', alt: '', overlayOpacity: 0.75 },
-  { id: 'tile-2', image: '', alt: '', overlayOpacity: 0.6 },
-  { id: 'tile-3', image: '', alt: '', overlayOpacity: 0.5 },
+  {
+    id: 'tile-2',
+    image: bodyImg,
+    alt: 'Placeholder image',
+    title: 'Placeholder Event Title',
+    date: 'Sat, Aug 8   |   11a - 2p',
+    location: '123 Placeholder St, Brooklyn, NY',
+  },
+  {
+    id: 'tile-3',
+    image: EventCard,
+    alt: 'Placeholder image',
+    title: 'Placeholder Pop-Up',
+    date: 'Sun, Aug 9   |   9a - 1p',
+    // No location for this one, it's optional
+  },
   {
     id: 'tile-featured',
-    image: '',
+    image: obscureEvent,
     alt: 'Buenos Diaz x Obscure Coffee',
-    overlayOpacity: 0,
-    featured: true,
+    title: 'Buenos Diaz x Obscure Coffee',
+    date: 'Sat, Aug 15   |   10a - 3p',
+    location: '259 Melrose St, Brooklyn, NY 11206',
   },
-  { id: 'tile-5', image: '', alt: '', overlayOpacity: 0.5 },
-  { id: 'tile-6', image: '', alt: '', overlayOpacity: 0.6 },
-  { id: 'tile-7', image: '', alt: '', overlayOpacity: 0.75 },
+  {
+    id: 'tile-5',
+    image: HeroBg,
+    alt: 'Placeholder image',
+    title: 'Placeholder Tasting',
+    date: 'Fri, Aug 21   |   6p - 9p',
+    location: '456 Placeholder Ave, Queens, NY',
+  },
+  {
+    id: 'tile-7',
+    image: MenuBg,
+    alt: 'Placeholder image',
+    title: 'Placeholder Market',
+    date: 'Sat, Aug 29   |   10a - 4p',
+    // No location for this one either
+  },
 ]
 
-const tileGrow: Record<number, number> = {
-  0: 137,
-  1: 177,
-  2: 177,
-  3: 746,
-  4: 177,
-  5: 177,
-  6: 137,
-}
+const FLIP_DURATION_MS = 600
+const FLIP_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)'
 
-const defaultEvent: EventDetails = {
-  title: 'Buenos Diaz x Obscure Coffee',
-  date: 'Sat, Aug 15   |   10a - 3p',
-  location: '259 Melrose St, Brooklyn, NY 11206',
-}
+const EventsGallery = ({ tiles: initialTiles = defaultTiles }: EventsGalleryProps) => {
+  const [tiles, setTiles] = useState<GalleryTile[]>(initialTiles)
+  const [isCenterArmed, setIsCenterArmed] = useState(false)
+  const navigate = useNavigate()
+  const centerIndex = Math.floor(tiles.length / 2)
+  const activeTile = tiles[centerIndex]
 
-const EventsGallery = ({
-  tiles = defaultTiles,
-  event = defaultEvent,
-  onImageClick,
-}: EventsGalleryProps) => {
-  const [lightboxTile, setLightboxTile] = useState<GalleryTile | null>(null)
+  const tileRefs = useRef(new Map<string, HTMLDivElement>())
+  const firstRects = useRef<Record<string, DOMRect>>({})
+  const rowRef = useRef<HTMLDivElement>(null)
 
-  const handleTileClick = (tile: GalleryTile) => {
-    if (!tile.featured) return
-    if (onImageClick) {
-      onImageClick(tile)
+  const setTileRef = (id: string) => (el: HTMLDivElement | null) => {
+    if (el) tileRefs.current.set(id, el)
+    else tileRefs.current.delete(id)
+  }
+
+  const captureFirstRects = () => {
+    const rects: Record<string, DOMRect> = {}
+    tileRefs.current.forEach((el, id) => {
+      rects[id] = el.getBoundingClientRect()
+    })
+    firstRects.current = rects
+  }
+
+  useLayoutEffect(() => {
+    const rowWidth = rowRef.current?.getBoundingClientRect().width ?? 0
+    const wrapThreshold = rowWidth * 0.6
+    const wrapEntryDistance = 160
+
+    tileRefs.current.forEach((el, id) => {
+      const first = firstRects.current[id]
+      if (!first) return
+
+      const last = el.getBoundingClientRect()
+      const rawDeltaX = first.left - last.left
+
+      if (Math.abs(rawDeltaX) < 1) return
+
+      // A tile crossing the array boundary (e.g. jumping from the last
+      // slot to the first) measures a huge literal distance since it's
+      // "teleporting" across the whole strip. Cap it to a short hop off
+      // the edge, in the same direction, so it reads as entering from
+      // that side rather than flying across the screen.
+      const isWrap = Math.abs(rawDeltaX) > wrapThreshold
+      const deltaX = isWrap ? Math.sign(rawDeltaX) * wrapEntryDistance : rawDeltaX
+
+      el.style.transition = 'none'
+      el.style.transform = `translateX(${deltaX}px)`
+
+      // Force layout so the browser registers the starting position
+      // before the transition below is allowed to run.
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      el.getBoundingClientRect()
+
+      requestAnimationFrame(() => {
+        el.style.transition = `transform ${FLIP_DURATION_MS}ms ${FLIP_EASING}, flex ${FLIP_DURATION_MS}ms ${FLIP_EASING}`
+        el.style.transform = 'translateX(0)'
+      })
+
+      window.setTimeout(() => {
+        el.style.transition = ''
+        el.style.transform = ''
+      }, FLIP_DURATION_MS + 50)
+    })
+
+    firstRects.current = {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tiles])
+
+  const handleTileClick = (index: number) => {
+    if (index === centerIndex) {
+      if (isCenterArmed) {
+        navigate(`/events/${tiles[index].id}`)
+      } else {
+        setIsCenterArmed(true)
+      }
       return
     }
-    setLightboxTile(tile)
+
+    captureFirstRects()
+
+    const len = tiles.length
+    const offset = (((index - centerIndex) % len) + len) % len
+
+    setTiles((prev) => prev.map((_, i) => prev[(i + offset) % len]))
+    setIsCenterArmed(true)
   }
 
   return (
     <Section data-testid='events-gallery'>
-      <GalleryRow>
-        {tiles.map((tile, index) => (
-          <Tile
-            key={tile.id}
-            $grow={tileGrow[index] ?? 1}
-            $clickable={tile.featured}
-            $featured={tile.featured}
-            onClick={() => handleTileClick(tile)}
-          >
-            <TileImage src={tile.image} alt={tile.alt} />
-            {tile.overlayOpacity > 0 && <TileOverlay $opacity={tile.overlayOpacity} />}
-          </Tile>
-        ))}
+      <GalleryRow ref={rowRef}>
+        {tiles.map((tile, index) => {
+          const distance = Math.abs(index - centerIndex)
+          const { grow, overlay } = getTileStyle(distance)
+          const featured = index === centerIndex
+
+          return (
+            <Tile
+              key={tile.id}
+              ref={setTileRef(tile.id)}
+              $grow={grow}
+              $featured={featured}
+              onClick={() => handleTileClick(index)}
+            >
+              <TileImage src={tile.image} alt={tile.alt} />
+              {overlay > 0 && <TileOverlay $opacity={overlay} />}
+            </Tile>
+          )
+        })}
       </GalleryRow>
 
+      <ScrollHint>
+        {tiles.map((tile, index) => (
+          <ScrollDot key={tile.id} $active={index === centerIndex} />
+        ))}
+      </ScrollHint>
+
       <EventInfo>
-        <EventTitle>{event.title}</EventTitle>
-        <EventMeta>
-          <EventDate>{event.date}</EventDate>
-          <EventLocation>{event.location}</EventLocation>
+        <EventTitle className='secondaryTitle'>{activeTile.title}</EventTitle>
+        <EventMeta $hasLocation={Boolean(activeTile.location)}>
+          <EventDate className='primaryTextSmall'>{activeTile.date}</EventDate>
+          {activeTile.location && (
+            <EventLocation className='primaryTextSmall'>{activeTile.location}</EventLocation>
+          )}
         </EventMeta>
       </EventInfo>
-
-      <LightboxOverlay $open={lightboxTile !== null} onClick={() => setLightboxTile(null)}>
-        {lightboxTile && (
-          <>
-            <LightboxImage src={lightboxTile.image} alt={lightboxTile.alt} />
-            <LightboxClose onClick={() => setLightboxTile(null)}>Close</LightboxClose>
-          </>
-        )}
-      </LightboxOverlay>
     </Section>
   )
 }

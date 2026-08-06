@@ -25,7 +25,7 @@ const TopRow = styled.div`
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 2.6cqw 11.98cqw 2cqw 11.98cqw;
+  padding: 1.5em 11.98cqw;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
@@ -90,7 +90,7 @@ const BottomRow = styled.nav`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2.6cqw 11.98cqw;
+  padding: 1.5em 11.98cqw;
 
   @media (max-width: 1024px) {
     flex-wrap: wrap;
