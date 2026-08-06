@@ -25,17 +25,22 @@ const Section = styled.section`
   width: 80%;
   margin: 0 auto 20em auto;
   aspect-ratio: 1386 / 850;
+  overflow: hidden;
   container-type: inline-size;
-  padding: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   @media (max-width: 1024px) {
     width: 88%;
     margin-bottom: 8em;
-    box-sizing: border-box;
   }
 
   @media (max-width: 767px) {
     width: 90%;
+    aspect-ratio: auto;
+    min-height: 45cqw;
+    box-sizing: border-box;
   }
 `
 
@@ -49,46 +54,44 @@ const Background = styled.img`
   z-index: 0;
 `
 
-const Column = styled.div<{ $left: string }>`
-  position: absolute;
-  left: ${(props) => props.$left};
-  top: 32.28%;
-  width: 26%;
+const Content = styled.div`
+  position: relative;
   z-index: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: clamp(1.5rem, 6cqw, 4rem);
+  padding: 2em;
+  box-sizing: border-box;
+
+  @media (max-width: 1024px) {
+    gap: clamp(1.5rem, 4cqw, 3rem);
+    padding: 3rem 2rem;
+  }
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 3rem 1.75rem;
+    gap: 2.75rem;
+  }
+`
+
+const CategoryColumn = styled.div`
+  flex: 0 1 320px;
+  max-width: 26cqw;
   display: flex;
   flex-direction: column;
   color: #ffffff;
 
   @media (max-width: 1024px) {
-    display: none;
-  }
-`
-
-const StackedCategory = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  @media (max-width: 767px) {
-    align-items: center;
-  }
-`
-
-const ColumnStack = styled.div`
-  display: none;
-
-  @media (max-width: 1024px) {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2.5rem;
-    color: #ffffff;
-    justify-items: center;
+    max-width: 34cqw;
   }
 
   @media (max-width: 767px) {
-    grid-template-columns: 1fr;
-    gap: 2.75rem;
+    justify-content: center;
+    max-width: 420px;
+    width: 100%;
   }
 `
 
@@ -100,6 +103,16 @@ const TitleRow = styled.div`
   @media (max-width: 1024px) {
     gap: 0.75rem;
   }
+`
+
+const Title = styled.h2`
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  font-size: clamp(1.6em, 2.164cqw, 2em);
 `
 
 const Divider = styled.span`
@@ -116,6 +129,18 @@ const Divider = styled.span`
     width: 2.75rem;
   }
 `
+
+const Subtitle = styled.p`
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 400;
+  font-size: clamp(1.25em, 1.443cqw, 1.4em);
+`
+
+const ItemName = styled(Subtitle)``
 
 const ItemList = styled.div`
   display: flex;
@@ -144,34 +169,22 @@ const Item = styled.div`
   }
 `
 
-const Title = styled.h2`
-  font-family: 'Inter', sans-serif;
-  text-transform: uppercase;
-  margin: 0;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 600;
-  font-size: clamp(17px, 2.164cqw, 2.1em);
-`
-
-const Subtitle = styled.p`
-  font-family: 'Inter', sans-serif;
-  text-transform: uppercase;
-  margin: 0;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 400;
-  font-size: clamp(12px, 1.443cqw, 20px);
-`
-
 const ItemDescription = styled.p`
   font-family: 'Inter', sans-serif;
   margin: 0;
-  line-height: 1;
+  line-height: 1.3;
   letter-spacing: -0.04em;
   font-weight: 300;
-  font-size: clamp(9px, 1.082cqw, 15px);
+  font-size: clamp(0.8em, 1.082cqw, 1em);
   max-width: 25cqw;
+
+  @media (max-width: 1024px) {
+    max-width: 30cqw;
+  }
+
+  @media (max-width: 767px) {
+    max-width: 40ch;
+  }
 `
 
 const defaultCategories: [MenuCategory, MenuCategory] = [
@@ -224,7 +237,7 @@ const defaultCategories: [MenuCategory, MenuCategory] = [
 ]
 
 const CategoryBlock = ({ category }: { category: MenuCategory }) => (
-  <>
+  <CategoryColumn>
     <TitleRow>
       <Title>{category.titleStart}</Title>
       <Divider />
@@ -234,12 +247,12 @@ const CategoryBlock = ({ category }: { category: MenuCategory }) => (
     <ItemList>
       {category.items.map((item) => (
         <Item key={item.id}>
-          <Subtitle>{item.name}</Subtitle>
+          <ItemName>{item.name}</ItemName>
           <ItemDescription>{item.description}</ItemDescription>
         </Item>
       ))}
     </ItemList>
-  </>
+  </CategoryColumn>
 )
 
 const MenuDisplay = ({
@@ -248,22 +261,10 @@ const MenuDisplay = ({
 }: MenuDisplayProps) => (
   <Section data-testid='menu-section'>
     <Background src={backgroundImage} alt='' aria-hidden='true' />
-
-    <Column $left='10.75%' data-testid='menu-column-specialty'>
+    <Content>
       <CategoryBlock category={categories[0]} />
-    </Column>
-
-    <Column $left='63.92%' data-testid='menu-column-non-coffee'>
       <CategoryBlock category={categories[1]} />
-    </Column>
-
-    <ColumnStack>
-      {categories.map((category) => (
-        <StackedCategory key={category.id}>
-          <CategoryBlock category={category} />
-        </StackedCategory>
-      ))}
-    </ColumnStack>
+    </Content>
   </Section>
 )
 
