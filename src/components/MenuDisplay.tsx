@@ -108,16 +108,6 @@ const TitleRow = styled.div`
   }
 `
 
-const Title = styled.h2`
-  font-family: 'Inter', sans-serif;
-  text-transform: uppercase;
-  margin: 0;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 600;
-  font-size: clamp(1.5em, 2.164cqw, 2em);
-`
-
 const Divider = styled.span`
   width: 5.56cqw;
   height: 2px;
@@ -132,18 +122,6 @@ const Divider = styled.span`
     width: 2.75rem;
   }
 `
-
-const Subtitle = styled.p`
-  font-family: 'Inter', sans-serif;
-  text-transform: uppercase;
-  margin: 0;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 400;
-  font-size: clamp(1.25em, 1.443cqw, 1.4em);
-`
-
-const ItemName = styled(Subtitle)``
 
 const ItemList = styled.div`
   display: flex;
@@ -172,13 +150,33 @@ const Item = styled.div`
   }
 `
 
+const Title = styled.h2`
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  font-size: 1.5em;
+`
+
+const Subtitle = styled.p`
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 400;
+  font-size: 1em;
+`
+
 const ItemDescription = styled.p`
   font-family: 'Inter', sans-serif;
   margin: 0;
-  line-height: 1.3;
+  line-height: 1;
   letter-spacing: -0.04em;
   font-weight: 300;
-  font-size: clamp(0.8em, 1.082cqw, 1em);
+  font-size: 0.8em;
   max-width: 25cqw;
 
   @media (max-width: 1024px) {
@@ -250,7 +248,7 @@ const CategoryBlock = ({ category }: { category: MenuCategory }) => (
     <ItemList>
       {category.items.map((item) => (
         <Item key={item.id}>
-          <ItemName>{item.name}</ItemName>
+          <Subtitle>{item.name}</Subtitle>
           <ItemDescription>{item.description}</ItemDescription>
         </Item>
       ))}
