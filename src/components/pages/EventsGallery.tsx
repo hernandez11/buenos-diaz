@@ -16,9 +16,10 @@ const SAFE_MAX = TOTAL_V - N * 2
 const THIN_WIDTH = 6.5
 
 const widthForDistance = (distance: number) => {
-  if (distance === 0) return 54
-  if (distance === 1) return 14
-  if (distance === 2) return 10
+  if (distance === 0) return 50
+  if (distance === 1) return 10
+  if (distance === 2) return 9
+  if (distance === 3) return 5
   return THIN_WIDTH
 }
 
@@ -26,12 +27,17 @@ const overlayForDistance = (distance: number) => {
   if (distance === 0) return 0
   if (distance === 1) return 0.5
   if (distance === 2) return 0.6
+  if (distance === 3) return 0.7
   return 0.75
 }
 
-const Section = styled.section`
+const Section = styled.section<{ $shrink: boolean }>`
   width: 100%;
   container-type: inline-size;
+  flex: ${(props) => (props.$shrink ? '0 0 auto' : 1)};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `
 
 const CollapsibleContent = styled.div<{ $collapsed: boolean }>`
@@ -53,12 +59,12 @@ const CollapseInner = styled.div`
 const Viewport = styled.div`
   position: relative;
   width: 100%;
-  height: clamp(220px, 28.588cqw, 560px);
+  height: clamp(260px, 33cqw, 640px);
   overflow: hidden;
   contain: layout paint;
 
   @media (max-width: 767px) {
-    height: clamp(280px, 90cqw, 420px);
+    height: clamp(320px, 95cqw, 480px);
   }
 `
 
@@ -74,6 +80,7 @@ const Track = styled.div<{ $offset: number }>`
 
 const Tile = styled.div<{ $width: number }>`
   position: relative;
+  box-sizing: border-box;
   flex: 0 0 ${(props) => props.$width}cqw;
   height: 100%;
   min-width: 0;
@@ -351,7 +358,7 @@ const EventsGallery = () => {
   }
 
   return (
-    <Section ref={sectionRef} data-testid='events-gallery'>
+    <Section ref={sectionRef} $shrink={isDetailOpen} data-testid='events-gallery'>
       <CollapsibleContent $collapsed={isDetailOpen}>
         <CollapseInner>
           <Viewport>

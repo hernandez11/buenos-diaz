@@ -10,6 +10,9 @@ const TRANSITION_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)'
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 `
 
 const FlyingImage = styled.img<{ $animating: boolean }>`
@@ -22,6 +25,17 @@ const FlyingImage = styled.img<{ $animating: boolean }>`
     props.$animating ? `all ${TRANSITION_MS}ms ${TRANSITION_EASING}` : 'none'};
 `
 
+/**
+ * Persistent layout for the /events route tree.
+ *
+ * EventsGallery lives here, one level above the :id child route, so it
+ * never unmounts when a detail page opens or closes. This component also
+ * owns the shared-element (FLIP) transition: when a tile is confirmed
+ * (second click), EventsGallery reports the tile's image and its current
+ * screen position here, and this component animates a floating clone of
+ * that image from the carousel down to wherever EventDetail's real hero
+ * image ends up, so the two feel like the same image the whole way.
+ */
 export const EventsPage = () => {
   const [flying, setFlying] = useState<FlyingImageState | null>(null)
   const [animating, setAnimating] = useState(false)
