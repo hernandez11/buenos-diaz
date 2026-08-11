@@ -7,7 +7,7 @@ import { useEventsTransition } from '../EventsTransitionContext'
 const FLIP_DURATION_MS = 600
 const FLIP_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)'
 
-const BUFFER_COPIES = 9
+const BUFFER_COPIES = 7
 const N = events.length
 const TOTAL_V = N * BUFFER_COPIES
 const START_CENTER = Math.floor(BUFFER_COPIES / 2) * N + Math.floor(N / 2)
@@ -54,6 +54,7 @@ const Viewport = styled.div`
   width: 100%;
   height: clamp(220px, 28.588cqw, 560px);
   overflow: hidden;
+  contain: layout paint;
 
   @media (max-width: 767px) {
     height: clamp(280px, 90cqw, 420px);
@@ -69,6 +70,14 @@ const Track = styled.div<{ $offset: number; $suppress: boolean }>`
   transform: translateX(${(props) => props.$offset}cqw);
   transition: ${(props) =>
     props.$suppress ? 'none' : `transform ${FLIP_DURATION_MS}ms ${FLIP_EASING}`};
+
+  ${(props) =>
+    props.$suppress &&
+    `
+    & > * {
+      transition: none !important;
+    }
+  `}
 `
 
 const Tile = styled.div<{ $width: number }>`
@@ -202,32 +211,74 @@ const EventsGallery = () => {
   const isDetailOpen = /^\/events\/.+/.test(location.pathname)
 
   const tileRefs = useRef(new Map<number, HTMLDivElement>())
-  const setTileRef = (v: number) => (el: HTMLDivElement | null) => {
-    if (el) tileRefs.current.set(v, el)
-    else tileRefs.current.delete(v)
+  const refCallbacks = useRef(new Map<number, (el: HTMLDivElement | null) => void>())
+  const getTileRef = (v: number) => {
+    let cb = refCallbacks.current.get(v)
+    if (!cb) {
+      cb = (el) => {
+        if (el) tileRefs.current.set(v, el)
+        else tileRefs.current.delete(v)
+      }
+      refCallbacks.current.set(v, cb)
+    }
+    return cb
   }
+
+  const virtualSlots = useMemo(() => {
+    const slots: { key: string; event: EventItem; v: number }[] = []
+    for (let copy = 0; copy < BUFFER_COPIES; copy++) {
+      for (let i = 0; i < N; i++) {
+        slots.push({ key: `${copy}-${events[i].id}`, event: events[i], v: copy * N + i })
+      }
+    }
+    return slots
+  }, [])
 
   const activeEvent: EventItem = events[((centerVirtual % N) + N) % N]
 
+  const centerRef = useRef(centerVirtual)
+  const lastMoveTs = useRef(0)
+  useEffect(() => {
+    centerRef.current = centerVirtual
+  }, [centerVirtual])
+
   useEffect(() => {
     if (!suppressTransition) return
-    const raf = requestAnimationFrame(() => setSuppressTransition(false))
-    return () => cancelAnimationFrame(raf)
+    let raf2: number
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setSuppressTransition(false))
+    })
+    return () => {
+      cancelAnimationFrame(raf1)
+      cancelAnimationFrame(raf2)
+    }
   }, [suppressTransition])
 
   useEffect(() => {
-    const nearStart = centerVirtual < RESET_MARGIN
-    const nearEnd = centerVirtual > TOTAL_V - RESET_MARGIN
-    if (!nearStart && !nearEnd) return
+    let cancelled = false
+    let timer: number
 
-    const shift = nearStart ? N : -N
-    const timer = window.setTimeout(() => {
-      setSuppressTransition(true)
-      setCenterVirtual((v) => v + shift)
-    }, FLIP_DURATION_MS + 50)
+    const check = () => {
+      const idleFor = Date.now() - lastMoveTs.current
+      if (idleFor >= FLIP_DURATION_MS + 50) {
+        const v = centerRef.current
+        if (v < RESET_MARGIN) {
+          setSuppressTransition(true)
+          setCenterVirtual(v + N)
+        } else if (v > TOTAL_V - RESET_MARGIN) {
+          setSuppressTransition(true)
+          setCenterVirtual(v - N)
+        }
+      }
+      if (!cancelled) timer = window.setTimeout(check, 100)
+    }
 
-    return () => clearTimeout(timer)
-  }, [centerVirtual])
+    timer = window.setTimeout(check, FLIP_DURATION_MS + 50)
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [])
 
   const trackOffsetCqw = useMemo(() => {
     let before = 0
@@ -257,6 +308,7 @@ const EventsGallery = () => {
       return
     }
 
+    lastMoveTs.current = Date.now()
     setCenterVirtual(v)
     setIsCenterArmed(true)
   }
@@ -267,26 +319,25 @@ const EventsGallery = () => {
         <CollapseInner>
           <Viewport>
             <Track $offset={trackOffsetCqw} $suppress={suppressTransition}>
-              {Array.from({ length: BUFFER_COPIES }).map((_, copy) =>
-                events.map((event, i) => {
-                  const v = copy * N + i
-                  const distance = Math.abs(v - centerVirtual)
-                  const width = widthForDistance(distance)
-                  const overlay = overlayForDistance(distance)
+              {virtualSlots.map(({ key, event, v }) => {
+                const distance = Math.abs(v - centerVirtual)
+                const width = widthForDistance(distance)
+                const overlay = overlayForDistance(distance)
 
-                  return (
-                    <Tile
-                      key={`${copy}-${event.id}`}
-                      ref={setTileRef(v)}
-                      $width={width}
-                      onClick={() => handleTileClick(v)}
-                    >
-                      <TileImage src={event.image} alt={event.alt} />
-                      {overlay > 0 && <TileOverlay $opacity={overlay} />}
-                    </Tile>
-                  )
-                }),
-              )}
+                return (
+                  <Tile
+                    key={key}
+                    ref={getTileRef(v)}
+                    $width={width}
+                    role='button'
+                    tabIndex={0}
+                    onClick={() => handleTileClick(v)}
+                  >
+                    <TileImage src={event.image} alt={event.alt} />
+                    {overlay > 0 && <TileOverlay $opacity={overlay} />}
+                  </Tile>
+                )
+              })}
             </Track>
           </Viewport>
 
