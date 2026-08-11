@@ -1,20 +1,31 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { events, type EventItem } from '../EventsData'
 import { useEventsTransition } from '../EventsTransitionContext'
 
-type GalleryTile = EventItem
+const FLIP_DURATION_MS = 600
+const FLIP_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)'
 
-interface EventsGalleryProps {
-  tiles?: GalleryTile[]
+const BUFFER_COPIES = 9
+const N = events.length
+const TOTAL_V = N * BUFFER_COPIES
+const START_CENTER = Math.floor(BUFFER_COPIES / 2) * N + Math.floor(N / 2)
+
+const RESET_MARGIN = N * 2
+
+const widthForDistance = (distance: number) => {
+  if (distance === 0) return 54
+  if (distance === 1) return 14
+  if (distance === 2) return 10
+  return 6.5
 }
 
-const getTileStyle = (distance: number) => {
-  if (distance === 0) return { grow: 746, overlay: 0 }
-  if (distance === 1) return { grow: 177, overlay: 0.5 }
-  if (distance === 2) return { grow: 177, overlay: 0.6 }
-  return { grow: 137, overlay: 0.75 }
+const overlayForDistance = (distance: number) => {
+  if (distance === 0) return 0
+  if (distance === 1) return 0.5
+  if (distance === 2) return 0.6
+  return 0.75
 }
 
 const Section = styled.section`
@@ -22,10 +33,6 @@ const Section = styled.section`
   container-type: inline-size;
 `
 
-// Grid 0fr/1fr collapse trick. This wrapper must have exactly one direct
-// child (CollapseInner below) for grid-template-rows to size the whole
-// group together, so GalleryRow, ScrollHint, and EventInfo shrink and
-// fade as one unit instead of only the first child collapsing.
 const CollapsibleContent = styled.div<{ $collapsed: boolean }>`
   display: grid;
   grid-template-rows: ${(props) => (props.$collapsed ? '0fr' : '1fr')};
@@ -42,40 +49,37 @@ const CollapseInner = styled.div`
   flex-direction: column;
 `
 
-const GalleryRow = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
+const Viewport = styled.div`
+  position: relative;
   width: 100%;
   height: clamp(220px, 28.588cqw, 560px);
+  overflow: hidden;
 
   @media (max-width: 767px) {
     height: clamp(280px, 90cqw, 420px);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
   }
 `
 
-const Tile = styled.div<{ $grow: number; $featured?: boolean }>`
+const Track = styled.div<{ $offset: number; $suppress: boolean }>`
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100%;
+  width: max-content;
+  will-change: transform;
+  transform: translateX(${(props) => props.$offset}cqw);
+  transition: ${(props) =>
+    props.$suppress ? 'none' : `transform ${FLIP_DURATION_MS}ms ${FLIP_EASING}`};
+`
+
+const Tile = styled.div<{ $width: number }>`
   position: relative;
-  flex: ${(props) => props.$grow} 1 0;
+  flex: 0 0 ${(props) => props.$width}cqw;
+  height: 100%;
   min-width: 0;
   overflow: hidden;
   border: 0.5px solid #ffffff;
   cursor: pointer;
-  transition: flex 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-
-  @media (max-width: 767px) {
-    flex: none;
-    width: ${(props) => (props.$featured ? '85%' : '38%')};
-    scroll-snap-align: center;
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+  transition: flex-basis ${FLIP_DURATION_MS}ms ${FLIP_EASING};
 `
 
 const TileImage = styled.img`
@@ -187,115 +191,73 @@ const EventLocation = styled.span`
   white-space: nowrap;
 `
 
-const defaultTiles: GalleryTile[] = events
-
-const FLIP_DURATION_MS = 600
-const FLIP_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)'
-
-const EventsGallery = ({ tiles: initialTiles = defaultTiles }: EventsGalleryProps) => {
-  const [tiles, setTiles] = useState<GalleryTile[]>(initialTiles)
+const EventsGallery = () => {
+  const [centerVirtual, setCenterVirtual] = useState(START_CENTER)
   const [isCenterArmed, setIsCenterArmed] = useState(false)
+  const [suppressTransition, setSuppressTransition] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const transition = useEventsTransition()
-  const centerIndex = Math.floor(tiles.length / 2)
-  const activeTile = tiles[centerIndex]
 
-  // A detail page is open whenever the URL is /events/:id rather than
-  // bare /events. Deriving this from location (instead of local state)
-  // keeps the gallery correctly expanded/collapsed in both directions,
-  // opening a detail and closing it back to the plain gallery, without
-  // needing a separate reset callback.
   const isDetailOpen = /^\/events\/.+/.test(location.pathname)
 
-  const tileRefs = useRef(new Map<string, HTMLDivElement>())
-  const firstRects = useRef<Record<string, DOMRect>>({})
-  const rowRef = useRef<HTMLDivElement>(null)
-
-  const setTileRef = (id: string) => (el: HTMLDivElement | null) => {
-    if (el) tileRefs.current.set(id, el)
-    else tileRefs.current.delete(id)
+  const tileRefs = useRef(new Map<number, HTMLDivElement>())
+  const setTileRef = (v: number) => (el: HTMLDivElement | null) => {
+    if (el) tileRefs.current.set(v, el)
+    else tileRefs.current.delete(v)
   }
 
-  const captureFirstRects = () => {
-    const rects: Record<string, DOMRect> = {}
-    tileRefs.current.forEach((el, id) => {
-      rects[id] = el.getBoundingClientRect()
-    })
-    firstRects.current = rects
-  }
+  const activeEvent: EventItem = events[((centerVirtual % N) + N) % N]
 
-  useLayoutEffect(() => {
-    const rowWidth = rowRef.current?.getBoundingClientRect().width ?? 0
-    const wrapThreshold = rowWidth * 0.6
-    const wrapEntryDistance = 160
+  useEffect(() => {
+    if (!suppressTransition) return
+    const raf = requestAnimationFrame(() => setSuppressTransition(false))
+    return () => cancelAnimationFrame(raf)
+  }, [suppressTransition])
 
-    tileRefs.current.forEach((el, id) => {
-      const first = firstRects.current[id]
-      if (!first) return
+  useEffect(() => {
+    const nearStart = centerVirtual < RESET_MARGIN
+    const nearEnd = centerVirtual > TOTAL_V - RESET_MARGIN
+    if (!nearStart && !nearEnd) return
 
-      const last = el.getBoundingClientRect()
-      const rawDeltaX = first.left - last.left
+    const shift = nearStart ? N : -N
+    const timer = window.setTimeout(() => {
+      setSuppressTransition(true)
+      setCenterVirtual((v) => v + shift)
+    }, FLIP_DURATION_MS + 50)
 
-      if (Math.abs(rawDeltaX) < 1) return
+    return () => clearTimeout(timer)
+  }, [centerVirtual])
 
-      // A tile crossing the array boundary (e.g. jumping from the last
-      // slot to the first) measures a huge literal distance since it's
-      // "teleporting" across the whole strip. Cap it to a short hop off
-      // the edge, in the same direction, so it reads as entering from
-      // that side rather than flying across the screen.
-      const isWrap = Math.abs(rawDeltaX) > wrapThreshold
-      const deltaX = isWrap ? Math.sign(rawDeltaX) * wrapEntryDistance : rawDeltaX
+  const trackOffsetCqw = useMemo(() => {
+    let before = 0
+    for (let v = 0; v < centerVirtual; v++) {
+      before += widthForDistance(Math.abs(v - centerVirtual))
+    }
+    return 50 - before - widthForDistance(0) / 2
+  }, [centerVirtual])
 
-      el.style.transition = 'none'
-      el.style.transform = `translateX(${deltaX}px)`
-
-      // Force layout so the browser registers the starting position
-      // before the transition below is allowed to run.
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      el.getBoundingClientRect()
-
-      requestAnimationFrame(() => {
-        el.style.transition = `transform ${FLIP_DURATION_MS}ms ${FLIP_EASING}, flex ${FLIP_DURATION_MS}ms ${FLIP_EASING}`
-        el.style.transform = 'translateX(0)'
-      })
-
-      window.setTimeout(() => {
-        el.style.transition = ''
-        el.style.transform = ''
-      }, FLIP_DURATION_MS + 50)
-    })
-
-    firstRects.current = {}
-  }, [tiles])
-
-  const handleTileClick = (index: number) => {
-    if (index === centerIndex) {
+  const handleTileClick = (v: number) => {
+    if (v === centerVirtual) {
       if (isCenterArmed) {
-        const tile = tiles[index]
-        const el = tileRefs.current.get(tile.id)
+        const el = tileRefs.current.get(v)
 
         if (transition && el) {
           transition.startTransition({
-            src: tile.image,
-            alt: tile.alt,
+            src: activeEvent.image,
+            alt: activeEvent.alt,
             from: el.getBoundingClientRect(),
           })
         }
 
-        navigate(`/events/${tile.id}`)
+        navigate(`/events/${activeEvent.id}`)
       } else {
         setIsCenterArmed(true)
       }
       return
     }
 
-    captureFirstRects()
-
-    const len = tiles.length
-    const offset = (((index - centerIndex) % len) + len) % len
-
-    setTiles((prev) => prev.map((_, i) => prev[(i + offset) % len]))
+    setCenterVirtual(v)
     setIsCenterArmed(true)
   }
 
@@ -303,39 +265,43 @@ const EventsGallery = ({ tiles: initialTiles = defaultTiles }: EventsGalleryProp
     <Section data-testid='events-gallery'>
       <CollapsibleContent $collapsed={isDetailOpen}>
         <CollapseInner>
-          <GalleryRow ref={rowRef}>
-            {tiles.map((tile, index) => {
-              const distance = Math.abs(index - centerIndex)
-              const { grow, overlay } = getTileStyle(distance)
-              const featured = index === centerIndex
+          <Viewport>
+            <Track $offset={trackOffsetCqw} $suppress={suppressTransition}>
+              {Array.from({ length: BUFFER_COPIES }).map((_, copy) =>
+                events.map((event, i) => {
+                  const v = copy * N + i
+                  const distance = Math.abs(v - centerVirtual)
+                  const width = widthForDistance(distance)
+                  const overlay = overlayForDistance(distance)
 
-              return (
-                <Tile
-                  key={tile.id}
-                  ref={setTileRef(tile.id)}
-                  $grow={grow}
-                  $featured={featured}
-                  onClick={() => handleTileClick(index)}
-                >
-                  <TileImage src={tile.image} alt={tile.alt} />
-                  {overlay > 0 && <TileOverlay $opacity={overlay} />}
-                </Tile>
-              )
-            })}
-          </GalleryRow>
+                  return (
+                    <Tile
+                      key={`${copy}-${event.id}`}
+                      ref={setTileRef(v)}
+                      $width={width}
+                      onClick={() => handleTileClick(v)}
+                    >
+                      <TileImage src={event.image} alt={event.alt} />
+                      {overlay > 0 && <TileOverlay $opacity={overlay} />}
+                    </Tile>
+                  )
+                }),
+              )}
+            </Track>
+          </Viewport>
 
           <ScrollHint>
-            {tiles.map((tile, index) => (
-              <ScrollDot key={tile.id} $active={index === centerIndex} />
+            {events.map((event, i) => (
+              <ScrollDot key={event.id} $active={i === ((centerVirtual % N) + N) % N} />
             ))}
           </ScrollHint>
 
           <EventInfo>
-            <EventTitle className='secondaryTitle'>{activeTile.title}</EventTitle>
-            <EventMeta $hasLocation={Boolean(activeTile.location)}>
-              <EventDate className='primaryTextSmall'>{activeTile.date}</EventDate>
-              {activeTile.location && (
-                <EventLocation className='primaryTextSmall'>{activeTile.location}</EventLocation>
+            <EventTitle className='secondaryTitle'>{activeEvent.title}</EventTitle>
+            <EventMeta $hasLocation={Boolean(activeEvent.location)}>
+              <EventDate className='primaryTextSmall'>{activeEvent.date}</EventDate>
+              {activeEvent.location && (
+                <EventLocation className='primaryTextSmall'>{activeEvent.location}</EventLocation>
               )}
             </EventMeta>
           </EventInfo>

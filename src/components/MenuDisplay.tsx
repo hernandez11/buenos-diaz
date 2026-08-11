@@ -24,7 +24,7 @@ const Section = styled.section`
   position: relative;
   width: 80%;
   margin: 0 auto 20em auto;
-  aspect-ratio: 1386 / 850;
+  aspect-ratio: 1386 / 650;
   overflow: hidden;
   container-type: inline-size;
   display: flex;
@@ -37,9 +37,7 @@ const Section = styled.section`
   }
 
   @media (max-width: 767px) {
-    width: 90%;
     aspect-ratio: auto;
-    min-height: 45cqw;
     box-sizing: border-box;
   }
 `
