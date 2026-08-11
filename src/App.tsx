@@ -7,6 +7,7 @@ import Footer from '@/components/Footer'
 import { EventsPage } from './components/pages/EventsPage'
 import EventDetail from './components/EventDetail'
 import { NotFound } from './components/pages/NotFound'
+import { useLenis } from './components/useLenis'
 
 const AppShell = styled.div`
   display: flex;
@@ -21,6 +22,8 @@ const Main = styled.main`
 `
 
 export default function App() {
+  useLenis()
+
   return (
     <BrowserRouter>
       <AppShell>
