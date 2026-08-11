@@ -1,11 +1,11 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { events, type EventItem } from '../EventsData'
-import { useEventsTransition } from '../EventsTransitionContext'
 
 const FLIP_DURATION_MS = 600
 const FLIP_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)'
+const FADE_OUT_MS = 350
 
 const BUFFER_COPIES = 7
 const N = events.length
@@ -13,12 +13,12 @@ const TOTAL_V = N * BUFFER_COPIES
 const START_CENTER = Math.floor(BUFFER_COPIES / 2) * N + Math.floor(N / 2)
 const SAFE_MIN = N * 2
 const SAFE_MAX = TOTAL_V - N * 2
-const THIN_WIDTH = 6.5
+const THIN_WIDTH = 0.4
 
 const widthForDistance = (distance: number) => {
-  if (distance === 0) return 50
-  if (distance === 1) return 10
-  if (distance === 2) return 9
+  if (distance === 0) return 58
+  if (distance === 1) return 8.5
+  if (distance === 2) return 6
   if (distance === 3) return 5
   return THIN_WIDTH
 }
@@ -31,29 +31,14 @@ const overlayForDistance = (distance: number) => {
   return 0.75
 }
 
-const Section = styled.section<{ $shrink: boolean }>`
+const Section = styled.section`
   width: 100%;
   container-type: inline-size;
-  flex: ${(props) => (props.$shrink ? '0 0 auto' : 1)};
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
-
-const CollapsibleContent = styled.div<{ $collapsed: boolean }>`
-  display: grid;
-  grid-template-rows: ${(props) => (props.$collapsed ? '0fr' : '1fr')};
-  opacity: ${(props) => (props.$collapsed ? 0 : 1)};
-  transition:
-    grid-template-rows 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.4s ease;
-`
-
-const CollapseInner = styled.div`
-  overflow: hidden;
+  flex: 1 0 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 `
 
 const Viewport = styled.div`
@@ -78,7 +63,7 @@ const Track = styled.div<{ $offset: number }>`
   transition: transform ${FLIP_DURATION_MS}ms ${FLIP_EASING};
 `
 
-const Tile = styled.div<{ $width: number }>`
+const Tile = styled.div<{ $width: number; $hidden: boolean }>`
   position: relative;
   box-sizing: border-box;
   flex: 0 0 ${(props) => props.$width}cqw;
@@ -87,7 +72,11 @@ const Tile = styled.div<{ $width: number }>`
   overflow: hidden;
   border: 0.5px solid #ffffff;
   cursor: pointer;
-  transition: flex-basis ${FLIP_DURATION_MS}ms ${FLIP_EASING};
+  opacity: ${(props) => (props.$hidden ? 0 : 1)};
+  pointer-events: ${(props) => (props.$hidden ? 'none' : 'auto')};
+  transition:
+    flex-basis ${FLIP_DURATION_MS}ms ${FLIP_EASING},
+    opacity ${FADE_OUT_MS}ms ease;
 `
 
 const TileImage = styled.img`
@@ -121,7 +110,29 @@ const TileOverlay = styled.div<{ $opacity: number }>`
   }
 `
 
-const ScrollHint = styled.div`
+const DetailLocation = styled.span<{ $visible: boolean }>`
+  position: absolute;
+  right: 3cqw;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16cqw;
+  text-align: right;
+  z-index: 3;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: clamp(11px, 0.868cqw, 15px);
+  letter-spacing: -0.04em;
+  color: #1e1e1e;
+  opacity: ${(props) => (props.$visible ? 1 : 0)};
+  transition: opacity 0.5s ease 0.15s;
+  pointer-events: none;
+
+  @media (max-width: 767px) {
+    display: none;
+  }
+`
+
+const ScrollHint = styled.div<{ $hidden: boolean }>`
   display: none;
 
   @media (max-width: 767px) {
@@ -129,6 +140,8 @@ const ScrollHint = styled.div`
     justify-content: center;
     gap: 0.4rem;
     margin-top: 0.75rem;
+    opacity: ${(props) => (props.$hidden ? 0 : 1)};
+    transition: opacity ${FADE_OUT_MS}ms ease;
   }
 `
 
@@ -140,13 +153,15 @@ const ScrollDot = styled.span<{ $active?: boolean }>`
   opacity: ${(props) => (props.$active ? 1 : 0.25)};
 `
 
-const EventInfo = styled.div`
+const EventInfo = styled.div<{ $hidden: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.2cqw;
   padding: 2.8cqw 4cqw;
   text-align: center;
+  opacity: ${(props) => (props.$hidden ? 0 : 1)};
+  transition: opacity ${FADE_OUT_MS}ms ease;
 
   @media (max-width: 767px) {
     gap: 0.75rem;
@@ -202,11 +217,13 @@ const EventLocation = styled.span`
 const EventsGallery = () => {
   const [centerVirtual, setCenterVirtual] = useState(START_CENTER)
   const [isCenterArmed, setIsCenterArmed] = useState(false)
+  const [isLeaving, setIsLeaving] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
-  const transition = useEventsTransition()
 
   const isDetailOpen = /^\/events\/.+/.test(location.pathname)
+  const detailId = isDetailOpen ? location.pathname.split('/')[2] : null
+  const fadeOthers = isLeaving || isDetailOpen
 
   const sectionRef = useRef<HTMLElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
@@ -215,6 +232,7 @@ const EventsGallery = () => {
   const tileRefCallbacks = useRef(new Map<number, (el: HTMLDivElement | null) => void>())
   const overlayRefCallbacks = useRef(new Map<number, (el: HTMLDivElement | null) => void>())
   const pendingUnfreeze = useRef(false)
+  const leaveTimer = useRef<number>()
 
   const getTileRef = (v: number) => {
     let cb = tileRefCallbacks.current.get(v)
@@ -255,6 +273,45 @@ const EventsGallery = () => {
   }, [])
 
   const activeEvent: EventItem = events[((centerVirtual % N) + N) % N]
+
+  useEffect(() => {
+    if (!isDetailOpen) {
+      setIsLeaving(false)
+      sectionRef.current?.style.removeProperty('height')
+      sectionRef.current?.style.removeProperty('flex')
+    }
+  }, [isDetailOpen])
+
+  useEffect(() => {
+    if (!detailId) return
+    const idx = events.findIndex((item) => item.id === detailId)
+    if (idx < 0) return
+    const current = ((centerVirtual % N) + N) % N
+    if (current === idx) return
+
+    const track = trackRef.current
+    if (track) {
+      track.style.transition = 'none'
+      tileRefs.current.forEach((el) => {
+        el.style.transition = 'none'
+      })
+      overlayRefs.current.forEach((el) => {
+        el.style.transition = 'none'
+      })
+      pendingUnfreeze.current = true
+    }
+
+    setCenterVirtual((v) => {
+      let target = v + (idx - current)
+      if (target < SAFE_MIN) target += N
+      if (target > SAFE_MAX) target -= N
+      return target
+    })
+  }, [detailId])
+
+  useEffect(() => {
+    return () => window.clearTimeout(leaveTimer.current)
+  }, [])
 
   const freezeAndShift = (shift: number) => {
     const track = trackRef.current
@@ -328,19 +385,22 @@ const EventsGallery = () => {
   }, [centerVirtual])
 
   const handleTileClick = (v: number) => {
+    if (isLeaving || isDetailOpen) return
+
     if (v === centerVirtual) {
       if (isCenterArmed) {
-        const el = tileRefs.current.get(v)
+        setIsLeaving(true)
 
-        if (transition && el) {
-          transition.startTransition({
-            src: activeEvent.image,
-            alt: activeEvent.alt,
-            from: el.getBoundingClientRect(),
-          })
+        const section = sectionRef.current
+        if (section) {
+          section.style.height = `${section.getBoundingClientRect().height}px`
+          section.style.flex = '0 0 auto'
         }
 
-        navigate(`/events/${activeEvent.id}`)
+        const targetEvent = activeEvent
+        leaveTimer.current = window.setTimeout(() => {
+          navigate(`/events/${targetEvent.id}`)
+        }, FADE_OUT_MS)
       } else {
         setIsCenterArmed(true)
       }
@@ -358,50 +418,52 @@ const EventsGallery = () => {
   }
 
   return (
-    <Section ref={sectionRef} $shrink={isDetailOpen} data-testid='events-gallery'>
-      <CollapsibleContent $collapsed={isDetailOpen}>
-        <CollapseInner>
-          <Viewport>
-            <Track ref={trackRef} $offset={trackOffsetCqw}>
-              {virtualSlots.map(({ key, event, v }) => {
-                const distance = Math.abs(v - centerVirtual)
-                const width = widthForDistance(distance)
-                const overlay = overlayForDistance(distance)
+    <Section ref={sectionRef} data-testid='events-gallery'>
+      <Viewport>
+        <Track ref={trackRef} $offset={trackOffsetCqw}>
+          {virtualSlots.map(({ key, event, v }) => {
+            const distance = Math.abs(v - centerVirtual)
+            const width = widthForDistance(distance)
+            const overlay = overlayForDistance(distance)
+            const isCenter = v === centerVirtual
 
-                return (
-                  <Tile
-                    key={key}
-                    ref={getTileRef(v)}
-                    $width={width}
-                    role='button'
-                    tabIndex={0}
-                    onClick={() => handleTileClick(v)}
-                  >
-                    <TileImage src={event.image} alt={event.alt} />
-                    <TileOverlay ref={getOverlayRef(v)} $opacity={overlay} />
-                  </Tile>
-                )
-              })}
-            </Track>
-          </Viewport>
+            return (
+              <Tile
+                key={key}
+                ref={getTileRef(v)}
+                $width={width}
+                $hidden={fadeOthers && !isCenter}
+                role='button'
+                tabIndex={0}
+                onClick={() => handleTileClick(v)}
+              >
+                <TileImage src={event.image} alt={event.alt} />
+                <TileOverlay ref={getOverlayRef(v)} $opacity={overlay} />
+              </Tile>
+            )
+          })}
+        </Track>
 
-          <ScrollHint>
-            {events.map((event, i) => (
-              <ScrollDot key={event.id} $active={i === ((centerVirtual % N) + N) % N} />
-            ))}
-          </ScrollHint>
+        {activeEvent.location && (
+          <DetailLocation $visible={isDetailOpen}>{activeEvent.location}</DetailLocation>
+        )}
+      </Viewport>
 
-          <EventInfo>
-            <EventTitle className='secondaryTitle'>{activeEvent.title}</EventTitle>
-            <EventMeta $hasLocation={Boolean(activeEvent.location)}>
-              <EventDate className='primaryTextSmall'>{activeEvent.date}</EventDate>
-              {activeEvent.location && (
-                <EventLocation className='primaryTextSmall'>{activeEvent.location}</EventLocation>
-              )}
-            </EventMeta>
-          </EventInfo>
-        </CollapseInner>
-      </CollapsibleContent>
+      <ScrollHint $hidden={fadeOthers}>
+        {events.map((event, i) => (
+          <ScrollDot key={event.id} $active={i === ((centerVirtual % N) + N) % N} />
+        ))}
+      </ScrollHint>
+
+      <EventInfo $hidden={fadeOthers}>
+        <EventTitle className='secondaryTitle'>{activeEvent.title}</EventTitle>
+        <EventMeta $hasLocation={Boolean(activeEvent.location)}>
+          <EventDate className='primaryTextSmall'>{activeEvent.date}</EventDate>
+          {activeEvent.location && (
+            <EventLocation className='primaryTextSmall'>{activeEvent.location}</EventLocation>
+          )}
+        </EventMeta>
+      </EventInfo>
     </Section>
   )
 }

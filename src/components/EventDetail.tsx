@@ -1,60 +1,43 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate, Navigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { getEventById } from './EventsData'
-import { useEventsTransition } from './EventsTransitionContext'
+import { events } from './EventsData'
 
-const Page = styled.div`
-  position: relative;
-  width: 100%;
-  background-color: #fffdfa;
-  container-type: inline-size;
-  opacity: 0;
-  transform: translateY(24px);
-  animation: fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-
-  @keyframes fade-in {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-`
-
-const CloseButton = styled.button`
+const InfoOverlay = styled.div`
   position: absolute;
-  top: 1rem;
-  right: 1.5rem;
-  z-index: 2;
-  background: none;
-  border: none;
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(12px, 1cqw, 15px);
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-  color: #1e1e1e;
-  cursor: pointer;
-  padding: 0.5rem 0.75rem;
-`
-
-const InfoRow = styled.div`
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  container-type: inline-size;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: flex-start;
   gap: 4cqw;
-  padding: 5.8cqw 7.9cqw 2cqw;
+  padding: 2.2cqw 28.4cqw 0 9.9cqw;
+  pointer-events: none;
+  opacity: 0;
+  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+
+  @keyframes detail-fade-in {
+    to {
+      opacity: 1;
+    }
+  }
 
   @media (max-width: 767px) {
+    position: static;
     flex-direction: column;
     gap: 1rem;
-    padding: 6rem 1.5rem 1.5rem;
+    padding: 1.5rem 1.5rem 0;
+    pointer-events: auto;
   }
 `
 
 const MetaBlock = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.4cqw;
+  gap: 0.6cqw;
   flex: 0 0 auto;
 
   @media (max-width: 767px) {
@@ -62,7 +45,7 @@ const MetaBlock = styled.div`
   }
 `
 
-const MetaText = styled.span`
+const MetaDate = styled.span`
   font-family: 'Inter', sans-serif;
   font-weight: 300;
   font-size: clamp(11px, 0.868cqw, 15px);
@@ -71,10 +54,10 @@ const MetaText = styled.span`
   white-space: nowrap;
 `
 
-const Title = styled.h1`
+const MetaTitle = styled.h1`
   font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: clamp(13px, 1.157cqw, 20px);
+  font-weight: 500;
+  font-size: clamp(14px, 1.157cqw, 20px);
   letter-spacing: -0.04em;
   color: #1e1e1e;
   margin: 0;
@@ -85,15 +68,31 @@ const Title = styled.h1`
 const Description = styled.p`
   font-family: 'Inter', sans-serif;
   font-weight: 300;
-  font-size: clamp(10px, 0.694cqw, 12px);
-  line-height: 1.5;
+  font-size: clamp(11px, 0.868cqw, 15px);
+  line-height: 1.4;
   letter-spacing: -0.04em;
   color: #1e1e1e;
-  max-width: 25.9cqw;
+  text-align: right;
+  max-width: 29.7cqw;
   margin: 0;
 
   @media (max-width: 767px) {
+    text-align: left;
     max-width: none;
+  }
+`
+
+const Page = styled.div`
+  width: 100%;
+  background-color: #fffdfa;
+  container-type: inline-size;
+  opacity: 0;
+  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+
+  @keyframes detail-fade-in {
+    to {
+      opacity: 1;
+    }
   }
 `
 
@@ -101,16 +100,17 @@ const ImageStack = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2.3cqw;
-  padding: 0 0 4cqw;
+  gap: 4.6cqw;
+  padding-top: 2cqw;
 
   @media (max-width: 767px) {
     gap: 1.5rem;
-    padding: 0 0 2.5rem;
+    padding-top: 1.5rem;
   }
 `
 
 const ImageColumn = styled.div`
+  position: relative;
   width: 43.17cqw;
 
   @media (max-width: 767px) {
@@ -118,30 +118,10 @@ const ImageColumn = styled.div`
   }
 `
 
-const ImageRow = styled.div`
+const PairRow = styled.div`
   display: flex;
-  align-items: flex-start;
-  gap: 2cqw;
+  gap: 2.5cqw;
   width: 100%;
-`
-
-const ImageWithTag = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 4cqw;
-  width: 100%;
-
-  @media (max-width: 767px) {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-`
-
-const Photo = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 `
 
 const PhotoFrame = styled.div<{ $aspect: string }>`
@@ -152,26 +132,90 @@ const PhotoFrame = styled.div<{ $aspect: string }>`
   min-width: 0;
 `
 
-const LocationTag = styled.span`
+const Photo = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.8;
+`
+
+const NavRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 7.6cqw 9.9cqw 7cqw;
+
+  @media (max-width: 767px) {
+    padding: 3rem 1.5rem 2.5rem;
+  }
+`
+
+const NavGroup = styled.button<{ $align: 'left' | 'right' }>`
+  display: flex;
+  flex-direction: column;
+  align-items: ${(props) => (props.$align === 'right' ? 'flex-end' : 'flex-start')};
+  gap: 0.4cqw;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: ${(props) => props.$align};
+`
+
+const NavLabelRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+`
+
+const NavLabel = styled.span`
   font-family: 'Inter', sans-serif;
-  font-weight: 300;
-  font-size: clamp(11px, 0.868cqw, 15px);
+  font-weight: 700;
+  font-size: clamp(13px, 1.157cqw, 20px);
   letter-spacing: -0.04em;
   color: #1e1e1e;
   white-space: nowrap;
-  flex: 0 0 auto;
-  padding-top: 0.3cqw;
+`
 
-  @media (max-width: 767px) {
-    padding-top: 0;
-  }
+const Dots = styled.span`
+  display: flex;
+  gap: 0.35cqw;
+`
+
+const Dot = styled.span`
+  width: clamp(6px, 0.58cqw, 10px);
+  height: clamp(6px, 0.58cqw, 10px);
+  border-radius: 50%;
+  background-color: #1e1e1e;
+`
+
+const NavSub = styled.span`
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: clamp(10px, 0.868cqw, 15px);
+  letter-spacing: -0.04em;
+  color: #1e1e1e;
+  white-space: nowrap;
+`
+
+const NavLink = styled.span`
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: clamp(10px, 0.694cqw, 12px);
+  letter-spacing: -0.04em;
+  color: #1e1e1e;
+  text-decoration: underline;
+  text-transform: uppercase;
+  margin-top: 1cqw;
 `
 
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const event = id ? getEventById(id) : undefined
-  const transition = useEventsTransition()
+
+  const index = events.findIndex((item) => item.id === id)
+  const event = index >= 0 ? events[index] : undefined
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
@@ -181,61 +225,75 @@ const EventDetail = () => {
     return <Navigate to='/events' replace />
   }
 
-  const handleClose = () => {
-    navigate('/events')
-  }
+  const prevEvent = events[(index - 1 + events.length) % events.length]
+  const nextEvent = events[(index + 1) % events.length]
 
   const pool = event.gallery && event.gallery.length > 0 ? event.gallery : [event.image]
-  const photoAt = (index: number) => pool[index % pool.length]
+  const photoAt = (i: number) => pool[i % pool.length]
 
   return (
-    <Page data-testid='event-detail'>
-      <CloseButton onClick={handleClose} aria-label='Close event details'>
-        Close
-      </CloseButton>
-
-      <InfoRow>
+    <>
+      <InfoOverlay key={`info-${event.id}`}>
         <MetaBlock>
-          <MetaText>{event.date}</MetaText>
-          <Title>{event.title}</Title>
+          <MetaDate>{event.date}</MetaDate>
+          <MetaTitle>{event.title}</MetaTitle>
         </MetaBlock>
         {event.description && <Description>{event.description}</Description>}
-      </InfoRow>
+      </InfoOverlay>
 
-      <ImageStack>
-        <ImageColumn>
-          <PhotoFrame $aspect='746 / 494'>
-            <Photo src={photoAt(0)} alt={event.alt} ref={transition?.registerHeroRef} />
-          </PhotoFrame>
-        </ImageColumn>
-
-        <ImageColumn>
-          <ImageWithTag>
+      <Page key={`page-${event.id}`} data-testid='event-detail'>
+        <ImageStack>
+          <ImageColumn>
             <PhotoFrame $aspect='746 / 494'>
               <Photo src={photoAt(1)} alt='' />
             </PhotoFrame>
-            {event.location && <LocationTag>{event.location}</LocationTag>}
-          </ImageWithTag>
-        </ImageColumn>
+          </ImageColumn>
 
-        <ImageColumn>
-          <ImageRow>
-            <PhotoFrame $aspect='351 / 278'>
-              <Photo src={photoAt(2)} alt='' />
-            </PhotoFrame>
-            <PhotoFrame $aspect='351 / 278'>
-              <Photo src={photoAt(3)} alt='' />
-            </PhotoFrame>
-          </ImageRow>
-        </ImageColumn>
+          <ImageColumn>
+            <PairRow>
+              <PhotoFrame $aspect='351 / 278'>
+                <Photo src={photoAt(2)} alt='' />
+              </PhotoFrame>
+              <PhotoFrame $aspect='351 / 278'>
+                <Photo src={photoAt(3)} alt='' />
+              </PhotoFrame>
+            </PairRow>
+          </ImageColumn>
 
-        <ImageColumn>
-          <PhotoFrame $aspect='746 / 334'>
-            <Photo src={photoAt(4)} alt='' />
-          </PhotoFrame>
-        </ImageColumn>
-      </ImageStack>
-    </Page>
+          <ImageColumn>
+            <PhotoFrame $aspect='746 / 334'>
+              <Photo src={photoAt(4)} alt='' />
+            </PhotoFrame>
+          </ImageColumn>
+        </ImageStack>
+
+        <NavRow>
+          <NavGroup $align='right' onClick={() => navigate(`/events/${prevEvent.id}`)}>
+            <NavLabelRow>
+              <NavLabel>PREVIOUS EVENT</NavLabel>
+              <Dots>
+                <Dot />
+                <Dot />
+              </Dots>
+            </NavLabelRow>
+            <NavSub>(EVENTO ANTERIOR)</NavSub>
+            <NavLink>{prevEvent.title}</NavLink>
+          </NavGroup>
+
+          <NavGroup $align='left' onClick={() => navigate(`/events/${nextEvent.id}`)}>
+            <NavLabelRow>
+              <Dots>
+                <Dot />
+                <Dot />
+              </Dots>
+              <NavLabel>NEXT EVENT</NavLabel>
+            </NavLabelRow>
+            <NavSub>(PROXIMO EVENTO)</NavSub>
+            <NavLink>{nextEvent.title}</NavLink>
+          </NavGroup>
+        </NavRow>
+      </Page>
+    </>
   )
 }
 

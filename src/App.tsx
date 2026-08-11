@@ -4,8 +4,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Header } from '@/components/Header'
 import { Home } from './components/pages/Home'
 import Footer from '@/components/Footer'
-// import { EventsPage } from './components/pages/EventsPage'
-// import EventDetail from './components/EventDetail'
+import { EventsPage } from './components/pages/EventsPage'
+import EventDetail from './components/EventDetail'
 import { NotFound } from './components/pages/NotFound'
 import { useLenis } from './components/useLenis'
 
@@ -32,9 +32,9 @@ export default function App() {
         <Main>
           <Routes>
             <Route path='/' element={<Home />} />
-            {/* <Route path='/events' element={<EventsPage />}>
+            <Route path='/events' element={<EventsPage />}>
               <Route path=':id' element={<EventDetail />} />
-            </Route> */}
+            </Route>
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Main>
