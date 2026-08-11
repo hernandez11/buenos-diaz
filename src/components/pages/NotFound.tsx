@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import Error_img from '@/assets/Error_img.jpg'
 
 const Section = styled.section`
-  width: 100%;
   flex: 1;
   container-type: inline-size;
   background-color: #fffdfa;
