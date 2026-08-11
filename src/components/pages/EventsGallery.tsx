@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { events, type EventItem } from '../EventsData'
@@ -11,14 +11,15 @@ const BUFFER_COPIES = 7
 const N = events.length
 const TOTAL_V = N * BUFFER_COPIES
 const START_CENTER = Math.floor(BUFFER_COPIES / 2) * N + Math.floor(N / 2)
-
-const RESET_MARGIN = N * 2
+const SAFE_MIN = N * 2
+const SAFE_MAX = TOTAL_V - N * 2
+const THIN_WIDTH = 6.5
 
 const widthForDistance = (distance: number) => {
   if (distance === 0) return 54
   if (distance === 1) return 14
   if (distance === 2) return 10
-  return 6.5
+  return THIN_WIDTH
 }
 
 const overlayForDistance = (distance: number) => {
@@ -61,23 +62,14 @@ const Viewport = styled.div`
   }
 `
 
-const Track = styled.div<{ $offset: number; $suppress: boolean }>`
+const Track = styled.div<{ $offset: number }>`
   display: flex;
   flex-wrap: nowrap;
   height: 100%;
   width: max-content;
   will-change: transform;
   transform: translateX(${(props) => props.$offset}cqw);
-  transition: ${(props) =>
-    props.$suppress ? 'none' : `transform ${FLIP_DURATION_MS}ms ${FLIP_EASING}`};
-
-  ${(props) =>
-    props.$suppress &&
-    `
-    & > * {
-      transition: none !important;
-    }
-  `}
+  transition: transform ${FLIP_DURATION_MS}ms ${FLIP_EASING};
 `
 
 const Tile = styled.div<{ $width: number }>`
@@ -111,7 +103,7 @@ const TileOverlay = styled.div<{ $opacity: number }>`
   background-color: rgb(30, 30, 30);
   opacity: ${(props) => props.$opacity};
   pointer-events: none;
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity ${FLIP_DURATION_MS}ms cubic-bezier(0.4, 0, 0.2, 1);
 
   ${Tile}:hover & {
     opacity: 0;
@@ -203,23 +195,40 @@ const EventLocation = styled.span`
 const EventsGallery = () => {
   const [centerVirtual, setCenterVirtual] = useState(START_CENTER)
   const [isCenterArmed, setIsCenterArmed] = useState(false)
-  const [suppressTransition, setSuppressTransition] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const transition = useEventsTransition()
 
   const isDetailOpen = /^\/events\/.+/.test(location.pathname)
 
+  const sectionRef = useRef<HTMLElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
   const tileRefs = useRef(new Map<number, HTMLDivElement>())
-  const refCallbacks = useRef(new Map<number, (el: HTMLDivElement | null) => void>())
+  const overlayRefs = useRef(new Map<number, HTMLDivElement>())
+  const tileRefCallbacks = useRef(new Map<number, (el: HTMLDivElement | null) => void>())
+  const overlayRefCallbacks = useRef(new Map<number, (el: HTMLDivElement | null) => void>())
+  const pendingUnfreeze = useRef(false)
+
   const getTileRef = (v: number) => {
-    let cb = refCallbacks.current.get(v)
+    let cb = tileRefCallbacks.current.get(v)
     if (!cb) {
       cb = (el) => {
         if (el) tileRefs.current.set(v, el)
         else tileRefs.current.delete(v)
       }
-      refCallbacks.current.set(v, cb)
+      tileRefCallbacks.current.set(v, cb)
+    }
+    return cb
+  }
+
+  const getOverlayRef = (v: number) => {
+    let cb = overlayRefCallbacks.current.get(v)
+    if (!cb) {
+      cb = (el) => {
+        if (el) overlayRefs.current.set(v, el)
+        else overlayRefs.current.delete(v)
+      }
+      overlayRefCallbacks.current.set(v, cb)
     }
     return cb
   }
@@ -228,7 +237,11 @@ const EventsGallery = () => {
     const slots: { key: string; event: EventItem; v: number }[] = []
     for (let copy = 0; copy < BUFFER_COPIES; copy++) {
       for (let i = 0; i < N; i++) {
-        slots.push({ key: `${copy}-${events[i].id}`, event: events[i], v: copy * N + i })
+        slots.push({
+          key: `${copy}-${events[i].id}`,
+          event: events[i],
+          v: copy * N + i,
+        })
       }
     }
     return slots
@@ -236,49 +249,68 @@ const EventsGallery = () => {
 
   const activeEvent: EventItem = events[((centerVirtual % N) + N) % N]
 
-  const centerRef = useRef(centerVirtual)
-  const lastMoveTs = useRef(0)
-  useEffect(() => {
-    centerRef.current = centerVirtual
-  }, [centerVirtual])
+  const freezeAndShift = (shift: number) => {
+    const track = trackRef.current
+    const section = sectionRef.current
+    if (!track || !section) return
 
-  useEffect(() => {
-    if (!suppressTransition) return
-    let raf2: number
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => setSuppressTransition(false))
+    const pxPerCqw = section.getBoundingClientRect().width / 100
+    const thinPx = THIN_WIDTH * pxPerCqw
+
+    const widths = new Map<number, number>()
+    tileRefs.current.forEach((el, v) => {
+      widths.set(v, el.getBoundingClientRect().width)
     })
-    return () => {
-      cancelAnimationFrame(raf1)
-      cancelAnimationFrame(raf2)
-    }
-  }, [suppressTransition])
 
-  useEffect(() => {
-    let cancelled = false
-    let timer: number
+    const opacities = new Map<number, string>()
+    overlayRefs.current.forEach((el, v) => {
+      opacities.set(v, getComputedStyle(el).opacity)
+    })
 
-    const check = () => {
-      const idleFor = Date.now() - lastMoveTs.current
-      if (idleFor >= FLIP_DURATION_MS + 50) {
-        const v = centerRef.current
-        if (v < RESET_MARGIN) {
-          setSuppressTransition(true)
-          setCenterVirtual(v + N)
-        } else if (v > TOTAL_V - RESET_MARGIN) {
-          setSuppressTransition(true)
-          setCenterVirtual(v - N)
-        }
-      }
-      if (!cancelled) timer = window.setTimeout(check, 100)
-    }
+    const tx = new DOMMatrixReadOnly(getComputedStyle(track).transform).m41
 
-    timer = window.setTimeout(check, FLIP_DURATION_MS + 50)
-    return () => {
-      cancelled = true
-      clearTimeout(timer)
-    }
-  }, [])
+    track.style.transition = 'none'
+    track.style.transform = `translateX(${tx - shift * THIN_WIDTH * pxPerCqw}px)`
+
+    tileRefs.current.forEach((el, v) => {
+      el.style.transition = 'none'
+      const source = widths.get(v - shift)
+      el.style.flexBasis = `${source ?? thinPx}px`
+    })
+
+    overlayRefs.current.forEach((el, v) => {
+      el.style.transition = 'none'
+      const source = opacities.get(v - shift)
+      el.style.opacity = source ?? '0.75'
+    })
+
+    pendingUnfreeze.current = true
+  }
+
+  useLayoutEffect(() => {
+    if (!pendingUnfreeze.current) return
+    pendingUnfreeze.current = false
+
+    const track = trackRef.current
+    if (!track) return
+
+    track.getBoundingClientRect()
+
+    const raf = requestAnimationFrame(() => {
+      track.style.transition = ''
+      track.style.transform = ''
+      tileRefs.current.forEach((el) => {
+        el.style.transition = ''
+        el.style.flexBasis = ''
+      })
+      overlayRefs.current.forEach((el) => {
+        el.style.transition = ''
+        el.style.opacity = ''
+      })
+    })
+
+    return () => cancelAnimationFrame(raf)
+  }, [centerVirtual])
 
   const trackOffsetCqw = useMemo(() => {
     let before = 0
@@ -308,17 +340,22 @@ const EventsGallery = () => {
       return
     }
 
-    lastMoveTs.current = Date.now()
-    setCenterVirtual(v)
+    let shift = 0
+    if (v < SAFE_MIN) shift = N
+    else if (v > SAFE_MAX) shift = -N
+
+    if (shift !== 0) freezeAndShift(shift)
+
+    setCenterVirtual(v + shift)
     setIsCenterArmed(true)
   }
 
   return (
-    <Section data-testid='events-gallery'>
+    <Section ref={sectionRef} data-testid='events-gallery'>
       <CollapsibleContent $collapsed={isDetailOpen}>
         <CollapseInner>
           <Viewport>
-            <Track $offset={trackOffsetCqw} $suppress={suppressTransition}>
+            <Track ref={trackRef} $offset={trackOffsetCqw}>
               {virtualSlots.map(({ key, event, v }) => {
                 const distance = Math.abs(v - centerVirtual)
                 const width = widthForDistance(distance)
@@ -334,7 +371,7 @@ const EventsGallery = () => {
                     onClick={() => handleTileClick(v)}
                   >
                     <TileImage src={event.image} alt={event.alt} />
-                    {overlay > 0 && <TileOverlay $opacity={overlay} />}
+                    <TileOverlay ref={getOverlayRef(v)} $opacity={overlay} />
                   </Tile>
                 )
               })}
