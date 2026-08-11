@@ -1,20 +1,10 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import obscureEvent from '@/assets/obscureEvent.jpg'
-import HeroBg from '@/assets/HeroBg.png'
-import EventCard from '@/assets/EventCard.jpg'
-import MenuBg from '@/assets/MenuBg.jpg'
-import bodyImg from '@/assets/body-img.jpg'
+import { events, type EventItem } from '../EventsData'
+import { useEventsTransition } from '../EventsTransitionContext'
 
-interface GalleryTile {
-  id: string
-  image: string
-  alt: string
-  title: string
-  date: string
-  location?: string
-}
+type GalleryTile = EventItem
 
 interface EventsGalleryProps {
   tiles?: GalleryTile[]
@@ -30,6 +20,26 @@ const getTileStyle = (distance: number) => {
 const Section = styled.section`
   width: 100%;
   container-type: inline-size;
+`
+
+// Grid 0fr/1fr collapse trick. This wrapper must have exactly one direct
+// child (CollapseInner below) for grid-template-rows to size the whole
+// group together, so GalleryRow, ScrollHint, and EventInfo shrink and
+// fade as one unit instead of only the first child collapsing.
+const CollapsibleContent = styled.div<{ $collapsed: boolean }>`
+  display: grid;
+  grid-template-rows: ${(props) => (props.$collapsed ? '0fr' : '1fr')};
+  opacity: ${(props) => (props.$collapsed ? 0 : 1)};
+  transition:
+    grid-template-rows 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.4s ease;
+`
+
+const CollapseInner = styled.div`
+  overflow: hidden;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 `
 
 const GalleryRow = styled.div`
@@ -177,48 +187,7 @@ const EventLocation = styled.span`
   white-space: nowrap;
 `
 
-const defaultTiles: GalleryTile[] = [
-  {
-    id: 'tile-2',
-    image: bodyImg,
-    alt: 'Placeholder image',
-    title: 'Placeholder Event Title',
-    date: 'Sat, Aug 8   |   11a - 2p',
-    location: '123 Placeholder St, Brooklyn, NY',
-  },
-  {
-    id: 'tile-3',
-    image: EventCard,
-    alt: 'Placeholder image',
-    title: 'Placeholder Pop-Up',
-    date: 'Sun, Aug 9   |   9a - 1p',
-    // No location for this one, it's optional
-  },
-  {
-    id: 'tile-featured',
-    image: obscureEvent,
-    alt: 'Buenos Diaz x Obscure Coffee',
-    title: 'Buenos Diaz x Obscure Coffee',
-    date: 'Sat, Aug 15   |   10a - 3p',
-    location: '259 Melrose St, Brooklyn, NY 11206',
-  },
-  {
-    id: 'tile-5',
-    image: HeroBg,
-    alt: 'Placeholder image',
-    title: 'Placeholder Tasting',
-    date: 'Fri, Aug 21   |   6p - 9p',
-    location: '456 Placeholder Ave, Queens, NY',
-  },
-  {
-    id: 'tile-7',
-    image: MenuBg,
-    alt: 'Placeholder image',
-    title: 'Placeholder Market',
-    date: 'Sat, Aug 29   |   10a - 4p',
-    // No location for this one either
-  },
-]
+const defaultTiles: GalleryTile[] = events
 
 const FLIP_DURATION_MS = 600
 const FLIP_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)'
@@ -227,8 +196,17 @@ const EventsGallery = ({ tiles: initialTiles = defaultTiles }: EventsGalleryProp
   const [tiles, setTiles] = useState<GalleryTile[]>(initialTiles)
   const [isCenterArmed, setIsCenterArmed] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
+  const transition = useEventsTransition()
   const centerIndex = Math.floor(tiles.length / 2)
   const activeTile = tiles[centerIndex]
+
+  // A detail page is open whenever the URL is /events/:id rather than
+  // bare /events. Deriving this from location (instead of local state)
+  // keeps the gallery correctly expanded/collapsed in both directions,
+  // opening a detail and closing it back to the plain gallery, without
+  // needing a separate reset callback.
+  const isDetailOpen = /^\/events\/.+/.test(location.pathname)
 
   const tileRefs = useRef(new Map<string, HTMLDivElement>())
   const firstRects = useRef<Record<string, DOMRect>>({})
@@ -289,13 +267,23 @@ const EventsGallery = ({ tiles: initialTiles = defaultTiles }: EventsGalleryProp
     })
 
     firstRects.current = {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tiles])
 
   const handleTileClick = (index: number) => {
     if (index === centerIndex) {
       if (isCenterArmed) {
-        navigate(`/events/${tiles[index].id}`)
+        const tile = tiles[index]
+        const el = tileRefs.current.get(tile.id)
+
+        if (transition && el) {
+          transition.startTransition({
+            src: tile.image,
+            alt: tile.alt,
+            from: el.getBoundingClientRect(),
+          })
+        }
+
+        navigate(`/events/${tile.id}`)
       } else {
         setIsCenterArmed(true)
       }
@@ -313,42 +301,46 @@ const EventsGallery = ({ tiles: initialTiles = defaultTiles }: EventsGalleryProp
 
   return (
     <Section data-testid='events-gallery'>
-      <GalleryRow ref={rowRef}>
-        {tiles.map((tile, index) => {
-          const distance = Math.abs(index - centerIndex)
-          const { grow, overlay } = getTileStyle(distance)
-          const featured = index === centerIndex
+      <CollapsibleContent $collapsed={isDetailOpen}>
+        <CollapseInner>
+          <GalleryRow ref={rowRef}>
+            {tiles.map((tile, index) => {
+              const distance = Math.abs(index - centerIndex)
+              const { grow, overlay } = getTileStyle(distance)
+              const featured = index === centerIndex
 
-          return (
-            <Tile
-              key={tile.id}
-              ref={setTileRef(tile.id)}
-              $grow={grow}
-              $featured={featured}
-              onClick={() => handleTileClick(index)}
-            >
-              <TileImage src={tile.image} alt={tile.alt} />
-              {overlay > 0 && <TileOverlay $opacity={overlay} />}
-            </Tile>
-          )
-        })}
-      </GalleryRow>
+              return (
+                <Tile
+                  key={tile.id}
+                  ref={setTileRef(tile.id)}
+                  $grow={grow}
+                  $featured={featured}
+                  onClick={() => handleTileClick(index)}
+                >
+                  <TileImage src={tile.image} alt={tile.alt} />
+                  {overlay > 0 && <TileOverlay $opacity={overlay} />}
+                </Tile>
+              )
+            })}
+          </GalleryRow>
 
-      <ScrollHint>
-        {tiles.map((tile, index) => (
-          <ScrollDot key={tile.id} $active={index === centerIndex} />
-        ))}
-      </ScrollHint>
+          <ScrollHint>
+            {tiles.map((tile, index) => (
+              <ScrollDot key={tile.id} $active={index === centerIndex} />
+            ))}
+          </ScrollHint>
 
-      <EventInfo>
-        <EventTitle className='secondaryTitle'>{activeTile.title}</EventTitle>
-        <EventMeta $hasLocation={Boolean(activeTile.location)}>
-          <EventDate className='primaryTextSmall'>{activeTile.date}</EventDate>
-          {activeTile.location && (
-            <EventLocation className='primaryTextSmall'>{activeTile.location}</EventLocation>
-          )}
-        </EventMeta>
-      </EventInfo>
+          <EventInfo>
+            <EventTitle className='secondaryTitle'>{activeTile.title}</EventTitle>
+            <EventMeta $hasLocation={Boolean(activeTile.location)}>
+              <EventDate className='primaryTextSmall'>{activeTile.date}</EventDate>
+              {activeTile.location && (
+                <EventLocation className='primaryTextSmall'>{activeTile.location}</EventLocation>
+              )}
+            </EventMeta>
+          </EventInfo>
+        </CollapseInner>
+      </CollapsibleContent>
     </Section>
   )
 }
