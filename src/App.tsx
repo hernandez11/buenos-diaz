@@ -8,6 +8,7 @@ import { EventsPage } from './components/pages/EventsPage'
 import EventDetail from './components/EventDetail'
 import { NotFound } from './components/pages/NotFound'
 import { useLenis } from './components/useLenis'
+import ScrollLogo from './components/ScrollLogo'
 
 const AppShell = styled.div`
   display: flex;
@@ -20,6 +21,7 @@ const Main = styled.main`
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
+  padding-top: var(--header-h, 0px);
 `
 
 export default function App() {
@@ -27,6 +29,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <ScrollLogo />
       <AppShell>
         <Header />
         <Main>

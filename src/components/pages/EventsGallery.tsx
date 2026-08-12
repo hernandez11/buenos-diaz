@@ -13,12 +13,12 @@ const TOTAL_V = N * BUFFER_COPIES
 const START_CENTER = Math.floor(BUFFER_COPIES / 2) * N + Math.floor(N / 2)
 const SAFE_MIN = N * 2
 const SAFE_MAX = TOTAL_V - N * 2
-const THIN_WIDTH = 0.4
+const THIN_WIDTH = 6.5
 
 const widthForDistance = (distance: number) => {
-  if (distance === 0) return 58
-  if (distance === 1) return 8.5
-  if (distance === 2) return 6
+  if (distance === 0) return 50
+  if (distance === 1) return 10
+  if (distance === 2) return 9
   if (distance === 3) return 5
   return THIN_WIDTH
 }
@@ -34,11 +34,32 @@ const overlayForDistance = (distance: number) => {
 const Section = styled.section`
   width: 100%;
   container-type: inline-size;
+  position: relative;
   flex: 1 0 auto;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  min-height: calc(clamp(260px, 33cqw, 640px) + 12cqw);
+
+  @media (max-width: 767px) {
+    min-height: calc(clamp(320px, 95cqw, 480px) + 6rem);
+  }
+`
+
+const CenterBlock = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  transform: translateY(-50%);
+`
+
+const BelowBlock = styled.div`
+  position: absolute;
+  top: calc(50% + clamp(260px, 33cqw, 640px) / 2);
+  left: 0;
+  width: 100%;
+
+  @media (max-width: 767px) {
+    top: calc(50% + clamp(320px, 95cqw, 480px) / 2);
+  }
 `
 
 const Viewport = styled.div`
@@ -110,28 +131,6 @@ const TileOverlay = styled.div<{ $opacity: number }>`
   }
 `
 
-const DetailLocation = styled.span<{ $visible: boolean }>`
-  position: absolute;
-  right: 3cqw;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16cqw;
-  text-align: right;
-  z-index: 3;
-  font-family: 'Inter', sans-serif;
-  font-weight: 300;
-  font-size: clamp(11px, 0.868cqw, 15px);
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
-  opacity: ${(props) => (props.$visible ? 1 : 0)};
-  transition: opacity 0.5s ease 0.15s;
-  pointer-events: none;
-
-  @media (max-width: 767px) {
-    display: none;
-  }
-`
-
 const ScrollHint = styled.div<{ $hidden: boolean }>`
   display: none;
 
@@ -156,16 +155,16 @@ const ScrollDot = styled.span<{ $active?: boolean }>`
 const EventInfo = styled.div<{ $hidden: boolean }>`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 1.2cqw;
-  padding: 2.8cqw 4cqw;
-  text-align: center;
+  padding: 1.8cqw 25cqw 0;
+  text-align: left;
   opacity: ${(props) => (props.$hidden ? 0 : 1)};
   transition: opacity ${FADE_OUT_MS}ms ease;
 
   @media (max-width: 767px) {
     gap: 0.75rem;
-    padding: 2rem 1.5rem;
+    padding: 1.5rem;
   }
 `
 
@@ -183,9 +182,8 @@ const EventMeta = styled.div<{ $hasLocation: boolean }>`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: ${(props) => (props.$hasLocation ? 'space-between' : 'center')};
-  width: 43.17cqw;
-  min-width: 280px;
+  justify-content: ${(props) => (props.$hasLocation ? 'space-between' : 'flex-start')};
+  width: 100%;
   gap: 1rem 2cqw;
 
   @media (max-width: 767px) {
@@ -226,13 +224,14 @@ const EventsGallery = () => {
   const fadeOthers = isLeaving || isDetailOpen
 
   const sectionRef = useRef<HTMLElement>(null)
+  const centerBlockRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const tileRefs = useRef(new Map<number, HTMLDivElement>())
   const overlayRefs = useRef(new Map<number, HTMLDivElement>())
-  const tileRefCallbacks = useRef(new Map<number, (el: HTMLDivElement | null) => void>())
-  const overlayRefCallbacks = useRef(new Map<number, (el: HTMLDivElement | null) => void>())
+  const tileRefCallbacks = useRef(new Map<number, (node: HTMLDivElement | null) => void>())
+  const overlayRefCallbacks = useRef(new Map<number, (node: HTMLDivElement | null) => void>())
   const pendingUnfreeze = useRef(false)
-  const leaveTimer = useRef<number>()
+  const leaveTimer = useRef<number | undefined>(undefined)
 
   const getTileRef = (v: number) => {
     let cb = tileRefCallbacks.current.get(v)
@@ -278,7 +277,10 @@ const EventsGallery = () => {
     if (!isDetailOpen) {
       setIsLeaving(false)
       sectionRef.current?.style.removeProperty('height')
+      sectionRef.current?.style.removeProperty('min-height')
       sectionRef.current?.style.removeProperty('flex')
+      centerBlockRef.current?.style.removeProperty('top')
+      centerBlockRef.current?.style.removeProperty('transform')
     }
   }, [isDetailOpen])
 
@@ -392,8 +394,16 @@ const EventsGallery = () => {
         setIsLeaving(true)
 
         const section = sectionRef.current
-        if (section) {
-          section.style.height = `${section.getBoundingClientRect().height}px`
+        const centerBlock = centerBlockRef.current
+        if (section && centerBlock) {
+          const sRect = section.getBoundingClientRect()
+          const cRect = centerBlock.getBoundingClientRect()
+          const top = cRect.top - sRect.top
+
+          centerBlock.style.top = `${top}px`
+          centerBlock.style.transform = 'none'
+          section.style.minHeight = '0px'
+          section.style.height = `${top + cRect.height}px`
           section.style.flex = '0 0 auto'
         }
 
@@ -419,51 +429,51 @@ const EventsGallery = () => {
 
   return (
     <Section ref={sectionRef} data-testid='events-gallery'>
-      <Viewport>
-        <Track ref={trackRef} $offset={trackOffsetCqw}>
-          {virtualSlots.map(({ key, event, v }) => {
-            const distance = Math.abs(v - centerVirtual)
-            const width = widthForDistance(distance)
-            const overlay = overlayForDistance(distance)
-            const isCenter = v === centerVirtual
+      <CenterBlock ref={centerBlockRef}>
+        <Viewport>
+          <Track ref={trackRef} $offset={trackOffsetCqw}>
+            {virtualSlots.map(({ key, event, v }) => {
+              const distance = Math.abs(v - centerVirtual)
+              const width = widthForDistance(distance)
+              const overlay = overlayForDistance(distance)
+              const isCenter = v === centerVirtual
 
-            return (
-              <Tile
-                key={key}
-                ref={getTileRef(v)}
-                $width={width}
-                $hidden={fadeOthers && !isCenter}
-                role='button'
-                tabIndex={0}
-                onClick={() => handleTileClick(v)}
-              >
-                <TileImage src={event.image} alt={event.alt} />
-                <TileOverlay ref={getOverlayRef(v)} $opacity={overlay} />
-              </Tile>
-            )
-          })}
-        </Track>
+              return (
+                <Tile
+                  key={key}
+                  ref={getTileRef(v)}
+                  $width={width}
+                  $hidden={fadeOthers && !isCenter}
+                  role='button'
+                  tabIndex={0}
+                  onClick={() => handleTileClick(v)}
+                >
+                  <TileImage src={event.image} alt={event.alt} />
+                  <TileOverlay ref={getOverlayRef(v)} $opacity={overlay} />
+                </Tile>
+              )
+            })}
+          </Track>
+        </Viewport>
+      </CenterBlock>
 
-        {activeEvent.location && (
-          <DetailLocation $visible={isDetailOpen}>{activeEvent.location}</DetailLocation>
-        )}
-      </Viewport>
+      <BelowBlock>
+        <ScrollHint $hidden={fadeOthers}>
+          {events.map((event, i) => (
+            <ScrollDot key={event.id} $active={i === ((centerVirtual % N) + N) % N} />
+          ))}
+        </ScrollHint>
 
-      <ScrollHint $hidden={fadeOthers}>
-        {events.map((event, i) => (
-          <ScrollDot key={event.id} $active={i === ((centerVirtual % N) + N) % N} />
-        ))}
-      </ScrollHint>
-
-      <EventInfo $hidden={fadeOthers}>
-        <EventTitle className='secondaryTitle'>{activeEvent.title}</EventTitle>
-        <EventMeta $hasLocation={Boolean(activeEvent.location)}>
-          <EventDate className='primaryTextSmall'>{activeEvent.date}</EventDate>
-          {activeEvent.location && (
-            <EventLocation className='primaryTextSmall'>{activeEvent.location}</EventLocation>
-          )}
-        </EventMeta>
-      </EventInfo>
+        <EventInfo $hidden={fadeOthers}>
+          <EventTitle className='secondaryTitle'>{activeEvent.title}</EventTitle>
+          <EventMeta $hasLocation={Boolean(activeEvent.location)}>
+            <EventDate className='primaryTextSmall'>{activeEvent.date}</EventDate>
+            {activeEvent.location && (
+              <EventLocation className='primaryTextSmall'>{activeEvent.location}</EventLocation>
+            )}
+          </EventMeta>
+        </EventInfo>
+      </BelowBlock>
     </Section>
   )
 }

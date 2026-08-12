@@ -1,165 +1,105 @@
 import styled from 'styled-components'
-import IgIcon from '@/assets/IgIcon.png'
-import EmailIcon from '@/assets/EmailIcon.png'
-
-interface FooterLink {
-  id: string
-  label: string
-  href: string
-}
 
 interface FooterProps {
   location?: string
   copyright?: string
-  links?: [FooterLink, FooterLink, FooterLink, FooterLink]
+  instagramUrl?: string
+  tiktokUrl?: string
 }
 
 const Wrapper = styled.footer`
-  position: relative;
   width: 100%;
-  background-color: #fffdfa;
+  box-sizing: border-box;
   container-type: inline-size;
-`
-
-const TopRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  padding: 0.5em 11.98cqw;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    text-align: center;
-  }
-`
-
-const Location = styled.span`
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(11px, 0.868cqw, 15px);
-  font-weight: 400;
-  letter-spacing: -0.04em;
-  color: #000000;
-  white-space: nowrap;
-
-  @media (max-width: 1024px) {
-    font-size: 0.9em;
-    order: 2;
-  }
-`
-
-const Copyright = styled.span`
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(11px, 0.868cqw, 15px);
-  font-weight: 400;
-  letter-spacing: -0.04em;
-  color: #000000;
-  text-align: right;
-  white-space: nowrap;
-
-  @media (max-width: 1024px) {
-    font-size: 0.9em;
-    text-align: center;
-    order: 3;
-  }
-`
-
-const LogoMark = styled.span`
-  font-family: 'Loved by the King', cursive;
-  font-size: clamp(28px, 3.078cqw, 53.19px);
-  color: #1e1e1e;
-  text-align: center;
-  line-height: 1;
-
-  @media (max-width: 1024px) {
-    order: 1;
-    font-size: 2.4em;
-  }
-`
-
-const Divider = styled.hr`
-  border: none;
-  border-top: 1px solid #1e1e1e;
-  opacity: 0.5;
-  margin: 0 5.56cqw;
-`
-
-const BottomRow = styled.nav`
+  background-color: #fffdfa;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5em 11.98cqw;
+  gap: 2cqw;
+  padding: 0.75cqw 11.98cqw;
 
-  @media (max-width: 1024px) {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.5rem;
-    padding: 0.5rem 2rem;
+  @media (max-width: 767px) {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    text-align: center;
   }
 `
 
-const SocialIconsBox = styled.div`
+const Text = styled.span`
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: clamp(11px, 0.868cqw, 15px);
+  letter-spacing: -0.04em;
+  color: #000000;
+  white-space: nowrap;
+  flex: 1 1 0;
+  min-width: 0;
+`
+
+const TextEnd = styled(Text)`
+  text-align: right;
+
+  @media (max-width: 767px) {
+    text-align: center;
+  }
+`
+
+const SocialGroup = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(8px, 1cqw, 16px);
+  gap: 0.9cqw;
+  flex: 0 0 auto;
 
-  a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  img {
-    width: clamp(14px, 1.8cqw, 22px);
-    height: clamp(14px, 1.8cqw, 22px);
-    object-fit: contain;
+  @media (max-width: 767px) {
+    gap: 0.6rem;
   }
 `
 
-const defaultLinks: [FooterLink, FooterLink, FooterLink, FooterLink] = [
-  { id: 'home', label: 'HOME', href: '/' },
-  { id: 'services', label: 'SERVICES', href: '/services' },
-  { id: 'events', label: 'EVENTS', href: '/events' },
-  { id: 'contact', label: 'CONTACT', href: '/contact' },
-]
+const SocialLink = styled.a`
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: clamp(11px, 0.868cqw, 15px);
+  letter-spacing: -0.04em;
+  color: #000000;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.6;
+  }
+`
+
+const Divider = styled.span`
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: clamp(11px, 0.868cqw, 15px);
+  letter-spacing: -0.04em;
+  color: #000000;
+`
 
 const Footer = ({
   location = 'Mobile Espresso Bar | NYC',
-  copyright = '© Buenos Díaz Coffee, 2026',
-  links = defaultLinks,
+  copyright = '@ Buenos Díaz Coffee, 2026',
+  instagramUrl = 'https://www.instagram.com/buenosdiaznyc/',
+  tiktokUrl = 'https://www.tiktok.com/@buenosdiaznyc',
 }: FooterProps) => (
   <Wrapper data-testid='footer'>
-    <TopRow>
-      <Location>{location}</Location>
-      <LogoMark>BD</LogoMark>
-      <Copyright>{copyright}</Copyright>
-    </TopRow>
+    <Text>{location}</Text>
 
-    <Divider />
+    <SocialGroup>
+      <SocialLink href={instagramUrl} target='_blank' rel='noreferrer'>
+        INSTAGRAM
+      </SocialLink>
+      <Divider>|</Divider>
+      <SocialLink href={tiktokUrl} target='_blank' rel='noreferrer'>
+        TIKTOK
+      </SocialLink>
+    </SocialGroup>
 
-    <BottomRow>
-      <a className='navigationLink' href={links[0].href}>
-        {links[0].label}
-      </a>
-      {/* <a className='navigationLink' href={links[1].href}>
-        {links[1].label}
-      </a> */}
-      <SocialIconsBox>
-        <a href='mailto:hello@buenosdiaznyc.com' aria-label='Email Buenos Díaz'>
-          <img src={EmailIcon} alt='Email' />
-        </a>
-        <a href='https://www.instagram.com/buenosdiaznyc/' target='_blank' rel='noreferrer'>
-          <img src={IgIcon} alt='Instagram' />
-        </a>
-      </SocialIconsBox>
-      {/* <a className='navigationLink' href={links[2].href}>
-        {links[2].label}
-      </a> */}
-      {/* <a className='navigationLink' href={links[3].href}>{links[3].label}</a> */}
-    </BottomRow>
+    <TextEnd>{copyright}</TextEnd>
   </Wrapper>
 )
 

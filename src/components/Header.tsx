@@ -1,139 +1,92 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import IgIcon from '@/assets/IgIcon.png'
-import EmailIcon from '@/assets/EmailIcon.png'
-import PrimaryLogo from '@/assets/PrimaryLogo.png'
 
-const StyledHeader = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fffdfa;
-  color: #1e1e1e;
-  padding: 0 4.9%;
-  height: 96px;
+const LOGO_RATIO = 3956 / 1218
+
+const StyledHeader = styled.header`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  width: 100%;
   box-sizing: border-box;
-
-  .navMenu {
-    display: flex;
-    align-items: center;
-    gap: 3em;
-  }
-
-  .headerLogo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: 'Loved by the King', cursive;
-    font-size: 40px;
-    margin: 0;
-    white-space: nowrap;
-  }
-
-  .iconMenu {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-  }
-
-  .iconLink {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
-
-    &:hover {
-      opacity: 0.6;
-    }
-
-    > img {
-      width: 20px;
-      height: 20px;
-      object-fit: contain;
-      display: block;
-    }
-  }
+  container-type: inline-size;
+  background-color: transparent;
+  height: var(--header-h, 88px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4.7cqw;
 
   @media (max-width: 767px) {
-    height: 72px;
     padding: 0 1.5rem;
-
-    .navMenu {
-      gap: 1.5em;
-    }
-
-    .headerLogo {
-      font-size: 28px;
-    }
-
-    .iconMenu {
-      gap: 1rem;
-    }
-
-    .iconLink > img {
-      width: 18px;
-      height: 18px;
-    }
-  }
-
-  .headerLogo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    margin: 0;
-
-    > img {
-      height: clamp(44px, 4.5vw, 64px);
-      width: auto;
-      object-fit: contain;
-      display: block;
-    }
-  }
   }
 `
 
-const SocialIconsBox = styled.div`
+const NavGroup = styled.nav`
+  display: flex;
+  align-items: center;
+  gap: 4.4cqw;
+  flex: 1 1 0;
+  min-width: 0;
+
+  @media (max-width: 767px) {
+    gap: 1.25rem;
+  }
+`
+
+const NavGroupEnd = styled(NavGroup)`
+  justify-content: flex-end;
+`
+
+const NavItem = styled(Link)`
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: clamp(11px, 0.868cqw, 15px);
+  letter-spacing: -0.04em;
+  color: var(--nav-color, #1e1e1e);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.6;
+  }
+`
+
+const LogoLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(8px, 1cqw, 16px);
+  flex: 0 0 auto;
+  text-decoration: none;
+`
 
-  a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  img {
-    width: clamp(14px, 1.8cqw, 22px);
-    height: clamp(14px, 1.8cqw, 22px);
-    object-fit: contain;
-  }
+const LogoSlot = styled.span`
+  display: block;
+  width: clamp(120px, 11cqw, 190px);
+  aspect-ratio: ${LOGO_RATIO};
 `
 
 export const Header = () => {
   return (
-    <StyledHeader>
-      <div className='navMenu'>
-        <p className='primaryTextSmall' data-testid={'InfoNavLink'}>
-          @buenosdiaznyc
-        </p>
-      </div>
+    <StyledHeader data-testid='header'>
+      <NavGroup>
+        <NavItem to='/'>HOME</NavItem>
+        <NavItem to='/services'>SERVICES</NavItem>
+      </NavGroup>
 
-      <a href='/' className={'headerLogo'} aria-label='Buenos Díaz logo'>
-        <img src={PrimaryLogo} alt='Email' />
-      </a>
+      <LogoLink to='/' aria-label='Buenos Díaz'>
+        <LogoSlot data-logo-slot='header' />
+      </LogoLink>
 
-      <SocialIconsBox>
-        <a href='mailto:hello@buenosdiaznyc.com' aria-label='Email Buenos Díaz'>
-          <img src={EmailIcon} alt='Email' />
-        </a>
-        <a href='https://www.instagram.com/buenosdiaznyc/' target='_blank' rel='noreferrer'>
-          <img src={IgIcon} alt='Instagram' />
-        </a>
-      </SocialIconsBox>
+      <NavGroupEnd>
+        <NavItem to='/shop'>SHOP</NavItem>
+        <NavItem to='/faq'>FAQ</NavItem>
+      </NavGroupEnd>
     </StyledHeader>
   )
 }
+
+export default Header
