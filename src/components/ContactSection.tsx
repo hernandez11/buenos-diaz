@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import ContactBg from '@/assets/contactImg.jpg'
+import ContactBg from '@/assets/ContactImg.jpg'
 import { bodySmFlat, color, displayMd, titleMd } from '@/theme'
 import { SlideReveal } from '@/components/SlideReveal'
 import { useMediaQuery } from '@/components/useMediaQuery'
