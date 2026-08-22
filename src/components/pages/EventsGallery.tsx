@@ -350,34 +350,9 @@ const EventTitle = styled.h3`
   color: ${color.ink};
 `
 
-const EventMeta = styled.div<{ $hasLocation: boolean }>`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: ${(props) => (props.$hasLocation ? 'space-between' : 'flex-start')};
-  width: 100%;
-  gap: 1rem 2cqw;
-
-  @media (max-width: 767px) {
-    width: 100%;
-    min-width: 0;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-`
-
 const EventDate = styled.span`
   ${bodySm};
   color: ${color.ink};
-  white-space: nowrap;
-`
-
-const EventLocation = styled.span`
-  font-family: 'Inter', sans-serif;
-  font-weight: 300;
-  font-size: clamp(12px, 1.082cqw, 15px);
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
   white-space: nowrap;
 `
 

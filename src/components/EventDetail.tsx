@@ -129,34 +129,6 @@ const ImageStack = styled.div`
   }
 `
 
-const StickyAddress = styled.span`
-  position: fixed;
-  right: 3vw;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16vw;
-  z-index: 6;
-  text-align: right;
-  font-family: 'Inter', sans-serif;
-  font-weight: 300;
-  font-size: clamp(11px, 0.868vw, 15px);
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
-  pointer-events: none;
-  opacity: 0;
-  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
-
-  @keyframes detail-fade-in {
-    to {
-      opacity: 1;
-    }
-  }
-
-  @media (max-width: 767px) {
-    display: none;
-  }
-`
-
 const ImageColumn = styled.div`
   position: relative;
   width: 50cqw;
@@ -458,8 +430,6 @@ const EventDetail = () => {
           </SlideReveal>
         </InfoOverlay>
       )}
-
-      {event.location && <StickyAddress key={`addr-${event.id}`}>{event.location}</StickyAddress>}
 
       <Page key={`page-${event.id}`} data-testid='event-detail'>
         <ImageStack>

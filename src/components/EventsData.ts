@@ -1,7 +1,6 @@
 import ObscureImg_1 from '@/assets/Events/Obscure/Obscure_gallery_1.png'
 import ObscureImg_2 from '@/assets/Events/Obscure/Obscure_gallery_2.jpeg'
 import ObscureImg_3 from '@/assets/Events/Obscure/Obscure_gallery_3.jpeg'
-import ObscureImg_4 from '@/assets/Events/Obscure/Obscure_gallery_4.jpeg'
 import ObscureVid_1 from '@/assets/Events/Obscure/Obscure_clip_1.mp4'
 import ObscureVid_2 from '@/assets/Events/Obscure/Obscure_clip_2.mp4'
 import ObscureVid_3 from '@/assets/Events/Obscure/Obscure_clip_3.mp4'
