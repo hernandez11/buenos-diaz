@@ -41,7 +41,7 @@ const Header = styled.div`
 const SectionTitle = styled.h2`
   font-family: 'Inter', sans-serif;
   font-size: 1.5em;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.96px;
   margin: 0;
   text-transform: uppercase;
@@ -84,7 +84,7 @@ const StackedContent = styled.div`
 const EventTitle = styled.h3`
   font-family: 'Inter', sans-serif;
   font-size: 1em;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.64px;
   margin: 0;
   text-transform: uppercase;

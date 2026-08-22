@@ -1,5 +1,42 @@
+:root {
+  --header-h: 88px;
+  --footer-h: 56px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --header-h: 64px;
+  }
+}
+
 html {
   height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #8fa9a0 transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #8fa9a0;
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #7a938a;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 body {
@@ -17,11 +54,44 @@ body {
   color: 0000;
 }
 
-* {
-  cursor:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='10' cy='10' r='7' fill='%23ED6636'/%3E%3C/svg%3E")
-      10 10,
-    auto;
+html,
+body,
+*,
+*::before,
+*::after {
+  cursor: none !important;
+}
+
+a,
+button,
+[role='button'],
+input,
+textarea,
+select,
+label,
+summary,
+[tabindex] {
+  cursor: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4,2L4,18.5L8.2,14.6L11,20.6L13.6,19.4L10.9,13.6L16.5,13.6Z'%20fill='%238fa9a0'%20stroke='%23fffdfa'%20stroke-width='1.2'%20stroke-linejoin='round'/%3E%3C/svg%3E")
+      4 2,
+    auto !important;
+}
+
+@media (hover: none), (pointer: coarse) {
+  html,
+  body,
+  *,
+  *::before,
+  *::after {
+    cursor: auto !important;
+  }
+}
+
+html.is-zoomed,
+html.is-zoomed body,
+html.is-zoomed *,
+html.is-zoomed *::before,
+html.is-zoomed *::after {
+  cursor: auto !important;
 }
 
 .primaryTitle {

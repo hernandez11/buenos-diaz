@@ -4,45 +4,41 @@ interface FooterProps {
   location?: string
   copyright?: string
   instagramUrl?: string
-  tiktokUrl?: string
 }
 
 const Wrapper = styled.footer`
+  position: relative;
+  z-index: 2;
   width: 100%;
   box-sizing: border-box;
   container-type: inline-size;
   background-color: #fffdfa;
+  min-height: var(--footer-h, 56px);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   gap: 2cqw;
-  padding: 0.75cqw 11.98cqw;
+  padding: 0.75cqw 4cqw;
 
   @media (max-width: 767px) {
-    flex-direction: column;
     gap: 0.75rem;
-    padding: 1.5rem;
-    text-align: center;
+    padding: 1rem;
   }
 `
 
 const Text = styled.span`
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: clamp(11px, 0.868cqw, 15px);
+  font-size: clamp(9px, 0.868cqw, 15px);
   letter-spacing: -0.04em;
   color: #000000;
   white-space: nowrap;
-  flex: 1 1 0;
+  flex: 0 1 auto;
   min-width: 0;
 `
 
 const TextEnd = styled(Text)`
   text-align: right;
-
-  @media (max-width: 767px) {
-    text-align: center;
-  }
 `
 
 const SocialGroup = styled.div`
@@ -60,7 +56,7 @@ const SocialGroup = styled.div`
 const SocialLink = styled.a`
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: clamp(11px, 0.868cqw, 15px);
+  font-size: clamp(9px, 0.868cqw, 15px);
   letter-spacing: -0.04em;
   color: #000000;
   text-decoration: none;
@@ -72,19 +68,10 @@ const SocialLink = styled.a`
   }
 `
 
-const Divider = styled.span`
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: clamp(11px, 0.868cqw, 15px);
-  letter-spacing: -0.04em;
-  color: #000000;
-`
-
 const Footer = ({
   location = 'Mobile Espresso Bar | NYC',
   copyright = '@ Buenos Díaz Coffee, 2026',
   instagramUrl = 'https://www.instagram.com/buenosdiaznyc/',
-  tiktokUrl = 'https://www.tiktok.com/@buenosdiaznyc',
 }: FooterProps) => (
   <Wrapper data-testid='footer'>
     <Text>{location}</Text>
@@ -92,10 +79,6 @@ const Footer = ({
     <SocialGroup>
       <SocialLink href={instagramUrl} target='_blank' rel='noreferrer'>
         INSTAGRAM
-      </SocialLink>
-      <Divider>|</Divider>
-      <SocialLink href={tiktokUrl} target='_blank' rel='noreferrer'>
-        TIKTOK
       </SocialLink>
     </SocialGroup>
 

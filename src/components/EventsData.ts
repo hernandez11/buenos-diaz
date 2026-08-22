@@ -1,8 +1,21 @@
-import obscureEvent from '@/assets/obscureEvent.jpg'
-import HeroBg from '@/assets/HeroBg.png'
-import EventCard from '@/assets/EventCard.jpg'
-import MenuBg from '@/assets/MenuBg.jpg'
-import bodyImg from '@/assets/body-img.jpg'
+import ObscureImg_1 from '@/assets/Events/Obscure/Obscure_gallery_1.png'
+import ObscureImg_2 from '@/assets/Events/Obscure/Obscure_gallery_2.jpeg'
+import ObscureImg_3 from '@/assets/Events/Obscure/Obscure_gallery_3.jpeg'
+import ObscureImg_4 from '@/assets/Events/Obscure/Obscure_gallery_4.jpeg'
+import ObscureVid_1 from '@/assets/Events/Obscure/Obscure_clip_1.mp4'
+import ObscureVid_2 from '@/assets/Events/Obscure/Obscure_clip_2.mp4'
+import ObscureVid_3 from '@/assets/Events/Obscure/Obscure_clip_3.mp4'
+import ObscureVid_4 from '@/assets/Events/Obscure/Obscure_clip_4.mp4'
+import ObscureRecap from '@/assets/Events/Obscure/Obscure_recap.mp4'
+import ShopifyImg_1 from '@/assets/Events/Shopify/Shopify_gallery_1.jpeg'
+import ShopifyImg_2 from '@/assets/Events/Shopify/Shopify_gallery_2.jpeg'
+import ShopifyImg_3 from '@/assets/Events/Shopify/Shopify_gallery_3.jpeg'
+import ShopifyVid_1 from '@/assets/Events/Shopify/Shopify_clip_1.mp4'
+import ShopifyVid_2 from '@/assets/Events/Shopify/Shopify_clip_2.mp4'
+import ShopifyVid_3 from '@/assets/Events/Shopify/Shopify_clip_3.mp4'
+import ShopifyRecap from '@/assets/Events/Shopify/Shopify_recap.mp4'
+
+export type GalleryBlock = 'full' | 'wide' | 'tall' | 'pair'
 
 export interface EventItem {
   id: string
@@ -10,63 +23,76 @@ export interface EventItem {
   alt: string
   title: string
   date: string
-  location?: string
   description?: string
   gallery?: string[]
+  layout?: GalleryBlock[]
 }
 
 export const events: EventItem[] = [
   {
-    id: 'tile-2',
-    image: bodyImg,
+    id: 'obscure-popup',
+    image: ObscureImg_1,
     alt: 'Placeholder image',
-    title: 'Placeholder Event Title',
-    date: 'Sat, Aug 8   |   11a - 2p',
-    location: '123 Placeholder St, Brooklyn, NY',
+    title: 'OBSCURE COFFEE ROASTERS',
+    date: '08.15',
     description:
-      'A short description of this event goes here. Swap this placeholder copy for the real story once you have it, tasting notes, what to expect, who is pouring, and so on.',
-    gallery: [bodyImg, EventCard],
+      'Buenos Díaz joined Obscure Coffee Roasters in Bushwick for a one-day popup, bringing our specialty espresso menu into their space alongside a limited run of collaborative drinks merging the coffee culture of Chiapas, Mexico with the bold flavors of Puerto Rico.',
+    gallery: [
+      ObscureRecap,
+      ObscureVid_3,
+      ObscureVid_4,
+      ObscureVid_2,
+      ObscureVid_1,
+      ObscureImg_3,
+      ObscureImg_2,
+    ],
+    layout: ['full', 'pair', 'wide', 'wide', 'pair'],
   },
   {
-    id: 'tile-3',
-    image: EventCard,
+    id: 'shopify-popup',
+    image: ShopifyImg_3,
     alt: 'Placeholder image',
-    title: 'Placeholder Pop-Up',
-    date: 'Sun, Aug 9   |   9a - 1p',
+    title: 'SHOPIFY | SUMMER BIZ CONNECT',
+    date: '07.21',
     description:
-      'A short description of this event goes here. This one has no location yet, since some events are still being finalized.',
-    gallery: [EventCard, MenuBg],
+      'Buenos Díaz served at Shopify NYs Summer Biz Connect, a networking mixer bringing together founders, merchants, and creators at their SoHo flagship on Greene Street. We poured our summer aguas frescas for a room full of builders and entrepreneurs, adding a taste of Mexican ingredients to an evening built on connection and collaboration.',
+    gallery: [
+      ShopifyRecap,
+      ShopifyImg_1,
+      ShopifyImg_2,
+      ShopifyImg_3,
+      ShopifyVid_1,
+      ShopifyVid_2,
+      ShopifyVid_3,
+    ],
+    layout: ['full', 'wide', 'wide', 'pair', 'tall'],
   },
-  {
-    id: 'tile-featured',
-    image: obscureEvent,
-    alt: 'Buenos Diaz x Obscure Coffee',
-    title: 'Buenos Diaz x Obscure Coffee',
-    date: 'Sat, Aug 15   |   10a - 3p',
-    location: '259 Melrose St, Brooklyn, NY 11206',
-    description:
-      'A short description of this event goes here. Replace with the real collaboration details, what Buenos Diaz and Obscure Coffee are bringing to the day, the menu, the vibe, all of it.',
-    gallery: [obscureEvent, bodyImg, HeroBg],
-  },
-  {
-    id: 'tile-5',
-    image: HeroBg,
-    alt: 'Placeholder image',
-    title: 'Placeholder Tasting',
-    date: 'Fri, Aug 21   |   6p - 9p',
-    location: '456 Placeholder Ave, Queens, NY',
-    description: 'A short description of this event goes here.',
-    gallery: [HeroBg, MenuBg],
-  },
-  {
-    id: 'tile-7',
-    image: MenuBg,
-    alt: 'Placeholder image',
-    title: 'Placeholder Market',
-    date: 'Sat, Aug 29   |   10a - 4p',
-    description: 'A short description of this event goes here.',
-    gallery: [MenuBg, EventCard],
-  },
+  // {
+  //   id: 'remedy-popup',
+  //   image: RemedyImg_3,
+  //   alt: 'Placeholder image',
+  //   title: 'REMEDY PLACE TAKEOVER',
+  //   date: '09.06',
+  //   layout: ['full'],
+  // },
 ]
 
 export const getEventById = (id: string) => events.find((event) => event.id === id)
+
+export const isUpcoming = (date: string, now = new Date()) => {
+  const match = date.match(/^(\d{1,2})\.(\d{1,2})$/)
+  if (!match) return false
+
+  const month = Number(match[1]) - 1
+  const day = Number(match[2])
+
+  let candidate = new Date(now.getFullYear(), month, day)
+  const halfYear = 182 * 24 * 60 * 60 * 1000
+
+  if (candidate.getTime() - now.getTime() < -halfYear) {
+    candidate = new Date(now.getFullYear() + 1, month, day)
+  }
+
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  return candidate.getTime() > today.getTime()
+}

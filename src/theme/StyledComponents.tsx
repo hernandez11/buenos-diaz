@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import heroImage from '@/assets/HeroBg.png'
+import heroImage from '@/assets/Events/ShopifyEvent_4.jpeg'
 import bodyImage from '@/assets/body-img.jpg'
 
 export const StyledHero = styled.div`

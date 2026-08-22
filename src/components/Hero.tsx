@@ -1,12 +1,13 @@
 import styled from 'styled-components'
-import heroImage from '@/assets/HeroBg.png'
-
-const LOGO_RATIO = 3956 / 1218
+// import heroImage from '@/assets/HeroBg.png'
+import heroImage from '@/assets/HeroBg.jpg'
+import { SlideReveal } from '@/components/SlideReveal'
+import { useParallax } from '@/components/useParallax'
 
 const HeroContainer = styled.section`
   position: relative;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  z-index: 0;
+  width: 100%;
   height: 100vh;
   height: 100dvh;
   margin-top: calc(-1 * var(--header-h, 0px));
@@ -16,14 +17,28 @@ const HeroContainer = styled.section`
   background-color: #1e1e1e;
 `
 
+const OVERLAY_OPACITY = 0.1
+
 const HeroImage = styled.img`
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
+  height: 123%;
+  max-width: none;
   object-fit: cover;
-  opacity: 0.8;
+  object-position: center center;
+  display: block;
   z-index: 0;
+  transform: translate3d(0, 0, 0);
+`
+
+const Overlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, ${OVERLAY_OPACITY});
+  pointer-events: none;
+  z-index: 1;
 `
 
 const Label = styled.span<{
@@ -43,7 +58,7 @@ const Label = styled.span<{
         ? 'translateX(-50%)'
         : props.$anchor === 'right'
           ? 'translateX(-100%)'
-          : 'none'};
+          : ''};
   text-align: ${(props) => props.$anchor ?? 'left'};
   z-index: 2;
   color: #ffffff;
@@ -52,9 +67,8 @@ const Label = styled.span<{
   white-space: ${(props) => (props.$width ? 'normal' : 'nowrap')};
   line-height: 1.3;
   letter-spacing: -0.04em;
-  font-weight: ${(props) => (props.$size === 'lg' ? 400 : 300)};
-  font-size: ${(props) =>
-    props.$size === 'lg' ? 'clamp(13px, 1.157cqw, 20px)' : 'clamp(11px, 0.868cqw, 15px)'};
+  font-weight: ${(props) => (props.$size === 'lg' ? 500 : 300)};
+  font-size: 0.8em;
 
   @media (max-width: 767px) {
     display: none;
@@ -63,9 +77,10 @@ const Label = styled.span<{
 
 const Divider = styled.span`
   position: absolute;
-  left: 74%;
-  top: 24%;
-  width: 5%;
+  left: 18.75%;
+  top: 27.9%;
+  transform: translateY(-50%);
+  width: 18.87%;
   height: 1px;
   background-color: #ffffff;
   z-index: 2;
@@ -75,63 +90,11 @@ const Divider = styled.span`
   }
 `
 
-const LogoBlock = styled.div`
+const TextLayer = styled.div`
   position: absolute;
-  left: 50%;
-  top: 49.4%;
-  transform: translate(-50%, -50%);
+  inset: 0;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  @media (max-width: 767px) {
-    display: none;
-  }
-`
-
-const LogoSlot = styled.span`
-  display: block;
-  width: 35em;
-  max-width: 60cqw;
-  aspect-ratio: ${LOGO_RATIO};
-`
-
-const SocialRow = styled.div`
-  position: absolute;
-  left: 95.3%;
-  top: 96.5%;
-  transform: translate(-100%, -50%);
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  gap: 0.8cqw;
-
-  @media (max-width: 767px) {
-    display: none;
-  }
-`
-
-const SocialLink = styled.a`
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: clamp(10px, 0.868cqw, 15px);
-  letter-spacing: -0.04em;
-  color: #ffffff;
-  text-decoration: none;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 0.7;
-  }
-`
-
-const Slash = styled.span`
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(10px, 0.868cqw, 15px);
-  color: #ffffff;
+  transform: translate3d(0, 0, 0);
 `
 
 const MobileContent = styled.div`
@@ -152,59 +115,69 @@ const MobileContent = styled.div`
   }
 `
 
-const Hero = () => (
-  <HeroContainer data-testid='hero'>
-    <HeroImage src={heroImage} alt='Buenos Díaz' />
+const Hero = () => {
+  const image = useParallax<HTMLElement, HTMLImageElement>({ speed: -0.42 })
+  const text = useParallax<HTMLElement, HTMLDivElement>({ speed: -0.85 })
 
-    <Label $left='66.7%' $top='23%' $size='lg'>
-      Made
-    </Label>
-    <Divider />
-    <Label $left='82.6%' $top='23%' $size='lg'>
-      For
-    </Label>
+  const setFrame = (node: HTMLElement | null) => {
+    ;(image.frameRef as React.MutableRefObject<HTMLElement | null>).current = node
+    ;(text.frameRef as React.MutableRefObject<HTMLElement | null>).current = node
+  }
 
-    <Label $left='22%' $top='33.2%' $anchor='center'>
-      Heritage
-    </Label>
-    <Label $left='8%' $top='66.4%'>
-      New York City
-    </Label>
-    <Label $left='60.1%' $top='72.8%' $anchor='right'>
-      Culture
-    </Label>
-    <Label $left='84.8%' $top='69.5%'>
-      Community
-    </Label>
+  return (
+    <HeroContainer ref={setFrame} data-testid='hero'>
+      <HeroImage ref={image.imageRef} src={heroImage} alt='Buenos Díaz' />
+      <Overlay />
 
-    <LogoBlock>
-      <LogoSlot data-logo-slot='hero' />
-    </LogoBlock>
+      <TextLayer ref={text.imageRef}>
+        <Label $left='16.84%' $top='27.9%' $anchor='right' $size='lg'>
+          <SlideReveal delay={0} duration={0.9}>
+            Made
+          </SlideReveal>
+        </Label>
+        <Divider />
+        <Label $left='39.53%' $top='27.9%' $size='lg'>
+          <SlideReveal delay={0} duration={0.9}>
+            For
+          </SlideReveal>
+        </Label>
 
-    <Label $left='29%' $top='95.7%' $anchor='right' $width='24%'>
-      Mexican heritage, poured in New York. Specialty coffee with a purpose.
-    </Label>
+        <Label $left='78.41%' $top='69.8%'>
+          <SlideReveal delay={0.5} duration={0.9}>
+            New York City
+          </SlideReveal>
+        </Label>
+        <Label $left='23.72%' $top='69.8%' $anchor='right'>
+          <SlideReveal delay={0.5} duration={0.9}>
+            Heritage
+          </SlideReveal>
+        </Label>
+        <Label $left='50%' $top='53.3%' $anchor='center'>
+          <SlideReveal delay={0.5} duration={0.9}>
+            Community
+          </SlideReveal>
+        </Label>
 
-    <SocialRow>
-      <SocialLink href='https://www.instagram.com/buenosdiaznyc/' target='_blank' rel='noreferrer'>
-        Instagram
-      </SocialLink>
-      <Slash>/</Slash>
-      <SocialLink href='https://www.tiktok.com/@buenosdiaznyc' target='_blank' rel='noreferrer'>
-        TikTok
-      </SocialLink>
-    </SocialRow>
+        <Label $left='50%' $top='91.4%' $anchor='center'>
+          <SlideReveal delay={1} duration={0.9}>
+            Mexican heritage, poured in New York.
+            <br />
+            Specialty coffee with a purpose.
+          </SlideReveal>
+        </Label>
 
-    <MobileContent>
-      <p className='secondaryTitle'>MADE FOR COMMUNITY</p>
+        <MobileContent>
+          <p className='secondaryTitle'>MADE FOR COMMUNITY</p>
 
-      <p className='primaryTextSmall'>
-        Mexican heritage, poured in New York.
-        <br />
-        Specialty coffee with a purpose.
-      </p>
-    </MobileContent>
-  </HeroContainer>
-)
+          <p className='primaryTextSmall'>
+            Mexican heritage, poured in New York.
+            <br />
+            Specialty coffee with a purpose.
+          </p>
+        </MobileContent>
+      </TextLayer>
+    </HeroContainer>
+  )
+}
 
 export default Hero

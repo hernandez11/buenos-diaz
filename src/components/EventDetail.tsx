@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
-import { useParams, useNavigate, Navigate } from 'react-router-dom'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useParams, Navigate, Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { events } from './EventsData'
+import { events, type GalleryBlock } from './EventsData'
+import { SlideReveal } from '@/components/SlideReveal'
 
 const InfoOverlay = styled.div`
   position: absolute;
@@ -10,11 +11,11 @@ const InfoOverlay = styled.div`
   right: 0;
   z-index: 5;
   container-type: inline-size;
+  height: calc(clamp(220px, 14cqw, 280px) / 2);
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  gap: 4cqw;
-  padding: 2.2cqw 25cqw 0;
+  padding: 2vw 9.9cqw 0 25cqw;
+  box-sizing: border-box;
   pointer-events: none;
   opacity: 0;
   animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
@@ -27,21 +28,41 @@ const InfoOverlay = styled.div`
 
   @media (max-width: 767px) {
     position: static;
+    height: auto;
+    display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 1.5rem 1.5rem 0;
+    padding: 1.5rem 6% 0;
     pointer-events: auto;
   }
 `
 
 const MetaBlock = styled.div`
+  position: fixed;
+  left: 9.9vw;
+  top: calc(var(--header-h, 88px) + 2vw);
+  width: 13vw;
+  z-index: 6;
   display: flex;
   flex-direction: column;
-  gap: 0.6cqw;
-  flex: 0 0 auto;
+  gap: 0.3vw;
+  pointer-events: none;
+  opacity: 0;
+  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+
+  @keyframes detail-fade-in {
+    to {
+      opacity: 1;
+    }
+  }
 
   @media (max-width: 767px) {
+    position: static;
+    transform: none;
+    width: auto;
     gap: 0.4rem;
+    padding: 8rem 6% 0;
+    pointer-events: auto;
   }
 `
 
@@ -57,12 +78,12 @@ const MetaDate = styled.span`
 const MetaTitle = styled.h1`
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  font-size: clamp(14px, 1.157cqw, 20px);
+  font-size: 0.8em;
+  line-height: 1.3;
   letter-spacing: -0.04em;
   color: #1e1e1e;
   margin: 0;
   text-transform: uppercase;
-  white-space: nowrap;
 `
 
 const Description = styled.p`
@@ -72,12 +93,11 @@ const Description = styled.p`
   line-height: 1.4;
   letter-spacing: -0.04em;
   color: #1e1e1e;
-  text-align: right;
-  max-width: 29.7cqw;
+  text-align: left;
+  max-width: 33.33vw;
   margin: 0;
 
   @media (max-width: 767px) {
-    text-align: left;
     max-width: none;
   }
 `
@@ -152,30 +172,147 @@ const PairRow = styled.div`
   width: 100%;
 `
 
-const PhotoFrame = styled.div<{ $aspect: string }>`
+const PhotoFrame = styled.div<{ $aspect: string; $visible?: boolean }>`
   width: 100%;
   aspect-ratio: ${(props) => props.$aspect};
   overflow: hidden;
   flex: 1 1 auto;
   min-width: 0;
+  clip-path: ${(props) => (props.$visible === false ? 'inset(100% 0 0)' : 'inset(0)')};
+  will-change: clip-path;
+  transition: clip-path 1.2s cubic-bezier(0.23, 1, 0.32, 1);
 `
+
+const RevealFrame = ({ aspect, children }: { aspect: string; children: React.ReactNode }) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisible(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <PhotoFrame ref={ref} $aspect={aspect} $visible={visible}>
+      {children}
+    </PhotoFrame>
+  )
+}
 
 const Photo = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  opacity: 0.8;
 `
+
+const Clip = styled.video`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+`
+
+const isVideo = (src: string) => /\.(mp4|webm|ogg)(\?|$)/i.test(src)
+
+const AutoClip = ({ src }: { src: string }) => {
+  const ref = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const resume = () => {
+      if (document.visibilityState !== 'visible') return
+      const attempt = el.play()
+      if (attempt) attempt.catch(() => {})
+    }
+
+    resume()
+    el.addEventListener('pause', resume)
+    el.addEventListener('canplay', resume)
+    document.addEventListener('visibilitychange', resume)
+
+    return () => {
+      el.removeEventListener('pause', resume)
+      el.removeEventListener('canplay', resume)
+      document.removeEventListener('visibilitychange', resume)
+    }
+  }, [src])
+
+  return (
+    <Clip
+      ref={ref}
+      src={src}
+      muted
+      loop
+      playsInline
+      autoPlay
+      tabIndex={-1}
+      disablePictureInPicture
+      controlsList='nodownload noplaybackrate noremoteplayback'
+      preload='auto'
+      aria-hidden='true'
+    />
+  )
+}
+
+const Media = ({ src }: { src: string }) =>
+  isVideo(src) ? (
+    <AutoClip src={src} />
+  ) : (
+    <Photo src={src} alt='' loading='lazy' decoding='async' />
+  )
 
 const NavRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  visibility: hidden;
+  pointer-events: none;
   padding: 7.6cqw 9.9cqw 7cqw;
 
   @media (max-width: 767px) {
-    padding: 3rem 1.5rem 2.5rem;
+    padding: 3rem 6% 7rem;
+  }
+`
+
+const BackSlot = styled(SlideReveal)`
+  align-self: flex-end;
+  margin-left: auto;
+`
+
+const BackLink = styled(Link)`
+  visibility: visible;
+  pointer-events: auto;
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.8em;
+  line-height: 1.3;
+  letter-spacing: -0.04em;
+  color: #1e1e1e;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 0.6;
   }
 `
 
@@ -199,7 +336,7 @@ const NavLabelRow = styled.div`
 
 const NavLabel = styled.span`
   font-family: 'Inter', sans-serif;
-  font-weight: 700;
+  font-weight: 600;
   font-size: clamp(13px, 1.157cqw, 20px);
   letter-spacing: -0.04em;
   color: #1e1e1e;
@@ -238,12 +375,59 @@ const NavLink = styled.span`
   margin-top: 1cqw;
 `
 
+const BLOCK_ASPECT: Record<GalleryBlock, string> = {
+  full: '746 / 494',
+  wide: '746 / 334',
+  tall: '746 / 560',
+  pair: '351 / 278',
+}
+
+const BLOCK_SIZE: Record<GalleryBlock, number> = {
+  full: 1,
+  wide: 1,
+  tall: 1,
+  pair: 2,
+}
+
+const DEFAULT_LAYOUT: GalleryBlock[] = ['full', 'pair', 'wide', 'tall']
+
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
 
   const index = events.findIndex((item) => item.id === id)
   const event = index >= 0 ? events[index] : undefined
+
+  const blocks = useMemo(() => {
+    if (!event) return []
+
+    const base = event.gallery && event.gallery.length > 0 ? event.gallery : [event.image]
+    const rest = base.filter((src) => src !== event.image)
+    const images = rest.length > 0 ? rest : base
+
+    const pattern = event.layout && event.layout.length > 0 ? event.layout : DEFAULT_LAYOUT
+    const plan: { kind: GalleryBlock; aspect: string; images: string[] }[] = []
+
+    let i = 0
+    let step = 0
+
+    while (i < images.length) {
+      const remaining = images.length - i
+      let kind = pattern[step % pattern.length]
+
+      if (BLOCK_SIZE[kind] > remaining) kind = 'full'
+
+      plan.push({
+        kind,
+        aspect: BLOCK_ASPECT[kind],
+        images: images.slice(i, i + BLOCK_SIZE[kind]),
+      })
+
+      i += BLOCK_SIZE[kind]
+      step += 1
+    }
+
+    return plan
+  }, [event])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
@@ -256,49 +440,50 @@ const EventDetail = () => {
   const prevEvent = events[(index - 1 + events.length) % events.length]
   const nextEvent = events[(index + 1) % events.length]
 
-  const pool = event.gallery && event.gallery.length > 0 ? event.gallery : [event.image]
-  const photoAt = (i: number) => pool[i % pool.length]
-
   return (
     <>
-      <InfoOverlay key={`info-${event.id}`}>
-        <MetaBlock>
+      <MetaBlock key={`meta-${event.id}`}>
+        <SlideReveal delay={0} duration={0.9}>
           <MetaDate>{event.date}</MetaDate>
+        </SlideReveal>
+        <SlideReveal delay={0.08} duration={0.9}>
           <MetaTitle>{event.title}</MetaTitle>
-        </MetaBlock>
-        {event.description && <Description>{event.description}</Description>}
-      </InfoOverlay>
+        </SlideReveal>
+      </MetaBlock>
+
+      {event.description && (
+        <InfoOverlay key={`info-${event.id}`}>
+          <SlideReveal delay={0.16} duration={0.9}>
+            <Description>{event.description}</Description>
+          </SlideReveal>
+        </InfoOverlay>
+      )}
 
       {event.location && <StickyAddress key={`addr-${event.id}`}>{event.location}</StickyAddress>}
 
       <Page key={`page-${event.id}`} data-testid='event-detail'>
         <ImageStack>
-          <ImageColumn>
-            <PhotoFrame $aspect='746 / 494'>
-              <Photo src={photoAt(1)} alt='' />
-            </PhotoFrame>
-          </ImageColumn>
-
-          <ImageColumn>
-            <PairRow>
-              <PhotoFrame $aspect='351 / 278'>
-                <Photo src={photoAt(2)} alt='' />
-              </PhotoFrame>
-              <PhotoFrame $aspect='351 / 278'>
-                <Photo src={photoAt(3)} alt='' />
-              </PhotoFrame>
-            </PairRow>
-          </ImageColumn>
-
-          <ImageColumn>
-            <PhotoFrame $aspect='746 / 334'>
-              <Photo src={photoAt(4)} alt='' />
-            </PhotoFrame>
-          </ImageColumn>
+          {blocks.map((block, index) => (
+            <ImageColumn key={`${event.id}-${index}`}>
+              {block.kind === 'pair' ? (
+                <PairRow>
+                  {block.images.map((src) => (
+                    <RevealFrame key={src} aspect={block.aspect}>
+                      <Media src={src} />
+                    </RevealFrame>
+                  ))}
+                </PairRow>
+              ) : (
+                <RevealFrame aspect={block.aspect}>
+                  <Media src={block.images[0]} />
+                </RevealFrame>
+              )}
+            </ImageColumn>
+          ))}
         </ImageStack>
 
-        <NavRow>
-          <NavGroup $align='right' onClick={() => navigate(`/events/${prevEvent.id}`)}>
+        <NavRow aria-hidden='true'>
+          <NavGroup $align='right' tabIndex={-1}>
             <NavLabelRow>
               <NavLabel>PREVIOUS EVENT</NavLabel>
               <Dots>
@@ -310,7 +495,7 @@ const EventDetail = () => {
             <NavLink>{prevEvent.title}</NavLink>
           </NavGroup>
 
-          <NavGroup $align='left' onClick={() => navigate(`/events/${nextEvent.id}`)}>
+          <NavGroup $align='left' tabIndex={-1}>
             <NavLabelRow>
               <Dots>
                 <Dot />
@@ -321,6 +506,10 @@ const EventDetail = () => {
             <NavSub>(PROXIMO EVENTO)</NavSub>
             <NavLink>{nextEvent.title}</NavLink>
           </NavGroup>
+
+          <BackSlot duration={0.9}>
+            <BackLink to='/events'>Back To Events</BackLink>
+          </BackSlot>
         </NavRow>
       </Page>
     </>

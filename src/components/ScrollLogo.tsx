@@ -59,43 +59,21 @@ export const ScrollLogo = () => {
       }
 
       const headerRect = headerSlot.getBoundingClientRect()
-      const heroSlot = document.querySelector<HTMLElement>('[data-logo-slot="hero"]')
-      const heroSection = document.querySelector<HTMLElement>('[data-testid="hero"]')
-      const heroRect = heroSlot?.getBoundingClientRect()
-
-      let left = headerRect.left
-      let top = headerRect.top
-      let width = headerRect.width
-      let progress = 1
-
+      const cover = document.querySelector<HTMLElement>('[data-hero-cover]')
       let tone = 1
 
-      if (heroSection) {
-        const bottom = heroSection.getBoundingClientRect().bottom
-        const overlap = (headerRect.bottom + NAV_FADE_BAND - bottom) / NAV_FADE_BAND
+      if (cover) {
+        const coverTop = cover.getBoundingClientRect().top
+        const overlap = (headerRect.bottom + NAV_FADE_BAND - coverTop) / NAV_FADE_BAND
         tone = Math.min(Math.max(overlap, 0), 1)
       }
 
       setNavTone(tone)
 
-      if (heroSlot && heroRect && heroRect.width > 0 && heroSection) {
-        const sectionRect = heroSection.getBoundingClientRect()
-        const travel = Math.max(sectionRect.height - headerRect.bottom, 1)
-        const scrolled = Math.max(-sectionRect.top, 0)
-        progress = Math.min(Math.max(scrolled / travel, 0), 1)
-
-        const heroRestTop = heroRect.top + scrolled
-        const heroRestLeft = heroRect.left
-
-        left = lerp(heroRestLeft, headerRect.left, progress)
-        top = lerp(heroRestTop, headerRect.top, progress)
-        width = lerp(heroRect.width, headerRect.width, progress)
-      }
-
       box.style.opacity = '1'
-      box.style.width = `${width}px`
-      box.style.height = `${width / LOGO_RATIO}px`
-      box.style.transform = `translate3d(${left}px, ${top}px, 0)`
+      box.style.width = `${headerRect.width}px`
+      box.style.height = `${headerRect.width / LOGO_RATIO}px`
+      box.style.transform = `translate3d(${headerRect.left}px, ${headerRect.top}px, 0)`
 
       light.style.opacity = `${1 - tone}`
       dark.style.opacity = `${tone}`
