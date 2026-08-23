@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import ContactBg from '@/assets/ContactImg.jpg'
+import ContactBg from '@/assets/ContactImg.webp'
 import { bodySmFlat, color, displayMd, titleMd } from '@/theme'
 import { SlideReveal } from '@/components/SlideReveal'
 import { useMediaQuery } from '@/components/useMediaQuery'
@@ -31,7 +31,7 @@ const Stage = styled.div`
   position: sticky;
   top: 0;
   height: calc(100vh - var(--footer-h, 56px));
-  height: calc(100dvh - var(--footer-h, 56px));
+  height: calc(100svh - var(--footer-h, 56px));
   width: 100%;
   overflow: hidden;
   container-type: inline-size;
@@ -445,9 +445,7 @@ const ContactSection = ({
         : currentValue.trim().length > 0)
   const isLastStep = step === FORM_STEPS.length - 1
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const raw = event.target.value
     const next = currentStep.id === 'phone' ? formatPhone(raw) : raw
     setAnswers((prev) => ({ ...prev, [currentStep.id]: next }))
@@ -612,7 +610,7 @@ const ContactSection = ({
       <Stage>
         <Photo ref={photoRef}>
           <PhotoReveal>
-            <PhotoImage src={image} alt='' aria-hidden='true' />
+            <PhotoImage src={image} alt='' aria-hidden='true' loading='lazy' decoding='async' />
           </PhotoReveal>
         </Photo>
 
@@ -647,7 +645,8 @@ const ContactSection = ({
 
         <Extras
           ref={extrasRef}
-          style={isStacked ? undefined : { opacity: progress > 0.6 ? undefined : 0 }}>
+          style={isStacked ? undefined : { opacity: progress > 0.6 ? undefined : 0 }}
+        >
           <WorkHeading>
             <WorkWord>Work</WorkWord>
             <WorkRule />
@@ -698,9 +697,7 @@ const ContactSection = ({
                   {atLimit && limit !== undefined && (
                     <LimitNote>Maximum {limit} characters.</LimitNote>
                   )}
-                  {!atLimit && emailInvalid && (
-                    <LimitNote>Enter a valid email address.</LimitNote>
-                  )}
+                  {!atLimit && emailInvalid && <LimitNote>Enter a valid email address.</LimitNote>}
                   {!atLimit && !emailInvalid && status === 'error' && (
                     <LimitNote>Something went wrong. Please try again or email {email}.</LimitNote>
                   )}

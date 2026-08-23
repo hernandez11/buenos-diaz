@@ -19,11 +19,20 @@ export const useScrollJumpLog = () => {
         console.log(
           '[jump]',
           `${Math.round(last)} -> ${Math.round(y)}`,
-          '| docH', lastDoc, '->', doc,
-          '| maxScroll', Math.round(maxScroll),
-          '| atBottom', Math.abs(y - maxScroll) < 4,
-          '| width', lastW, '->', window.innerWidth,
-          '| duringResize', resizing,
+          '| docH',
+          lastDoc,
+          '->',
+          doc,
+          '| maxScroll',
+          Math.round(maxScroll),
+          '| atBottom',
+          Math.abs(y - maxScroll) < 4,
+          '| width',
+          lastW,
+          '->',
+          window.innerWidth,
+          '| duringResize',
+          resizing,
         )
       }
 

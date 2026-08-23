@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import MenuBg from '@/assets/MenuBg.jpg'
+import MenuBg from '@/assets/MenuBg.webp'
 import { bodySmFlat, color, displayMd, titleSm } from '@/theme'
 import { useParallax } from '@/components/useParallax'
 import { SlideReveal } from '@/components/SlideReveal'
@@ -26,7 +26,7 @@ interface MenuDisplayProps {
 const Section = styled.section`
   width: 100%;
   height: 115vh;
-  height: 115dvh;
+  height: 115svh;
   container-type: inline-size;
   background-color: ${color.cream};
   display: flex;
@@ -76,7 +76,9 @@ const Columns = styled.div`
   @media (max-width: 900px) {
     flex-direction: column;
     gap: 3rem;
-    padding: 2.5rem 48% 3rem 1.5rem;
+    padding-block: 2.5rem 3rem;
+    padding-left: 1.5rem;
+    padding-right: min(48%, calc(100% - 1.5rem - 16rem));
   }
 `
 
@@ -90,6 +92,7 @@ const Column = styled.div`
   @media (max-width: 900px) {
     max-width: none;
     width: 100%;
+    min-width: 0;
   }
 `
 
@@ -213,8 +216,7 @@ const defaultSpecialty: MenuEntry[] = [
   {
     id: 'guava-cream',
     name: 'Guava Cream Top',
-    description:
-      'Double espresso latte layered beneath a silky guava and strawberry cold foam.',
+    description: 'Double espresso latte layered beneath a silky guava and strawberry cold foam.',
   },
 ]
 
@@ -249,67 +251,74 @@ const MenuDisplay = ({
   const { frameRef, imageRef } = useParallax({ speed: 0.42 })
 
   return (
-  <Section data-testid='menu-section'>
-    <Hero ref={frameRef}>
-      <HeroImage ref={imageRef} src={backgroundImage} alt='' aria-hidden='true' />
-    </Hero>
+    <Section data-testid='menu-section'>
+      <Hero ref={frameRef}>
+        <HeroImage
+          ref={imageRef}
+          src={backgroundImage}
+          alt=''
+          aria-hidden='true'
+          fetchPriority='high'
+          decoding='async'
+        />
+      </Hero>
 
-    <Columns>
-      <Column>
-        <SlideReveal index={0}>
-          <Heading>
-            Specialty
-            <Rule />
-            Drinks
-          </Heading>
-          <Subheading>(Bebidas Especiales)</Subheading>
-          <List>
-            {specialty.map((entry) => (
-              <Entry key={entry.id}>
-                <EntryName>{entry.name}</EntryName>
-                {entry.description && <EntryDescription>{entry.description}</EntryDescription>}
-              </Entry>
-            ))}
-          </List>
-        </SlideReveal>
-      </Column>
+      <Columns>
+        <Column>
+          <SlideReveal index={0}>
+            <Heading>
+              Specialty
+              <Rule />
+              Drinks
+            </Heading>
+            <Subheading>(Bebidas Especiales)</Subheading>
+            <List>
+              {specialty.map((entry) => (
+                <Entry key={entry.id}>
+                  <EntryName>{entry.name}</EntryName>
+                  {entry.description && <EntryDescription>{entry.description}</EntryDescription>}
+                </Entry>
+              ))}
+            </List>
+          </SlideReveal>
+        </Column>
 
-      <Column>
-        <SlideReveal index={1}>
-          <Heading>Classics</Heading>
-          <Subheading>(Clásicos)</Subheading>
-          <PairList>
-            {classics.map((pair) => (
-              <PairRow key={pair.id}>
-                <PairItem $align='left'>{pair.left}</PairItem>
-                <PairRule />
-                <PairItem $align='right'>{pair.right}</PairItem>
-              </PairRow>
-            ))}
-          </PairList>
-        </SlideReveal>
-      </Column>
+        <Column>
+          <SlideReveal index={1}>
+            <Heading>Classics</Heading>
+            <Subheading>(Clásicos)</Subheading>
+            <PairList>
+              {classics.map((pair) => (
+                <PairRow key={pair.id}>
+                  <PairItem $align='left'>{pair.left}</PairItem>
+                  <PairRule />
+                  <PairItem $align='right'>{pair.right}</PairItem>
+                </PairRow>
+              ))}
+            </PairList>
+          </SlideReveal>
+        </Column>
 
-      <Column>
-        <SlideReveal index={2}>
-          <Heading>
-            Non
-            <Rule />
-            Coffee
-          </Heading>
-          <Subheading>(Sin Café)</Subheading>
-          <List>
-            {nonCoffee.map((entry) => (
-              <Entry key={entry.id}>
-                <EntryName>{entry.name}</EntryName>
-                {entry.description && <EntryDescription>{entry.description}</EntryDescription>}
-              </Entry>
-            ))}
-          </List>
-        </SlideReveal>
-      </Column>
-    </Columns>
-  </Section>
+        <Column>
+          <SlideReveal index={2}>
+            <Heading>
+              Non
+              <Rule />
+              Coffee
+            </Heading>
+            <Subheading>(Sin Café)</Subheading>
+            <List>
+              {nonCoffee.map((entry) => (
+                <Entry key={entry.id}>
+                  <EntryName>{entry.name}</EntryName>
+                  {entry.description && <EntryDescription>{entry.description}</EntryDescription>}
+                </Entry>
+              ))}
+            </List>
+          </SlideReveal>
+        </Column>
+      </Columns>
+    </Section>
   )
 }
 

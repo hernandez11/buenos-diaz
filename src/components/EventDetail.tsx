@@ -17,10 +17,13 @@ const InfoOverlay = styled.div`
   padding: 2vw 9.9cqw 0 25cqw;
   box-sizing: border-box;
   pointer-events: none;
-  opacity: 0;
-  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+  opacity: 1;
+  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s backwards;
 
   @keyframes detail-fade-in {
+    from {
+      opacity: 0;
+    }
     to {
       opacity: 1;
     }
@@ -47,10 +50,13 @@ const MetaBlock = styled.div`
   flex-direction: column;
   gap: 0.3vw;
   pointer-events: none;
-  opacity: 0;
-  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+  opacity: 1;
+  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s backwards;
 
   @keyframes detail-fade-in {
+    from {
+      opacity: 0;
+    }
     to {
       opacity: 1;
     }
@@ -106,10 +112,13 @@ const Page = styled.div`
   width: 100%;
   background-color: #fffdfa;
   container-type: inline-size;
-  opacity: 0;
-  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+  opacity: 1;
+  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s backwards;
 
   @keyframes detail-fade-in {
+    from {
+      opacity: 0;
+    }
     to {
       opacity: 1;
     }
@@ -163,6 +172,11 @@ const RevealFrame = ({ aspect, children }: { aspect: string; children: React.Rea
     const el = ref.current
     if (!el) return
 
+    if (typeof IntersectionObserver === 'undefined') {
+      setVisible(true)
+      return
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -174,7 +188,16 @@ const RevealFrame = ({ aspect, children }: { aspect: string; children: React.Rea
     )
 
     observer.observe(el)
-    return () => observer.disconnect()
+
+    const failsafe = window.setTimeout(() => {
+      setVisible(true)
+      observer.disconnect()
+    }, 3000)
+
+    return () => {
+      window.clearTimeout(failsafe)
+      observer.disconnect()
+    }
   }, [])
 
   return (
@@ -244,11 +267,7 @@ const AutoClip = ({ src }: { src: string }) => {
 }
 
 const Media = ({ src }: { src: string }) =>
-  isVideo(src) ? (
-    <AutoClip src={src} />
-  ) : (
-    <Photo src={src} alt='' loading='lazy' decoding='async' />
-  )
+  isVideo(src) ? <AutoClip src={src} /> : <Photo src={src} alt='' loading='lazy' decoding='async' />
 
 const NavRow = styled.div`
   display: flex;
@@ -266,6 +285,8 @@ const NavRow = styled.div`
 const BackSlot = styled(SlideReveal)`
   align-self: flex-end;
   margin-left: auto;
+  flex: 0 0 auto;
+  min-width: max-content;
 `
 
 const BackLink = styled(Link)`
@@ -298,6 +319,10 @@ const NavGroup = styled.button<{ $align: 'left' | 'right' }>`
   padding: 0;
   cursor: pointer;
   text-align: ${(props) => props.$align};
+
+  @media (max-width: 767px) {
+    display: none;
+  }
 `
 
 const NavLabelRow = styled.div`

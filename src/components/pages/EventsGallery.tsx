@@ -28,8 +28,7 @@ const SAFE_MIN = N * 2
 const SAFE_MAX = TOTAL_V - N * 2
 const THIN_WIDTH = 6.5
 
-const CAROUSEL_H =
-  'min(clamp(400px, 63.4cqw, 570px), 66dvh)'
+const CAROUSEL_H = 'min(clamp(400px, 63.4cqw, 570px), 66svh)'
 
 const widthForDistance = (distance: number) => {
   if (distance === 0) return 50
@@ -144,7 +143,7 @@ const Section = styled.section<{ $pinned: boolean }>`
     right: 0;
     width: 100%;
     height: calc(100vh - var(--header-h, 88px));
-    height: calc(100dvh - var(--header-h, 88px));
+    height: calc(100svh - var(--header-h, 88px));
     min-height: 0;
     z-index: 1;
   `
@@ -159,7 +158,7 @@ const PinSpacer = styled.div`
   width: 100%;
   flex: 0 0 auto;
   height: calc(100vh - var(--header-h, 88px));
-  height: calc(100dvh - var(--header-h, 88px));
+  height: calc(100svh - var(--header-h, 88px));
 `
 
 const CenterBlock = styled.div`
@@ -425,7 +424,6 @@ const EventsGallery = () => {
 
   const activeEvent: EventItem = events[((centerVirtual % N) + N) % N]
 
-
   useEffect(() => {
     const section = sectionRef.current
     const centerBlock = centerBlockRef.current
@@ -600,119 +598,118 @@ const EventsGallery = () => {
 
   const pinned = !isDetailOpen && !isLeaving && !isShortViewport
 
-  return (
-    isMobile ? (
-      isDetailOpen ? null : (
-        <MobileSection data-testid='events-gallery'>
-          <Cards>
-            {events.map((event, index) => {
-              const soon = isUpcoming(event.date)
+  return isMobile ? (
+    isDetailOpen ? null : (
+      <MobileSection data-testid='events-gallery'>
+        <Cards>
+          {events.map((event, index) => {
+            const soon = isUpcoming(event.date)
 
-              return (
-                <Card
-                  key={event.id}
-                  to={soon ? '#' : `/events/${event.id}`}
-                  onClick={soon ? (e) => e.preventDefault() : undefined}
-                  aria-disabled={soon}>
-                  <SlideReveal index={index % 2} duration={0.9}>
-                    <CardIndex>
-                      00
-                      <IndexDot />
-                      {String(index + 1).padStart(2, '0')}
-                    </CardIndex>
+            return (
+              <Card
+                key={event.id}
+                to={soon ? '#' : `/events/${event.id}`}
+                onClick={soon ? (e) => e.preventDefault() : undefined}
+                aria-disabled={soon}
+              >
+                <SlideReveal index={index % 2} duration={0.9}>
+                  <CardIndex>
+                    00
+                    <IndexDot />
+                    {String(index + 1).padStart(2, '0')}
+                  </CardIndex>
 
-                    <CardFrame>
-                      <CardImage src={event.image} alt={event.alt} decoding='async' />
-                    </CardFrame>
+                  <CardFrame>
+                    <CardImage src={event.image} alt={event.alt} decoding='async' />
+                  </CardFrame>
 
-                    <CardMeta>
-                      <span>{event.date}</span>
-                      {soon && <CardSoon>Coming Soon</CardSoon>}
-                    </CardMeta>
+                  <CardMeta>
+                    <span>{event.date}</span>
+                    {soon && <CardSoon>Coming Soon</CardSoon>}
+                  </CardMeta>
 
-                    <CardTitle>{event.title}</CardTitle>
-                  </SlideReveal>
-                </Card>
-              )
-            })}
-          </Cards>
-        </MobileSection>
-      )
-    ) : (
-    <>
-    {pinned && <PinSpacer />}
-    <Section ref={sectionRef} $pinned={pinned} data-testid='events-gallery'>
-      <CenterBlock ref={centerBlockRef}>
-        {isUpcoming(activeEvent.date) && (
-          <AboveBlock $hidden={fadeOthers}>
-            <SlideReveal key={`soon-${activeEvent.id}`} delay={0} duration={0.9}>
-              <ComingSoon>Coming Soon</ComingSoon>
-            </SlideReveal>
-          </AboveBlock>
-        )}
-
-        <Viewport>
-          <Track ref={trackRef} $offset={trackOffsetCqw} $duration={FLIP_DURATION_MS}>
-            {virtualSlots.map(({ key, event, v }) => {
-              const distance = Math.abs(v - centerVirtual)
-              const width = widthForDistance(distance)
-              const overlay = overlayForDistance(distance)
-              const isCenter = v === centerVirtual
-              const tileInteractive = !isDetailOpen && !(isCenter && isUpcoming(event.date))
-
-              return (
-                <Tile
-                  key={key}
-                  ref={getTileRef(v)}
-                  $width={width}
-                  $duration={FLIP_DURATION_MS}
-                  $hidden={fadeOthers && !isCenter}
-                  $interactive={tileInteractive}
-                  role={tileInteractive ? 'button' : undefined}
-                  tabIndex={tileInteractive ? 0 : undefined}
-                  onClick={tileInteractive ? () => handleTileClick(v) : undefined}
-                >
-                  <TileReveal
-                    style={
-                      {
-                        '--enter-delay': `${ENTER_DELAY_MS + distance * ENTER_STAGGER_MS}ms`,
-                      } as React.CSSProperties
-                    }
-                  >
-                    <TileImage
-                      src={event.image}
-                      alt={event.alt}
-                      decoding='async'
-                      draggable={false}
-                    />
-                    <TileOverlay ref={getOverlayRef(v)} $opacity={overlay} />
-                  </TileReveal>
-                </Tile>
-              )
-            })}
-          </Track>
-        </Viewport>
-      </CenterBlock>
-
-      <BelowBlock>
-        <ScrollHint $hidden={fadeOthers}>
-          {events.map((event, i) => (
-            <ScrollDot key={event.id} $active={i === ((centerVirtual % N) + N) % N} />
-          ))}
-        </ScrollHint>
-
-        <EventInfo $hidden={fadeOthers}>
-          <SlideReveal key={`date-${activeEvent.id}`} delay={0} duration={0.9}>
-            <EventDate className='primaryTextSmall'>{activeEvent.date}</EventDate>
-          </SlideReveal>
-          <SlideReveal key={`title-${activeEvent.id}`} delay={0.08} duration={0.9}>
-            <EventTitle>{activeEvent.title}</EventTitle>
-          </SlideReveal>
-        </EventInfo>
-      </BelowBlock>
-    </Section>
-    </>
+                  <CardTitle>{event.title}</CardTitle>
+                </SlideReveal>
+              </Card>
+            )
+          })}
+        </Cards>
+      </MobileSection>
     )
+  ) : (
+    <>
+      {pinned && <PinSpacer />}
+      <Section ref={sectionRef} $pinned={pinned} data-testid='events-gallery'>
+        <CenterBlock ref={centerBlockRef}>
+          {isUpcoming(activeEvent.date) && (
+            <AboveBlock $hidden={fadeOthers}>
+              <SlideReveal key={`soon-${activeEvent.id}`} delay={0} duration={0.9}>
+                <ComingSoon>Coming Soon</ComingSoon>
+              </SlideReveal>
+            </AboveBlock>
+          )}
+
+          <Viewport>
+            <Track ref={trackRef} $offset={trackOffsetCqw} $duration={FLIP_DURATION_MS}>
+              {virtualSlots.map(({ key, event, v }) => {
+                const distance = Math.abs(v - centerVirtual)
+                const width = widthForDistance(distance)
+                const overlay = overlayForDistance(distance)
+                const isCenter = v === centerVirtual
+                const tileInteractive = !isDetailOpen && !(isCenter && isUpcoming(event.date))
+
+                return (
+                  <Tile
+                    key={key}
+                    ref={getTileRef(v)}
+                    $width={width}
+                    $duration={FLIP_DURATION_MS}
+                    $hidden={fadeOthers && !isCenter}
+                    $interactive={tileInteractive}
+                    role={tileInteractive ? 'button' : undefined}
+                    tabIndex={tileInteractive ? 0 : undefined}
+                    onClick={tileInteractive ? () => handleTileClick(v) : undefined}
+                  >
+                    <TileReveal
+                      style={
+                        {
+                          '--enter-delay': `${ENTER_DELAY_MS + distance * ENTER_STAGGER_MS}ms`,
+                        } as React.CSSProperties
+                      }
+                    >
+                      <TileImage
+                        src={event.image}
+                        alt={event.alt}
+                        decoding='async'
+                        draggable={false}
+                      />
+                      <TileOverlay ref={getOverlayRef(v)} $opacity={overlay} />
+                    </TileReveal>
+                  </Tile>
+                )
+              })}
+            </Track>
+          </Viewport>
+        </CenterBlock>
+
+        <BelowBlock>
+          <ScrollHint $hidden={fadeOthers}>
+            {events.map((event, i) => (
+              <ScrollDot key={event.id} $active={i === ((centerVirtual % N) + N) % N} />
+            ))}
+          </ScrollHint>
+
+          <EventInfo $hidden={fadeOthers}>
+            <SlideReveal key={`date-${activeEvent.id}`} delay={0} duration={0.9}>
+              <EventDate className='primaryTextSmall'>{activeEvent.date}</EventDate>
+            </SlideReveal>
+            <SlideReveal key={`title-${activeEvent.id}`} delay={0.08} duration={0.9}>
+              <EventTitle>{activeEvent.title}</EventTitle>
+            </SlideReveal>
+          </EventInfo>
+        </BelowBlock>
+      </Section>
+    </>
   )
 }
 

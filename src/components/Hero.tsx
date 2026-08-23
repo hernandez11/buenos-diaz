@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 // import heroImage from '@/assets/HeroBg.png'
-import heroImage from '@/assets/HeroBg.jpg'
+import heroImage from '@/assets/HeroBg.webp'
 import { SlideReveal } from '@/components/SlideReveal'
 import { useParallax } from '@/components/useParallax'
 
@@ -9,7 +9,7 @@ const HeroContainer = styled.section`
   z-index: 0;
   width: 100%;
   height: 100vh;
-  height: 100dvh;
+  height: 100svh;
   margin-top: calc(-1 * var(--header-h, 0px));
   flex: 0 0 auto;
   overflow: hidden;
@@ -126,7 +126,13 @@ const Hero = () => {
 
   return (
     <HeroContainer ref={setFrame} data-testid='hero'>
-      <HeroImage ref={image.imageRef} src={heroImage} alt='Buenos Díaz' />
+      <HeroImage
+        ref={image.imageRef}
+        src={heroImage}
+        alt='Buenos Díaz'
+        fetchPriority='high'
+        decoding='async'
+      />
       <Overlay />
 
       <TextLayer ref={text.imageRef}>

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import Error_img from '@/assets/Error_img.jpg'
+import Error_img from '@/assets/Error_img.webp'
 
 const Section = styled.section`
   flex: 1;

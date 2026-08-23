@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import FaqBg from '@/assets/FaqBg.jpg'
+import FaqBg from '@/assets/FaqBg.webp'
 import { bodySm, color } from '@/theme'
 import { useParallax } from '@/components/useParallax'
 import { SlideReveal } from '@/components/SlideReveal'
@@ -171,7 +171,14 @@ export const FaqPage = ({ backgroundImage = FaqBg }: FaqPageProps) => {
   return (
     <Section data-testid='faq-page'>
       <Hero ref={frameRef}>
-        <HeroImage ref={imageRef} src={backgroundImage} alt='' aria-hidden='true' />
+        <HeroImage
+          ref={imageRef}
+          src={backgroundImage}
+          alt=''
+          aria-hidden='true'
+          fetchPriority='high'
+          decoding='async'
+        />
       </Hero>
 
       <Grid data-hero-cover>

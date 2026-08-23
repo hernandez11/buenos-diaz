@@ -1,15 +1,15 @@
-import ObscureImg_1 from '@/assets/Events/Obscure/Obscure_gallery_1.png'
-import ObscureImg_2 from '@/assets/Events/Obscure/Obscure_gallery_2.jpeg'
-import ObscureImg_3 from '@/assets/Events/Obscure/Obscure_gallery_3.jpeg'
+import ObscureImg_1 from '@/assets/Events/Obscure/Obscure_gallery_1.webp'
+import ObscureImg_2 from '@/assets/Events/Obscure/Obscure_gallery_2.webp'
+import ObscureImg_3 from '@/assets/Events/Obscure/Obscure_gallery_3.webp'
 import ObscureVid_1 from '@/assets/Events/Obscure/Obscure_clip_1.mp4'
 import ObscureVid_2 from '@/assets/Events/Obscure/Obscure_clip_2.mp4'
 import ObscureVid_3 from '@/assets/Events/Obscure/Obscure_clip_3.mp4'
 import ObscureVid_4 from '@/assets/Events/Obscure/Obscure_clip_4.mp4'
 import ObscureRecap from '@/assets/Events/Obscure/Obscure_recap.mp4'
-import ShopifyImg_1 from '@/assets/Events/Shopify/Shopify_gallery_1.jpeg'
-import ShopifyImg_2 from '@/assets/Events/Shopify/Shopify_gallery_2.jpeg'
-import ShopifyImg_3 from '@/assets/Events/Shopify/Shopify_gallery_3.jpeg'
-import ShopifyVid_1 from '@/assets/Events/Shopify/Shopify_clip_1.mp4'
+import ShopifyImg_1 from '@/assets/Events/Shopify/Shopify_gallery_1.webp'
+import ShopifyImg_2 from '@/assets/Events/Shopify/Shopify_gallery_2.webp'
+import ShopifyImg_3 from '@/assets/Events/Shopify/Shopify_gallery_3.webp'
+import ShopifyImg_4 from '@/assets/Events/Shopify/Shopify_gallery_4.jpeg'
 import ShopifyVid_2 from '@/assets/Events/Shopify/Shopify_clip_2.mp4'
 import ShopifyVid_3 from '@/assets/Events/Shopify/Shopify_clip_3.mp4'
 import ShopifyRecap from '@/assets/Events/Shopify/Shopify_recap.mp4'
@@ -39,13 +39,13 @@ export const events: EventItem[] = [
     gallery: [
       ObscureRecap,
       ObscureVid_3,
-      ObscureVid_4,
       ObscureVid_2,
+      ObscureVid_4,
       ObscureVid_1,
       ObscureImg_3,
       ObscureImg_2,
     ],
-    layout: ['full', 'pair', 'wide', 'wide', 'pair'],
+    layout: ['full', 'wide', 'pair', 'wide', 'pair'],
   },
   {
     id: 'shopify-popup',
@@ -60,7 +60,7 @@ export const events: EventItem[] = [
       ShopifyImg_1,
       ShopifyImg_2,
       ShopifyImg_3,
-      ShopifyVid_1,
+      ShopifyImg_4,
       ShopifyVid_2,
       ShopifyVid_3,
     ],

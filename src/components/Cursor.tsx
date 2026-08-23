@@ -6,7 +6,8 @@ import { useVisualZoom } from '@/components/useVisualZoom'
 const BLANK_CURSOR =
   'url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") 0 0, none'
 
-const HOVER_SELECTOR = 'a, button, [role="button"], input, textarea, select, label, summary, [tabindex]'
+const HOVER_SELECTOR =
+  'a, button, [role="button"], input, textarea, select, label, summary, [tabindex]'
 const BASE_SIZE = 10
 const HOVER_SIZE = 20
 const GROW_MS = 2000

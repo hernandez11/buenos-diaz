@@ -43,6 +43,11 @@ export const SlideReveal = ({
     const el = ref.current
     if (!el) return
 
+    if (typeof IntersectionObserver === 'undefined') {
+      setActive(true)
+      return
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -54,7 +59,16 @@ export const SlideReveal = ({
     )
 
     observer.observe(el)
-    return () => observer.disconnect()
+
+    const failsafe = window.setTimeout(() => {
+      setActive(true)
+      observer.disconnect()
+    }, 3000)
+
+    return () => {
+      window.clearTimeout(failsafe)
+      observer.disconnect()
+    }
   }, [])
 
   return (

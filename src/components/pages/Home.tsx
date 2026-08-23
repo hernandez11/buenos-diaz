@@ -13,7 +13,7 @@ const HeroCover = styled.div`
 const InfoPanel = styled.section`
   width: 100%;
   min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -58,7 +58,6 @@ export const Home = () => {
         My family has carried on this tradition for generations, cultivating and harvesting coffee with the same care and dedication. Growing up surrounded by these practices instilled in me a deep respect for the craft and a desire to share its warmth, richness, and cultural significance.
 
         At Buenos Díaz, we specialize in specialty coffee and crafting experiences that go beyond the cup. From thoughtfully sourced beans to homemade syrups and flavors grounded in Mexican traditions, every drink tells a story—one of care, culture, and the joy of sharing coffee with others.`}</p>
-
           </div>
         </InfoPanel>
 

@@ -9,11 +9,7 @@ interface ParallaxOptions {
 export const useParallax = <
   F extends HTMLElement = HTMLDivElement,
   I extends HTMLElement = HTMLImageElement,
->({
-  speed = 0.22,
-  pinned = false,
-  smoothing = 0.12,
-}: ParallaxOptions = {}) => {
+>({ speed = 0.22, pinned = false, smoothing = 0.12 }: ParallaxOptions = {}) => {
   const frameRef = useRef<F>(null)
   const imageRef = useRef<I>(null)
 

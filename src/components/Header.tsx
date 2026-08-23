@@ -194,7 +194,8 @@ export const Header = () => {
         <MenuButton
           aria-expanded={open}
           aria-controls='primary-navigation'
-          onClick={() => setOpen((value) => !value)}>
+          onClick={() => setOpen((value) => !value)}
+        >
           {open ? 'Close' : 'Menu'}
         </MenuButton>
       </StyledHeader>
