@@ -60,11 +60,11 @@ export const events: EventItem[] = [
       ShopifyImg_1,
       ShopifyImg_2,
       ShopifyImg_3,
+      ShopifyVid_3,
       ShopifyImg_4,
       ShopifyVid_2,
-      ShopifyVid_3,
     ],
-    layout: ['full', 'wide', 'wide', 'pair', 'tall'],
+    layout: ['full', 'wide', 'wide', 'tall', 'pair'],
   },
   // {
   //   id: 'remedy-popup',

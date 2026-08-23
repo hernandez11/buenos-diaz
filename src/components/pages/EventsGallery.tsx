@@ -83,7 +83,7 @@ const IndexDot = styled.span`
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background-color: ${color.accent};
+  background-color: ${color.sage};
 `
 
 const CardFrame = styled.div`
