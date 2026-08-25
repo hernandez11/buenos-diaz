@@ -648,16 +648,28 @@ const ContactSection = ({
           style={isStacked ? undefined : { opacity: progress > 0.6 ? undefined : 0 }}
         >
           <WorkHeading>
-            <WorkWord>Work</WorkWord>
-            <WorkRule />
-            <WorkWord>With Us</WorkWord>
+            {isSuccess ? (
+              <>
+                <WorkWord>Thank</WorkWord>
+                <WorkRule />
+                <WorkWord>You</WorkWord>
+              </>
+            ) : (
+              <>
+                <WorkWord>Work</WorkWord>
+                <WorkRule />
+                <WorkWord>With Us</WorkWord>
+              </>
+            )}
           </WorkHeading>
 
           <Form onSubmit={handleSubmit}>
-            <FieldLabel htmlFor={`contact-${currentStep.id}`}>
-              {isSuccess ? 'Thank you' : currentStep.label}
-              {!isSuccess && <small> {currentStep.optional ? '(optional)' : '(required)'}</small>}
-            </FieldLabel>
+            {!isSuccess && (
+              <FieldLabel htmlFor={`contact-${currentStep.id}`}>
+                {currentStep.label}
+                <small> {currentStep.optional ? '(optional)' : '(required)'}</small>
+              </FieldLabel>
+            )}
 
             {isSuccess ? (
               <StatusNote>

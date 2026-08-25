@@ -192,9 +192,13 @@ export const Header = () => {
         </LogoLink>
 
         <MenuButton
+          type='button'
           aria-expanded={open}
           aria-controls='primary-navigation'
-          onClick={() => setOpen((value) => !value)}
+          onClick={(event) => {
+            event.preventDefault()
+            setOpen((value) => !value)
+          }}
         >
           {open ? 'Close' : 'Menu'}
         </MenuButton>

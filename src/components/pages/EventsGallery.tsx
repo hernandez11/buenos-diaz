@@ -1,7 +1,14 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { events, isUpcoming, type EventItem } from '../EventsData'
+import {
+  defaultEventIndex,
+  displayDate,
+  events,
+  hasDetailPage,
+  isUpcoming,
+  type EventItem,
+} from '../EventsData'
 import { bodySm, color, titleMd } from '@/theme'
 import { SlideReveal } from '@/components/SlideReveal'
 import { useMediaQuery } from '@/components/useMediaQuery'
@@ -17,12 +24,10 @@ const ENTER_EASING = 'cubic-bezier(0.19, 1, 0.22, 1)'
 const BUFFER_COPIES = 7
 const N = events.length
 const TOTAL_V = N * BUFFER_COPIES
-const START_CENTER = Math.floor(BUFFER_COPIES / 2) * N + Math.floor(N / 2)
-
 const centerForId = (id: string | null) => {
-  if (!id) return START_CENTER
-  const index = events.findIndex((event) => event.id === id)
-  return index >= 0 ? Math.floor(BUFFER_COPIES / 2) * N + index : START_CENTER
+  const found = id ? events.findIndex((event) => event.id === id) : -1
+  const index = found >= 0 ? found : defaultEventIndex()
+  return Math.floor(BUFFER_COPIES / 2) * N + index
 }
 const SAFE_MIN = N * 2
 const SAFE_MAX = TOTAL_V - N * 2
@@ -365,7 +370,6 @@ const EventsGallery = () => {
         : null,
     ),
   )
-  const [isCenterArmed, setIsCenterArmed] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
@@ -376,6 +380,7 @@ const EventsGallery = () => {
 
   const sectionRef = useRef<HTMLElement>(null)
   const centerBlockRef = useRef<HTMLDivElement>(null)
+  const belowBlockRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const tileRefs = useRef(new Map<number, HTMLDivElement>())
   const overlayRefs = useRef(new Map<number, HTMLDivElement>())
@@ -427,6 +432,7 @@ const EventsGallery = () => {
   useEffect(() => {
     const section = sectionRef.current
     const centerBlock = centerBlockRef.current
+    const belowBlock = belowBlockRef.current
 
     if (!isDetailOpen) {
       setIsLeaving(false)
@@ -435,6 +441,7 @@ const EventsGallery = () => {
       section?.style.removeProperty('flex')
       centerBlock?.style.removeProperty('top')
       centerBlock?.style.removeProperty('transform')
+      belowBlock?.style.removeProperty('top')
       return
     }
 
@@ -443,6 +450,10 @@ const EventsGallery = () => {
     const sRect = section.getBoundingClientRect()
     const cRect = centerBlock.getBoundingClientRect()
     const top = cRect.top - sRect.top
+
+    if (belowBlock) {
+      belowBlock.style.top = `${belowBlock.getBoundingClientRect().top - sRect.top}px`
+    }
 
     centerBlock.style.top = `${top}px`
     centerBlock.style.transform = 'none'
@@ -557,32 +568,33 @@ const EventsGallery = () => {
     if (isLeaving || isDetailOpen) return
 
     if (v === centerVirtual) {
-      if (isUpcoming(activeEvent.date)) return
+      if (!hasDetailPage(activeEvent)) return
 
-      if (isCenterArmed) {
-        setIsLeaving(true)
+      setIsLeaving(true)
 
-        const section = sectionRef.current
-        const centerBlock = centerBlockRef.current
-        if (section && centerBlock) {
-          const sRect = section.getBoundingClientRect()
-          const cRect = centerBlock.getBoundingClientRect()
-          const top = cRect.top - sRect.top
+      const section = sectionRef.current
+      const centerBlock = centerBlockRef.current
+      const belowBlock = belowBlockRef.current
+      if (section && centerBlock) {
+        const sRect = section.getBoundingClientRect()
+        const cRect = centerBlock.getBoundingClientRect()
+        const top = cRect.top - sRect.top
 
-          centerBlock.style.top = `${top}px`
-          centerBlock.style.transform = 'none'
-          section.style.minHeight = '0px'
-          section.style.height = `${top + cRect.height}px`
-          section.style.flex = '0 0 auto'
+        if (belowBlock) {
+          belowBlock.style.top = `${belowBlock.getBoundingClientRect().top - sRect.top}px`
         }
 
-        const targetEvent = activeEvent
-        leaveTimer.current = window.setTimeout(() => {
-          navigate(`/events/${targetEvent.id}`)
-        }, FADE_OUT_MS)
-      } else {
-        setIsCenterArmed(true)
+        centerBlock.style.top = `${top}px`
+        centerBlock.style.transform = 'none'
+        section.style.minHeight = '0px'
+        section.style.height = `${top + cRect.height}px`
+        section.style.flex = '0 0 auto'
       }
+
+      const targetEvent = activeEvent
+      leaveTimer.current = window.setTimeout(() => {
+        navigate(`/events/${targetEvent.id}`)
+      }, FADE_OUT_MS)
       return
     }
 
@@ -593,7 +605,6 @@ const EventsGallery = () => {
     if (shift !== 0) freezeAndShift(shift)
 
     setCenterVirtual(v + shift)
-    setIsCenterArmed(true)
   }
 
   const pinned = !isDetailOpen && !isLeaving && !isShortViewport
@@ -604,13 +615,14 @@ const EventsGallery = () => {
         <Cards>
           {events.map((event, index) => {
             const soon = isUpcoming(event.date)
+            const locked = !hasDetailPage(event)
 
             return (
               <Card
                 key={event.id}
-                to={soon ? '#' : `/events/${event.id}`}
-                onClick={soon ? (e) => e.preventDefault() : undefined}
-                aria-disabled={soon}
+                to={locked ? '#' : `/events/${event.id}`}
+                onClick={locked ? (e) => e.preventDefault() : undefined}
+                aria-disabled={locked}
               >
                 <SlideReveal index={index % 2} duration={0.9}>
                   <CardIndex>
@@ -624,7 +636,7 @@ const EventsGallery = () => {
                   </CardFrame>
 
                   <CardMeta>
-                    <span>{event.date}</span>
+                    <span>{displayDate(event.date)}</span>
                     {soon && <CardSoon>Coming Soon</CardSoon>}
                   </CardMeta>
 
@@ -656,7 +668,7 @@ const EventsGallery = () => {
                 const width = widthForDistance(distance)
                 const overlay = overlayForDistance(distance)
                 const isCenter = v === centerVirtual
-                const tileInteractive = !isDetailOpen && !(isCenter && isUpcoming(event.date))
+                const tileInteractive = !isDetailOpen && !(isCenter && !hasDetailPage(event))
 
                 return (
                   <Tile
@@ -692,7 +704,7 @@ const EventsGallery = () => {
           </Viewport>
         </CenterBlock>
 
-        <BelowBlock>
+        <BelowBlock ref={belowBlockRef}>
           <ScrollHint $hidden={fadeOthers}>
             {events.map((event, i) => (
               <ScrollDot key={event.id} $active={i === ((centerVirtual % N) + N) % N} />
@@ -701,7 +713,7 @@ const EventsGallery = () => {
 
           <EventInfo $hidden={fadeOthers}>
             <SlideReveal key={`date-${activeEvent.id}`} delay={0} duration={0.9}>
-              <EventDate className='primaryTextSmall'>{activeEvent.date}</EventDate>
+              <EventDate className='primaryTextSmall'>{displayDate(activeEvent.date)}</EventDate>
             </SlideReveal>
             <SlideReveal key={`title-${activeEvent.id}`} delay={0.08} duration={0.9}>
               <EventTitle>{activeEvent.title}</EventTitle>

@@ -8,6 +8,8 @@ const BLANK_CURSOR =
 
 const HOVER_SELECTOR =
   'a, button, [role="button"], input, textarea, select, label, summary, [tabindex]'
+const BASE_COLOR = '#8fa9a0'
+const HOVER_COLOR = '#5f7a71'
 const BASE_SIZE = 10
 const HOVER_SIZE = 20
 const GROW_MS = 2000
@@ -28,6 +30,7 @@ const Dot = styled.div`
   z-index: 9999;
   will-change: transform, width, height;
   transition:
+    background-color ${GROW_MS}ms cubic-bezier(0.22, 1, 0.36, 1),
     width ${GROW_MS}ms cubic-bezier(0.22, 1, 0.36, 1),
     height ${GROW_MS}ms cubic-bezier(0.22, 1, 0.36, 1),
     margin ${GROW_MS}ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -73,6 +76,7 @@ export const Cursor = () => {
       el.style.height = `${size}px`
       el.style.marginLeft = `${-size / 2}px`
       el.style.marginTop = `${-size / 2}px`
+      el.style.backgroundColor = hit ? HOVER_COLOR : BASE_COLOR
     }
 
     const handleLeave = () => {

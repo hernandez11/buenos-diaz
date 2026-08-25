@@ -12,6 +12,7 @@ import { useScrollJumpLog } from './components/useScrollJumpLog'
 import ScrollLogo from './components/ScrollLogo'
 import { FaqPage } from './components/pages/FaqPage'
 import { Cursor } from './components/Cursor'
+import { ScrollToTop } from './components/ScrollToTop'
 
 const AppShell = styled.div`
   display: flex;
@@ -33,6 +34,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Cursor />
       <ScrollLogo />
       <AppShell>

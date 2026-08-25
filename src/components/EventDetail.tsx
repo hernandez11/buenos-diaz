@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, Navigate, Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { events, type GalleryBlock } from './EventsData'
+import { displayDate, events, hasDetailPage, type GalleryBlock } from './EventsData'
 import { SlideReveal } from '@/components/SlideReveal'
 
 const InfoOverlay = styled.div`
@@ -282,16 +282,33 @@ const NavRow = styled.div`
   }
 `
 
-const BackSlot = styled(SlideReveal)`
-  align-self: flex-end;
-  margin-left: auto;
-  flex: 0 0 auto;
-  min-width: max-content;
+const StickyNav = styled.nav`
+  position: fixed;
+  right: 9.9vw;
+  bottom: calc(var(--footer-h, 56px) + 2vw);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5vw;
+  opacity: 1;
+  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s backwards;
+
+  @keyframes detail-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 767px) {
+    display: none;
+  }
 `
 
 const BackLink = styled(Link)`
-  visibility: visible;
-  pointer-events: auto;
   display: inline-block;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
@@ -307,6 +324,23 @@ const BackLink = styled(Link)`
   &:hover {
     opacity: 0.6;
   }
+`
+
+const BackSlot = styled(SlideReveal)`
+  display: none;
+
+  @media (max-width: 767px) {
+    display: block;
+    align-self: flex-end;
+    margin-left: auto;
+    flex: 0 0 auto;
+    min-width: max-content;
+  }
+`
+
+const MobileBackLink = styled(BackLink)`
+  visibility: visible;
+  pointer-events: auto;
 `
 
 const NavGroup = styled.button<{ $align: 'left' | 'right' }>`
@@ -426,11 +460,7 @@ const EventDetail = () => {
     return plan
   }, [event])
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
-  }, [id])
-
-  if (!event) {
+  if (!event || !hasDetailPage(event)) {
     return <Navigate to='/events' replace />
   }
 
@@ -441,7 +471,7 @@ const EventDetail = () => {
     <>
       <MetaBlock key={`meta-${event.id}`}>
         <SlideReveal delay={0} duration={0.9}>
-          <MetaDate>{event.date}</MetaDate>
+          <MetaDate>{displayDate(event.date)}</MetaDate>
         </SlideReveal>
         <SlideReveal delay={0.08} duration={0.9}>
           <MetaTitle>{event.title}</MetaTitle>
@@ -501,12 +531,15 @@ const EventDetail = () => {
             <NavSub>(PROXIMO EVENTO)</NavSub>
             <NavLink>{nextEvent.title}</NavLink>
           </NavGroup>
-
           <BackSlot duration={0.9}>
-            <BackLink to='/events'>Back To Events</BackLink>
+            <MobileBackLink to='/events'>Back To Events</MobileBackLink>
           </BackSlot>
         </NavRow>
       </Page>
+
+      <StickyNav key={`nav-${event.id}`}>
+        <BackLink to='/events'>Back To Events</BackLink>
+      </StickyNav>
     </>
   )
 }
