@@ -73,11 +73,8 @@ export const events: EventItem[] = [
     alt: 'Remedy popup poster',
     title: 'REMEDY PLACE',
     date: '09.06.2026',
-    // layout: ['full'],
   },
 ]
-
-export const getEventById = (id: string) => events.find((event) => event.id === id)
 
 const DATED = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/
 const UNDATED = /^(\d{1,2})\.(\d{1,2})$/

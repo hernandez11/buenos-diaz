@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { color, font, media, tracking } from '@/theme'
 
 interface FooterProps {
   location?: string
@@ -12,7 +13,7 @@ const Wrapper = styled.footer`
   width: 100%;
   box-sizing: border-box;
   container-type: inline-size;
-  background-color: #fffdfa;
+  background-color: ${color.cream};
   min-height: var(--footer-h, 56px);
   display: flex;
   align-items: center;
@@ -20,18 +21,18 @@ const Wrapper = styled.footer`
   gap: 2cqw;
   padding: 0.75cqw 4cqw;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     gap: 0.75rem;
     padding: 1rem;
   }
 `
 
 const Text = styled.span`
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 400;
   font-size: clamp(9px, 0.868cqw, 15px);
-  letter-spacing: -0.04em;
-  color: #000000;
+  letter-spacing: ${tracking.tight};
+  color: ${color.black};
   white-space: nowrap;
   flex: 0 1 auto;
   min-width: 0;
@@ -48,17 +49,17 @@ const SocialGroup = styled.div`
   gap: 0.9cqw;
   flex: 0 0 auto;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     gap: 0.6rem;
   }
 `
 
 const SocialLink = styled.a`
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 400;
   font-size: clamp(9px, 0.868cqw, 15px);
-  letter-spacing: -0.04em;
-  color: #000000;
+  letter-spacing: ${tracking.tight};
+  color: ${color.black};
   text-decoration: none;
   white-space: nowrap;
   transition: opacity 0.2s ease;

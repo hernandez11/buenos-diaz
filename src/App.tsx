@@ -8,7 +8,6 @@ import { EventsPage } from './components/pages/EventsPage'
 import EventDetail from './components/EventDetail'
 import { NotFound } from './components/pages/NotFound'
 import { useLenis } from './components/useLenis'
-import { useScrollJumpLog } from './components/useScrollJumpLog'
 import ScrollLogo from './components/ScrollLogo'
 import { FaqPage } from './components/pages/FaqPage'
 import { Cursor } from './components/Cursor'
@@ -30,7 +29,6 @@ const Main = styled.main`
 
 export default function App() {
   useLenis()
-  useScrollJumpLog()
 
   return (
     <BrowserRouter>
@@ -46,7 +44,6 @@ export default function App() {
               <Route path=':id' element={<EventDetail />} />
             </Route>
             <Route path='/faq' element={<FaqPage />} />
-
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Main>

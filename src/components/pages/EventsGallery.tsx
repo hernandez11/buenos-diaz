@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import {
@@ -9,7 +9,7 @@ import {
   isUpcoming,
   type EventItem,
 } from '../EventsData'
-import { bodySm, color, titleMd } from '@/theme'
+import { bodySm, color, font, media, titleMd } from '@/theme'
 import { SlideReveal } from '@/components/SlideReveal'
 import { useMediaQuery } from '@/components/useMediaQuery'
 
@@ -154,7 +154,7 @@ const Section = styled.section<{ $pinned: boolean }>`
   `
       : ''}
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     min-height: calc(clamp(320px, 95cqw, 480px) + 6rem);
   }
 `
@@ -180,7 +180,7 @@ const BelowBlock = styled.div`
   left: 0;
   width: 100%;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     top: calc(50% + clamp(320px, 95cqw, 480px) / 2);
   }
 `
@@ -198,14 +198,14 @@ const AboveBlock = styled.div<{ $hidden: boolean }>`
   opacity: ${(props) => (props.$hidden ? 0 : 1)};
   transition: opacity ${FADE_OUT_MS}ms ease;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     bottom: calc(50% + clamp(320px, 95cqw, 480px) / 2);
     padding: 0 1.5rem 0.75rem;
   }
 `
 
 const ComingSoon = styled.span`
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 300;
   font-size: 0.65em;
   line-height: 1;
@@ -222,7 +222,7 @@ const Viewport = styled.div`
   overflow: hidden;
   contain: layout paint;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     height: clamp(320px, 95cqw, 480px);
   }
 `
@@ -249,7 +249,7 @@ const Tile = styled.div<{
   height: 100%;
   min-width: 0;
   overflow: hidden;
-  border: 0.5px solid #ffffff;
+  border: 0.5px solid ${color.white};
   cursor: ${(props) => (props.$interactive ? 'pointer' : 'default')};
   opacity: ${(props) => (props.$hidden ? 0 : 1)};
   pointer-events: ${(props) => (props.$hidden || !props.$interactive ? 'none' : 'auto')};
@@ -307,7 +307,7 @@ const TileOverlay = styled.div<{ $opacity: number }>`
     opacity: 0;
   }
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     opacity: ${(props) => Math.min(props.$opacity, 0.35)};
   }
 `
@@ -315,7 +315,7 @@ const TileOverlay = styled.div<{ $opacity: number }>`
 const ScrollHint = styled.div<{ $hidden: boolean }>`
   display: none;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     display: flex;
     justify-content: center;
     gap: 0.4rem;
@@ -329,7 +329,7 @@ const ScrollDot = styled.span<{ $active?: boolean }>`
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #1e1e1e;
+  background-color: ${color.ink};
   opacity: ${(props) => (props.$active ? 1 : 0.25)};
 `
 
@@ -343,7 +343,7 @@ const EventInfo = styled.div<{ $hidden: boolean }>`
   opacity: ${(props) => (props.$hidden ? 0 : 1)};
   transition: opacity ${FADE_OUT_MS}ms ease;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     gap: 0.75rem;
     padding: 1.5rem;
   }
@@ -686,7 +686,7 @@ const EventsGallery = () => {
                       style={
                         {
                           '--enter-delay': `${ENTER_DELAY_MS + distance * ENTER_STAGGER_MS}ms`,
-                        } as React.CSSProperties
+                        } as CSSProperties
                       }
                     >
                       <TileImage

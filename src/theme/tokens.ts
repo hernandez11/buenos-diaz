@@ -4,6 +4,7 @@ export const color = {
   white: '#ffffff',
   cream: '#fffdfa',
   sage: '#8fa9a0',
+  sageDark: '#5f7a71',
   accent: '#ed6636',
   danger: '#d64545',
 } as const

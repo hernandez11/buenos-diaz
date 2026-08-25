@@ -3,11 +3,12 @@ import styled from 'styled-components'
 import Hero from '@/components/Hero'
 import MenuDisplay from '@/components/MenuDisplay'
 import ContactSection from '@/components/ContactSection'
+import { color, media } from '@/theme'
 
 const HeroCover = styled.div`
   position: relative;
   z-index: 1;
-  background-color: #fffdfa;
+  background-color: ${color.cream};
 `
 
 const InfoPanel = styled.section`
@@ -22,7 +23,7 @@ const InfoPanel = styled.section`
   box-sizing: border-box;
   overflow-x: hidden;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     padding: 4rem 20%;
   }
 
@@ -32,7 +33,7 @@ const InfoPanel = styled.section`
     text-align: center;
     white-space: pre-line;
 
-    @media (max-width: 767px) {
+    ${media.mobile} {
       width: 100%;
 
       p:first-child {

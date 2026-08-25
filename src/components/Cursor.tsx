@@ -2,14 +2,15 @@ import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { useVisualZoom } from '@/components/useVisualZoom'
+import { color } from '@/theme'
 
 const BLANK_CURSOR =
   'url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") 0 0, none'
 
 const HOVER_SELECTOR =
   'a, button, [role="button"], input, textarea, select, label, summary, [tabindex]'
-const BASE_COLOR = '#8fa9a0'
-const HOVER_COLOR = '#5f7a71'
+const BASE_COLOR = color.sage
+const HOVER_COLOR = color.sageDark
 const BASE_SIZE = 10
 const HOVER_SIZE = 20
 const GROW_MS = 2000
@@ -24,7 +25,7 @@ const Dot = styled.div`
   margin-left: ${-BASE_SIZE / 2}px;
   margin-top: ${-BASE_SIZE / 2}px;
   border-radius: 50%;
-  background-color: #8fa9a0;
+  background-color: ${BASE_COLOR};
   opacity: 0;
   pointer-events: none;
   z-index: 9999;

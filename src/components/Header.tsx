@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type MouseEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { color, titleMd } from '@/theme'
+import { color, font, media, titleMd, tracking } from '@/theme'
 import { getLenis } from '@/components/useLenis'
 
 const LOGO_RATIO = 3956 / 1218
@@ -24,7 +24,7 @@ const StyledHeader = styled.header<{ $hidden: boolean }>`
   justify-content: space-between;
   padding: 0 4.7cqw;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     padding: 0 1.5rem;
   }
 `
@@ -51,17 +51,17 @@ const MenuButton = styled.button`
   border: none;
   cursor: pointer;
   z-index: 2;
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 500;
   font-size: clamp(11px, 0.868cqw, 15px);
   line-height: 1.3;
-  letter-spacing: -0.04em;
+  letter-spacing: ${tracking.tight};
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--nav-color, #1e1e1e);
+  color: var(--nav-color, ${color.ink});
   transition: color 0.3s ease;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     font-size: 0.8em;
   }
 `
@@ -95,7 +95,7 @@ const Dropdown = styled.div<{ $open: boolean }>`
   pointer-events: ${(props) => (props.$open ? 'auto' : 'none')};
   transition: opacity 0.5s ease-in-out;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     padding: calc(var(--header-h, 64px) + 1.5rem) 1.5rem 1.75rem;
   }
 `
@@ -130,7 +130,7 @@ export const Header = () => {
     else window.scrollTo({ top: target, behavior: 'smooth' })
   }
 
-  const handleContact = (event: React.MouseEvent) => {
+  const handleContact = (event: MouseEvent) => {
     event.preventDefault()
     setOpen(false)
 

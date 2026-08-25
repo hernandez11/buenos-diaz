@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  type RefObject,
+} from 'react'
 import styled from 'styled-components'
 import ContactBg from '@/assets/ContactImg.webp'
 import { bodySmFlat, color, displayMd, titleMd } from '@/theme'
@@ -327,7 +334,7 @@ const Submit = styled.button`
   font-weight: 500;
   line-height: 1;
   text-transform: uppercase;
-  color: #ffffff;
+  color: ${color.white};
   background-color: ${color.sage};
   border: 1px solid ${color.sage};
   border-radius: 2.5px;
@@ -445,13 +452,13 @@ const ContactSection = ({
         : currentValue.trim().length > 0)
   const isLastStep = step === FORM_STEPS.length - 1
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const raw = event.target.value
     const next = currentStep.id === 'phone' ? formatPhone(raw) : raw
     setAnswers((prev) => ({ ...prev, [currentStep.id]: next }))
   }
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     if (!canAdvance || status === 'sending') return
 
@@ -681,7 +688,7 @@ const ContactSection = ({
                   <TextArea
                     id={`contact-${currentStep.id}`}
                     key={currentStep.id}
-                    ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+                    ref={inputRef as RefObject<HTMLTextAreaElement>}
                     name={currentStep.id}
                     rows={3}
                     maxLength={currentStep.maxLength}
@@ -693,7 +700,7 @@ const ContactSection = ({
                   <Input
                     id={`contact-${currentStep.id}`}
                     key={currentStep.id}
-                    ref={inputRef as React.RefObject<HTMLInputElement>}
+                    ref={inputRef as RefObject<HTMLInputElement>}
                     name={currentStep.id}
                     type={currentStep.type}
                     autoComplete={currentStep.autoComplete}

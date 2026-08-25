@@ -1,8 +1,23 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useParams, Navigate, Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import { displayDate, events, hasDetailPage, type GalleryBlock } from './EventsData'
 import { SlideReveal } from '@/components/SlideReveal'
+import { color, font, media, tracking } from '@/theme'
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`
+
+const detailFade = css`
+  opacity: 1;
+  animation: ${fadeIn} 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s backwards;
+`
 
 const InfoOverlay = styled.div`
   position: absolute;
@@ -17,19 +32,9 @@ const InfoOverlay = styled.div`
   padding: 2vw 9.9cqw 0 25cqw;
   box-sizing: border-box;
   pointer-events: none;
-  opacity: 1;
-  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s backwards;
+  ${detailFade};
 
-  @keyframes detail-fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @media (max-width: 767px) {
+  ${media.mobile} {
     position: static;
     height: auto;
     display: flex;
@@ -50,19 +55,9 @@ const MetaBlock = styled.div`
   flex-direction: column;
   gap: 0.3vw;
   pointer-events: none;
-  opacity: 1;
-  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s backwards;
+  ${detailFade};
 
-  @keyframes detail-fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @media (max-width: 767px) {
+  ${media.mobile} {
     position: static;
     transform: none;
     width: auto;
@@ -73,56 +68,46 @@ const MetaBlock = styled.div`
 `
 
 const MetaDate = styled.span`
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 300;
   font-size: clamp(11px, 0.868cqw, 15px);
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
+  letter-spacing: ${tracking.tight};
+  color: ${color.ink};
   white-space: nowrap;
 `
 
 const MetaTitle = styled.h1`
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 500;
   font-size: 0.8em;
   line-height: 1.3;
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
+  letter-spacing: ${tracking.tight};
+  color: ${color.ink};
   margin: 0;
   text-transform: uppercase;
 `
 
 const Description = styled.p`
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 300;
   font-size: clamp(11px, 0.868cqw, 15px);
   line-height: 1.4;
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
+  letter-spacing: ${tracking.tight};
+  color: ${color.ink};
   text-align: left;
   max-width: 33.33vw;
   margin: 0;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     max-width: none;
   }
 `
 
 const Page = styled.div`
   width: 100%;
-  background-color: #fffdfa;
+  background-color: ${color.cream};
   container-type: inline-size;
-  opacity: 1;
-  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s backwards;
-
-  @keyframes detail-fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+  ${detailFade};
 `
 
 const ImageStack = styled.div`
@@ -132,7 +117,7 @@ const ImageStack = styled.div`
   gap: 3cqw;
   padding-top: 3cqw;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     gap: 1.5rem;
     padding-top: 1.5rem;
   }
@@ -142,7 +127,7 @@ const ImageColumn = styled.div`
   position: relative;
   width: 50cqw;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     width: 88%;
   }
 `
@@ -164,7 +149,7 @@ const PhotoFrame = styled.div<{ $aspect: string; $visible?: boolean }>`
   transition: clip-path 1.2s cubic-bezier(0.23, 1, 0.32, 1);
 `
 
-const RevealFrame = ({ aspect, children }: { aspect: string; children: React.ReactNode }) => {
+const RevealFrame = ({ aspect, children }: { aspect: string; children: ReactNode }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
 
@@ -277,7 +262,7 @@ const NavRow = styled.div`
   pointer-events: none;
   padding: 7.6cqw 9.9cqw 7cqw;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     padding: 3rem 6% 7rem;
   }
 `
@@ -291,31 +276,21 @@ const StickyNav = styled.nav`
   flex-direction: column;
   align-items: flex-end;
   gap: 0.5vw;
-  opacity: 1;
-  animation: detail-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s backwards;
+  ${detailFade};
 
-  @keyframes detail-fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @media (max-width: 767px) {
+  ${media.mobile} {
     display: none;
   }
 `
 
 const BackLink = styled(Link)`
   display: inline-block;
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 500;
   font-size: 0.8em;
   line-height: 1.3;
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
+  letter-spacing: ${tracking.tight};
+  color: ${color.ink};
   text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
@@ -329,7 +304,7 @@ const BackLink = styled(Link)`
 const BackSlot = styled(SlideReveal)`
   display: none;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     display: block;
     align-self: flex-end;
     margin-left: auto;
@@ -354,7 +329,7 @@ const NavGroup = styled.button<{ $align: 'left' | 'right' }>`
   cursor: pointer;
   text-align: ${(props) => props.$align};
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     display: none;
   }
 `
@@ -366,11 +341,11 @@ const NavLabelRow = styled.div`
 `
 
 const NavLabel = styled.span`
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 600;
   font-size: clamp(13px, 1.157cqw, 20px);
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
+  letter-spacing: ${tracking.tight};
+  color: ${color.ink};
   white-space: nowrap;
 `
 
@@ -383,24 +358,24 @@ const Dot = styled.span`
   width: clamp(6px, 0.58cqw, 10px);
   height: clamp(6px, 0.58cqw, 10px);
   border-radius: 50%;
-  background-color: #1e1e1e;
+  background-color: ${color.ink};
 `
 
 const NavSub = styled.span`
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 300;
   font-size: clamp(10px, 0.868cqw, 15px);
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
+  letter-spacing: ${tracking.tight};
+  color: ${color.ink};
   white-space: nowrap;
 `
 
 const NavLink = styled.span`
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 300;
   font-size: clamp(10px, 0.694cqw, 12px);
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
+  letter-spacing: ${tracking.tight};
+  color: ${color.ink};
   text-decoration: underline;
   text-transform: uppercase;
   margin-top: 1cqw;

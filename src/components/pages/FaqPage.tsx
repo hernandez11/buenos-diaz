@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import FaqBg from '@/assets/FaqBg.webp'
-import { bodySm, color } from '@/theme'
+import { bodySm, color, media } from '@/theme'
 import { useParallax } from '@/components/useParallax'
 import { SlideReveal } from '@/components/SlideReveal'
 
@@ -108,13 +108,13 @@ const Grid = styled.div`
   row-gap: 6.9cqw;
   padding: 9.7cqw 13.31cqw 8cqw;
 
-  @media (max-width: 1024px) {
+  ${media.tablet} {
     grid-template-columns: repeat(2, 1fr);
     row-gap: 3.5rem;
     padding: 4rem 1.5rem 5rem;
   }
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 1.25rem;
     row-gap: 2.75rem;
@@ -135,7 +135,7 @@ const Index = styled.span`
   color: ${color.ink};
   white-space: nowrap;
 
-  @media (max-width: 1024px) {
+  ${media.tablet} {
     font-size: 0.9em;
   }
 `
@@ -148,7 +148,7 @@ const Question = styled.h2`
   margin-top: 0.5cqw;
   min-height: 3.9cqw;
 
-  @media (max-width: 1024px) {
+  ${media.tablet} {
     margin-top: 0.4rem;
     min-height: 0;
   }
@@ -160,7 +160,7 @@ const Answer = styled.p`
   color: ${color.ink};
   margin-top: 1.2cqw;
 
-  @media (max-width: 1024px) {
+  ${media.tablet} {
     margin-top: 0.6rem;
   }
 `

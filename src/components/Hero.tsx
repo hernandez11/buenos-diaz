@@ -1,8 +1,9 @@
+import { type MutableRefObject } from 'react'
 import styled from 'styled-components'
-// import heroImage from '@/assets/HeroBg.png'
 import heroImage from '@/assets/HeroBg.webp'
 import { SlideReveal } from '@/components/SlideReveal'
 import { useParallax } from '@/components/useParallax'
+import { color, font, media, tracking } from '@/theme'
 
 const HeroContainer = styled.section`
   position: relative;
@@ -14,7 +15,7 @@ const HeroContainer = styled.section`
   flex: 0 0 auto;
   overflow: hidden;
   container-type: inline-size;
-  background-color: #1e1e1e;
+  background-color: ${color.ink};
 `
 
 const OVERLAY_OPACITY = 0.1
@@ -61,16 +62,16 @@ const Label = styled.span<{
           : ''};
   text-align: ${(props) => props.$anchor ?? 'left'};
   z-index: 2;
-  color: #ffffff;
-  font-family: 'Inter', sans-serif;
+  color: ${color.white};
+  font-family: ${font.sans};
   text-transform: uppercase;
   white-space: ${(props) => (props.$width ? 'normal' : 'nowrap')};
   line-height: 1.3;
-  letter-spacing: -0.04em;
+  letter-spacing: ${tracking.tight};
   font-weight: ${(props) => (props.$size === 'lg' ? 500 : 300)};
   font-size: 0.8em;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     display: none;
   }
 `
@@ -82,10 +83,10 @@ const Divider = styled.span`
   transform: translateY(-50%);
   width: 18.87%;
   height: 1px;
-  background-color: #ffffff;
+  background-color: ${color.white};
   z-index: 2;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     display: none;
   }
 `
@@ -100,7 +101,7 @@ const TextLayer = styled.div`
 const MobileContent = styled.div`
   display: none;
 
-  @media (max-width: 767px) {
+  ${media.mobile} {
     position: absolute;
     inset: 0;
     z-index: 2;
@@ -111,7 +112,7 @@ const MobileContent = styled.div`
     gap: 3rem;
     padding: 0 2rem;
     text-align: center;
-    color: #ffffff;
+    color: ${color.white};
   }
 `
 
@@ -120,8 +121,8 @@ const Hero = () => {
   const text = useParallax<HTMLElement, HTMLDivElement>({ speed: -0.85 })
 
   const setFrame = (node: HTMLElement | null) => {
-    ;(image.frameRef as React.MutableRefObject<HTMLElement | null>).current = node
-    ;(text.frameRef as React.MutableRefObject<HTMLElement | null>).current = node
+    ;(image.frameRef as MutableRefObject<HTMLElement | null>).current = node
+    ;(text.frameRef as MutableRefObject<HTMLElement | null>).current = node
   }
 
   return (

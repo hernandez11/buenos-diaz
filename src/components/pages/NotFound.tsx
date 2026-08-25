@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import Error_img from '@/assets/Error_img.webp'
+import { color, font, tracking } from '@/theme'
 
 const Section = styled.section`
   flex: 1;
   container-type: inline-size;
-  background-color: #fffdfa;
+  background-color: ${color.cream};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,10 +29,10 @@ const Digits = styled.p`
   align-items: center;
   justify-content: center;
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 700;
   line-height: 1;
-  color: #ed6636;
+  color: ${color.accent};
   font-size: clamp(96px, 46.2cqw, 500px);
 `
 
@@ -43,7 +44,7 @@ const PhotoWindow = styled.div`
   width: 18.58%;
   height: 88.7%;
   overflow: hidden;
-  border: 0.5px solid #fff;
+  border: 0.5px solid ${color.white};
 `
 
 const PhotoImg = styled.img`
@@ -66,10 +67,10 @@ const MessageRow = styled.div`
 `
 
 const MessageWord = styled.span`
-  font-family: 'Inter', sans-serif;
+  font-family: ${font.sans};
   font-weight: 400;
-  letter-spacing: -0.04em;
-  color: #1e1e1e;
+  letter-spacing: ${tracking.tight};
+  color: ${color.ink};
   font-size: 1em;
   white-space: nowrap;
 `
@@ -78,7 +79,7 @@ const Divider = styled.span`
   display: block;
   width: clamp(60px, 12.73cqw, 220px);
   height: 1px;
-  background-color: #1e1e1e;
+  background-color: ${color.ink};
 `
 
 export const NotFound = () => {

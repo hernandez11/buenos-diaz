@@ -63,15 +63,3 @@ export const caption = css`
   font-weight: ${weight.regular};
   font-size: ${size.caption};
 `
-
-export const navLink = css`
-  ${base};
-  font-weight: ${weight.regular};
-  font-size: ${size.titleSm};
-  text-decoration: none;
-  white-space: nowrap;
-
-  ${media.tablet} {
-    font-size: 0.8em;
-  }
-`
