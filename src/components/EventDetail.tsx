@@ -172,15 +172,20 @@ const RevealFrame = ({ aspect, children }: { aspect: string; children: ReactNode
       { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
     )
 
-    observer.observe(el)
+    // clip-path zeroes this element's own intersection rect, so watch an unclipped ancestor
+    observer.observe(el.parentElement ?? el)
 
-    const failsafe = window.setTimeout(() => {
-      setVisible(true)
-      observer.disconnect()
-    }, 3000)
+    const rect = el.getBoundingClientRect()
+    const startsInView = rect.top < window.innerHeight && rect.bottom > 0
+    const failsafe = startsInView
+      ? window.setTimeout(() => {
+          setVisible(true)
+          observer.disconnect()
+        }, 3000)
+      : 0
 
     return () => {
-      window.clearTimeout(failsafe)
+      if (failsafe) window.clearTimeout(failsafe)
       observer.disconnect()
     }
   }, [])
@@ -216,21 +221,50 @@ const AutoClip = ({ src }: { src: string }) => {
     const el = ref.current
     if (!el) return
 
-    const resume = () => {
+    let inView = false
+
+    const play = () => {
+      if (!inView) return
       if (document.visibilityState !== 'visible') return
       const attempt = el.play()
       if (attempt) attempt.catch(() => {})
     }
 
-    resume()
-    el.addEventListener('pause', resume)
-    el.addEventListener('canplay', resume)
-    document.addEventListener('visibilitychange', resume)
+    const onCanPlay = () => play()
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') play()
+      else el.pause()
+    }
+
+    let observer: IntersectionObserver | null = null
+
+    if (typeof IntersectionObserver === 'undefined') {
+      inView = true
+      el.preload = 'auto'
+      play()
+    } else {
+      observer = new IntersectionObserver(
+        (entries) => {
+          inView = entries[0].isIntersecting
+          if (inView) {
+            if (el.preload !== 'auto') el.preload = 'auto'
+            play()
+          } else {
+            el.pause()
+          }
+        },
+        { rootMargin: '200px 0px' },
+      )
+      observer.observe(el)
+    }
+
+    el.addEventListener('canplay', onCanPlay)
+    document.addEventListener('visibilitychange', onVisibility)
 
     return () => {
-      el.removeEventListener('pause', resume)
-      el.removeEventListener('canplay', resume)
-      document.removeEventListener('visibilitychange', resume)
+      observer?.disconnect()
+      el.removeEventListener('canplay', onCanPlay)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [src])
 
@@ -241,11 +275,10 @@ const AutoClip = ({ src }: { src: string }) => {
       muted
       loop
       playsInline
-      autoPlay
       tabIndex={-1}
       disablePictureInPicture
       controlsList='nodownload noplaybackrate noremoteplayback'
-      preload='auto'
+      preload='none'
       aria-hidden='true'
     />
   )

@@ -1,9 +1,12 @@
 import '@/theme/GlobalStyles.css'
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import Hero from '@/components/Hero'
 import MenuDisplay from '@/components/MenuDisplay'
 import ContactSection from '@/components/ContactSection'
 import { color, media } from '@/theme'
+import { getLenis } from '@/components/useLenis'
 
 const HeroCover = styled.div`
   position: relative;
@@ -44,6 +47,29 @@ const InfoPanel = styled.section`
 `
 
 export const Home = () => {
+  const { pathname, hash } = useLocation()
+
+  useEffect(() => {
+    if (pathname !== '/menu' && hash !== '#menu') return
+
+    const timer = window.setTimeout(() => {
+      const section = document.getElementById('menu')
+      if (!section) return
+
+      const headerHeight =
+        parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue('--header-h'),
+        ) || 88
+      const top = section.getBoundingClientRect().top + window.scrollY - headerHeight
+
+      const lenis = getLenis()
+      if (lenis) lenis.scrollTo(top, { immediate: true, force: true })
+      else window.scrollTo(0, top)
+    }, 300)
+
+    return () => window.clearTimeout(timer)
+  }, [pathname, hash])
+
   return (
     <>
       <Hero />

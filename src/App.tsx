@@ -40,6 +40,7 @@ export default function App() {
         <Main>
           <Routes>
             <Route path='/' element={<Home />} />
+            <Route path='/menu' element={<Home />} />
             <Route path='/events' element={<EventsPage />}>
               <Route path=':id' element={<EventDetail />} />
             </Route>

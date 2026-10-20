@@ -14,6 +14,15 @@ import ShopifyVid_2 from '@/assets/Events/Shopify/Shopify_clip_2.mp4'
 import ShopifyVid_3 from '@/assets/Events/Shopify/Shopify_clip_3.mp4'
 import ShopifyRecap from '@/assets/Events/Shopify/Shopify_recap.mp4'
 import RemedyImg_1 from '@/assets/Events/Remedy/Remedy_gallery_1.webp'
+import RemedyImg_2 from '@/assets/Events/Remedy/Remedy_gallery_2.webp'
+import RemedyImg_3 from '@/assets/Events/Remedy/Remedy_gallery_3.webp'
+import RemedyImg_4 from '@/assets/Events/Remedy/Remedy_gallery_4.webp'
+import RemedyVid_1 from '@/assets/Events/Remedy/Remedy_clip_1.mp4'
+import RemedyVid_2 from '@/assets/Events/Remedy/Remedy_clip_2.mp4'
+import RemedyVid_3 from '@/assets/Events/Remedy/Remedy_clip_3.mp4'
+import RemedyVid_4 from '@/assets/Events/Remedy/Remedy_clip_4.mp4'
+import GoogleImg_1 from '@/assets/Events/Google/Google_gallery_1.webp'
+import SalonImg_1 from '@/assets/Events/Salon/Salon_gallery_1.webp'
 
 export type GalleryBlock = 'full' | 'wide' | 'tall' | 'pair'
 
@@ -29,6 +38,43 @@ export interface EventItem {
 }
 
 export const events: EventItem[] = [
+  {
+    id: 'salon-art-design',
+    image: SalonImg_1,
+    alt: 'Salon Art + Design poster',
+    title: 'Salon Art + Design',
+    date: '11.05.2026',
+    description:
+      "For the 15th edition of Salon Art + Design, Buenos Díaz set up inside the Park Avenue Armory, pouring specialty espresso among some of the world's finest collectible design, decorative arts, and twentieth century masterworks.\n\nOur 1986 Piaggio Ape took its place on the floor alongside the work on view, opening the fair on Collectors and VIP day with complimentary coffee service before serving the public through the weekend. Espresso rooted in Chiapas, served in a room built around craft, heritage, and objects made to last.",
+  },
+  {
+    id: 'google',
+    image: GoogleImg_1,
+    alt: 'Google popup poster',
+    title: 'Google',
+    date: '10.14.2026',
+    description:
+      "For Hispanic Heritage Month, Buenos Díaz pulled up to Google NYC and introduced the city to the newest member of our team: a 1986 Piaggio Ape, brought over from Italy and rebuilt from the ground up as our mobile espresso bar. Its first public appearance happened right on campus.\n\nThe coffee carries our family's story, farming in Chiapas since the 1800’s. The Ape carries it through the streets of New York. This was the day both finally arrived together.",
+  },
+  {
+    id: 'remedy-popup',
+    image: RemedyImg_1,
+    alt: 'Remedy popup poster',
+    title: 'REMEDY PLACE',
+    date: '09.06.2026',
+    description:
+      "Buenos Díaz took over the bar at Remedy Place Flatiron for a day, pouring specialty espresso made with authentic Mexican ingredients through the morning before shifting to our handcrafted aguas frescas in the afternoon. A taste of Chiapas inside one of NYC's social wellness clubs.",
+    gallery: [
+      RemedyImg_2,
+      RemedyImg_3,
+      RemedyImg_4,
+      RemedyVid_1,
+      RemedyVid_2,
+      RemedyVid_3,
+      RemedyVid_4,
+    ],
+    layout: ['full', 'pair', 'tall', 'full', 'full', 'full'],
+  },
   {
     id: 'obscure-popup',
     image: ObscureImg_1,
@@ -66,13 +112,6 @@ export const events: EventItem[] = [
       ShopifyVid_2,
     ],
     layout: ['full', 'wide', 'wide', 'tall', 'pair'],
-  },
-  {
-    id: 'remedy-popup',
-    image: RemedyImg_1,
-    alt: 'Remedy popup poster',
-    title: 'REMEDY PLACE',
-    date: '09.06.2026',
   },
 ]
 

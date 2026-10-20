@@ -27,3 +27,7 @@ dist-ssr
 .env
 .env.local
 .env*
+
+# one-time media import (safe to delete)
+src/assets/_incoming/
+pull-media.sh

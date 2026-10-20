@@ -202,35 +202,36 @@ const PairRule = styled.span`
 
 const defaultSpecialty: MenuEntry[] = [
   {
-    id: 'fresa',
-    name: 'Fresa Horchata Latte',
+    id: 'nogal',
+    name: 'El Nogál',
     description:
-      'Double espresso with strawberry puree + creamy oatmilk horchata spiced with warm cinnamon.',
+      'Toasted pecan and Mexican vanilla over double espresso and steamed milk. Inspired by the fall desserts of southern Mexico.',
   },
   {
-    id: 'cajeta',
-    name: 'Cajeta Cortado',
+    id: 'cafe-de-olla',
+    name: 'Cafe de Olla Latte',
     description:
-      'Double espresso with cajeta, a rich Mexican caramel made from slow-cooked goat’s milk.',
+      'Double espresso steeped with aromatic spices. This latte captures the soul of traditional Mexican coffee. It’s warm, spiced, and deeply rooted in heritage.',
   },
   {
-    id: 'guava-cream',
-    name: 'Guava Cream Top',
-    description: 'Double espresso latte layered beneath a silky guava and strawberry cold foam.',
+    id: 'calabaza',
+    name: 'Calabaza (Pumpkin) Cream Top',
+    description:
+      'Double espresso latte beneath a silky pumpkin cold foam with piloncillo and cinnamon. Inspired by calabaza en tacha, a classic Mexican fall dessert.',
   },
 ]
 
 const defaultClassics: ClassicPair[] = [
   { id: 'row-1', left: 'Espresso', right: 'Flat White' },
   { id: 'row-2', left: 'Latte', right: 'American' },
-  { id: 'row-3', left: 'Cortado', right: 'Machiato' },
-  { id: 'row-4', left: 'Cappucino' },
+  { id: 'row-3', left: 'Cortado', right: 'Macchiato' },
+  { id: 'row-4', left: 'Cappuccino' },
 ]
 
 const defaultNonCoffee: MenuEntry[] = [
   {
     id: 'guava-roja',
-    name: 'Guava Roja',
+    name: 'Guava Roja - Refresher',
     description:
       'Tropical guava layered with the vibrant tang of hibiscus and subtle warming spices. Inspired by the refreshing jamaica agua fresca found across Mexico.',
   },
@@ -251,7 +252,7 @@ const MenuDisplay = ({
   const { frameRef, imageRef } = useParallax({ speed: 0.42 })
 
   return (
-    <Section data-testid='menu-section'>
+    <Section id='menu' data-testid='menu-section'>
       <Hero ref={frameRef}>
         <HeroImage
           ref={imageRef}

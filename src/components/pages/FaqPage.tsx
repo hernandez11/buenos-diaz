@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import FaqBg from '@/assets/FaqBg.webp'
+import FaqBg from '@/assets/FaqBg_fall.webp'
 import { bodySm, color, media } from '@/theme'
 import { useParallax } from '@/components/useParallax'
 import { SlideReveal } from '@/components/SlideReveal'
@@ -56,7 +56,7 @@ const faqs: FaqItem[] = [
   {
     question: 'HOW DO YOU BOOK US?',
     answer:
-      'Email us at hello@buenosdiaznyc.com with details of your event. We will follow up with availability, specifics, and a quote.',
+      'Send us a note through the contact form with details of your event. We will follow up with availability, specifics, and a quote.',
   },
 ]
 
@@ -85,20 +85,14 @@ const Hero = styled.div`
 
 const HeroImage = styled.img`
   position: absolute;
-  top: -13%;
-  left: -19.14%;
-  width: 119.14%;
-  height: 150%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   max-width: none;
   object-fit: cover;
-  object-position: center 42%;
+  object-position: center;
   display: block;
   transform: translate3d(0, 0, 0);
-
-  @media (max-width: 900px) {
-    width: 170%;
-    left: -27.3%;
-  }
 `
 
 const Grid = styled.div`
@@ -166,7 +160,7 @@ const Answer = styled.p`
 `
 
 export const FaqPage = ({ backgroundImage = FaqBg }: FaqPageProps) => {
-  const { frameRef, imageRef } = useParallax({ speed: -0.42 })
+  const { frameRef, imageRef } = useParallax({ speed: 0 })
 
   return (
     <Section data-testid='faq-page'>
