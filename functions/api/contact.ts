@@ -19,6 +19,23 @@ interface Context {
 
 const RESEND_ENDPOINT = 'https://api.resend.com/emails'
 
+const RATE_WINDOW_MS = 10 * 60 * 1000
+const RATE_MAX = 5
+
+const recentHits = new Map<string, number[]>()
+
+const isRateLimited = (key: string) => {
+  const now = Date.now()
+
+  if (recentHits.size > 500) recentHits.clear()
+
+  const hits = (recentHits.get(key) ?? []).filter((time) => now - time < RATE_WINDOW_MS)
+  hits.push(now)
+  recentHits.set(key, hits)
+
+  return hits.length > RATE_MAX
+}
+
 const MAX_BODY_BYTES = 8000
 const LIMITS = { name: 100, email: 254, phone: 20, details: 500 } as const
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -140,6 +157,18 @@ export const onRequestPost = async (context: Context): Promise<Response> => {
     return Response.json({ error: 'Request too large' }, { status: 413 })
   }
 
+  const clientKey =
+    request.headers.get('cf-connecting-ip') ??
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    'unknown'
+
+  if (isRateLimited(clientKey)) {
+    return Response.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': '600' } },
+    )
+  }
+
   const apiKey = env.RESEND_API_KEY
   const fromAddress = env.CONTACT_FROM ?? 'Buenos Díaz <hello@buenosdiaznyc.com>'
   const toAddress = env.CONTACT_TO ?? 'hello@buenosdiaznyc.com'
@@ -191,11 +220,13 @@ export const onRequestPost = async (context: Context): Promise<Response> => {
 
     if (!response.ok) {
       const detail = await response.text()
+      console.error('[contact] resend rejected:', response.status, detail)
       return Response.json({ error: 'Could not send', detail }, { status: 502 })
     }
 
     return Response.json({ ok: true })
-  } catch {
+  } catch (thrown) {
+    console.error('[contact] send threw:', thrown)
     return Response.json({ error: 'Could not send' }, { status: 502 })
   }
 }
