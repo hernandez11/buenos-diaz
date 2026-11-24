@@ -433,7 +433,7 @@ const ContactSection = ({
   const isStacked = useMediaQuery('(max-width: 900px)')
   const honeypotRef = useRef<HTMLInputElement>(null)
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null)
-  const hasMountedRef = useRef(false)
+  const lastStepRef = useRef(0)
 
   const currentStep = FORM_STEPS[step]
   const currentValue = answers[currentStep.id] ?? ''
@@ -501,10 +501,8 @@ const ContactSection = ({
   const isSuccess = status === 'success'
 
   useEffect(() => {
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true
-      return
-    }
+    if (lastStepRef.current === step) return
+    lastStepRef.current = step
     inputRef.current?.focus({ preventScroll: true })
   }, [step])
 
@@ -613,7 +611,7 @@ const ContactSection = ({
   }, [isStacked])
 
   return (
-    <Wrapper ref={wrapperRef} data-testid='contact-section'>
+    <Wrapper ref={wrapperRef} data-scroll-anchor data-testid='contact-section'>
       <Stage>
         <Photo ref={photoRef}>
           <PhotoReveal>

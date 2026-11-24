@@ -227,7 +227,7 @@ const AutoClip = ({ src }: { src: string }) => {
       if (!inView) return
       if (document.visibilityState !== 'visible') return
       const attempt = el.play()
-      if (attempt) attempt.catch(() => {})
+      if (attempt) attempt.catch(() => undefined)
     }
 
     const onCanPlay = () => play()
@@ -477,7 +477,7 @@ const EventDetail = () => {
 
   return (
     <>
-      <MetaBlock key={`meta-${event.id}`}>
+      <MetaBlock key={`meta-${event.id}`} data-scroll-anchor>
         <SlideReveal delay={0} duration={0.9}>
           <MetaDate>{displayDate(event.date)}</MetaDate>
         </SlideReveal>
@@ -494,7 +494,7 @@ const EventDetail = () => {
         </InfoOverlay>
       )}
 
-      <Page key={`page-${event.id}`} data-testid='event-detail'>
+      <Page key={`page-${event.id}`} data-scroll-anchor data-testid='event-detail'>
         <ImageStack>
           {blocks.map((block, index) => (
             <ImageColumn key={`${event.id}-${index}`}>

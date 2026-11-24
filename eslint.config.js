@@ -40,4 +40,15 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ['**/*.{ts,mts,cts,tsx}'],
+    rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    },
+  },
+  {
+    files: ['api/**/*.{ts,js}', 'functions/**/*.{ts,js}', 'scripts/**/*.{ts,js}'],
+    languageOptions: { globals: { ...globals.node } },
+  },
 ])

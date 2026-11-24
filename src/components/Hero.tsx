@@ -126,7 +126,7 @@ const Hero = () => {
   }
 
   return (
-    <HeroContainer ref={setFrame} data-testid='hero'>
+    <HeroContainer ref={setFrame} data-scroll-anchor data-testid='hero'>
       <HeroImage
         ref={image.imageRef}
         src={heroImage}

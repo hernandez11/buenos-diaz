@@ -51,12 +51,18 @@ const isAllowedOrigin = (origin: string | null) => {
   }
 }
 
+const stripControl = (value: string) => {
+  let out = ''
+  for (const char of value) {
+    const code = char.codePointAt(0) ?? 0
+    out += code < 32 || code === 127 ? ' ' : char
+  }
+  return out
+}
+
 const clean = (value: unknown, max: number) => {
   if (typeof value !== 'string') return ''
-  return value
-    .replace(/[\u0000-\u001f\u007f]/g, ' ')
-    .trim()
-    .slice(0, max)
+  return stripControl(value).trim().slice(0, max)
 }
 
 const CREAM = '#fffdfa'
@@ -189,8 +195,7 @@ export default async function handler(request: Request): Promise<Response> {
     return Response.json({ error: 'Request too large' }, { status: 413 })
   }
 
-  const clientKey =
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+  const clientKey = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
 
   if (isRateLimited(clientKey)) {
     return Response.json(

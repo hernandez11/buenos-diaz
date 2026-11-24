@@ -1,8 +1,8 @@
-import { useEffect, useState, type MouseEvent } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { color, font, media, titleMd, tracking } from '@/theme'
-import { getLenis } from '@/components/useLenis'
+import { useContactLink } from '@/components/useContactLink'
 
 const LOGO_RATIO = 3956 / 1218
 
@@ -120,28 +120,7 @@ export const Header = () => {
   const [open, setOpen] = useState(false)
   const [hidden, setHidden] = useState(false)
   const location = useLocation()
-  const navigate = useNavigate()
-
-  const scrollToContact = () => {
-    const target = Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
-    const lenis = getLenis()
-
-    if (lenis) lenis.scrollTo(target, { duration: 1.8 })
-    else window.scrollTo({ top: target, behavior: 'smooth' })
-  }
-
-  const handleContact = (event: MouseEvent) => {
-    event.preventDefault()
-    setOpen(false)
-
-    if (location.pathname === '/') {
-      scrollToContact()
-      return
-    }
-
-    navigate('/')
-    window.setTimeout(scrollToContact, 120)
-  }
+  const handleContact = useContactLink(() => setOpen(false))
 
   useEffect(() => {
     setOpen(false)

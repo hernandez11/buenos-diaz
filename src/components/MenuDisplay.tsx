@@ -252,7 +252,7 @@ const MenuDisplay = ({
   const { frameRef, imageRef } = useParallax({ speed: 0.42 })
 
   return (
-    <Section id='menu' data-testid='menu-section'>
+    <Section id='menu' data-scroll-anchor data-testid='menu-section'>
       <Hero ref={frameRef}>
         <HeroImage
           ref={imageRef}

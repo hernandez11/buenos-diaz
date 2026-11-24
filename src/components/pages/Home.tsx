@@ -57,9 +57,7 @@ export const Home = () => {
       if (!section) return
 
       const headerHeight =
-        parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue('--header-h'),
-        ) || 88
+        parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 88
       const top = section.getBoundingClientRect().top + window.scrollY - headerHeight
 
       const lenis = getLenis()
@@ -75,7 +73,7 @@ export const Home = () => {
       <Hero />
 
       <HeroCover data-hero-cover>
-        <InfoPanel>
+        <InfoPanel data-scroll-anchor>
           <div className='infoSection' data-testid='InfoSection'>
             <p className='secondaryTitle'>
               <strong>BUENOS DÍAZ</strong> | NYC

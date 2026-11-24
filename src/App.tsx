@@ -8,10 +8,12 @@ import { EventsPage } from './components/pages/EventsPage'
 import EventDetail from './components/EventDetail'
 import { NotFound } from './components/pages/NotFound'
 import { useLenis } from './components/useLenis'
+import { useScrollAnchor } from '@/components/useScrollAnchor'
 import ScrollLogo from './components/ScrollLogo'
 import { FaqPage } from './components/pages/FaqPage'
 import { Cursor } from './components/Cursor'
 import { ScrollToTop } from './components/ScrollToTop'
+import { useSeo } from '@/seo/useSeo'
 
 const AppShell = styled.div`
   display: flex;
@@ -27,12 +29,19 @@ const Main = styled.main`
   padding-top: var(--header-h, 0px);
 `
 
+const Seo = () => {
+  useSeo()
+  return null
+}
+
 export default function App() {
   useLenis()
+  useScrollAnchor()
 
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <Seo />
       <Cursor />
       <ScrollLogo />
       <AppShell>

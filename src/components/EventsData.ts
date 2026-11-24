@@ -21,8 +21,8 @@ import RemedyVid_1 from '@/assets/Events/Remedy/Remedy_clip_1.mp4'
 import RemedyVid_2 from '@/assets/Events/Remedy/Remedy_clip_2.mp4'
 import RemedyVid_3 from '@/assets/Events/Remedy/Remedy_clip_3.mp4'
 import RemedyVid_4 from '@/assets/Events/Remedy/Remedy_clip_4.mp4'
-import GoogleImg_1 from '@/assets/Events/Google/Google_gallery_1.webp'
-import SalonImg_1 from '@/assets/Events/Salon/Salon_gallery_1.webp'
+
+import { findEventContent } from '@/content/events'
 
 export type GalleryBlock = 'full' | 'wide' | 'tall' | 'pair'
 
@@ -39,31 +39,9 @@ export interface EventItem {
 
 export const events: EventItem[] = [
   {
-    id: 'salon-art-design',
-    image: SalonImg_1,
-    alt: 'Salon Art + Design poster',
-    title: 'Salon Art + Design',
-    date: '11.05.2026',
-    description:
-      "For the 15th edition of Salon Art + Design, Buenos Díaz set up inside the Park Avenue Armory, pouring specialty espresso among some of the world's finest collectible design, decorative arts, and twentieth century masterworks.\n\nOur 1986 Piaggio Ape took its place on the floor alongside the work on view, opening the fair on Collectors and VIP day with complimentary coffee service before serving the public through the weekend. Espresso rooted in Chiapas, served in a room built around craft, heritage, and objects made to last.",
-  },
-  {
-    id: 'google',
-    image: GoogleImg_1,
-    alt: 'Google popup poster',
-    title: 'Google',
-    date: '10.14.2026',
-    description:
-      "For Hispanic Heritage Month, Buenos Díaz pulled up to Google NYC and introduced the city to the newest member of our team: a 1986 Piaggio Ape, brought over from Italy and rebuilt from the ground up as our mobile espresso bar. Its first public appearance happened right on campus.\n\nThe coffee carries our family's story, farming in Chiapas since the 1800’s. The Ape carries it through the streets of New York. This was the day both finally arrived together.",
-  },
-  {
-    id: 'remedy-popup',
+    ...findEventContent('remedy-popup'),
     image: RemedyImg_1,
     alt: 'Remedy popup poster',
-    title: 'REMEDY PLACE',
-    date: '09.06.2026',
-    description:
-      "Buenos Díaz took over the bar at Remedy Place Flatiron for a day, pouring specialty espresso made with authentic Mexican ingredients through the morning before shifting to our handcrafted aguas frescas in the afternoon. A taste of Chiapas inside one of NYC's social wellness clubs.",
     gallery: [
       RemedyImg_2,
       RemedyImg_3,
@@ -76,13 +54,9 @@ export const events: EventItem[] = [
     layout: ['full', 'pair', 'tall', 'full', 'full', 'full'],
   },
   {
-    id: 'obscure-popup',
+    ...findEventContent('obscure-popup'),
     image: ObscureImg_1,
     alt: 'Obscure popup poster',
-    title: 'OBSCURE COFFEE ROASTERS',
-    date: '08.15.2026',
-    description:
-      'Buenos Díaz joined Obscure Coffee Roasters in Bushwick for a one-day popup, bringing our specialty espresso menu into their space alongside a limited run of collaborative drinks merging the coffee culture of Chiapas, Mexico with the bold flavors of Puerto Rico.',
     gallery: [
       ObscureRecap,
       ObscureVid_3,
@@ -95,13 +69,9 @@ export const events: EventItem[] = [
     layout: ['full', 'wide', 'pair', 'wide', 'pair'],
   },
   {
-    id: 'shopify-popup',
+    ...findEventContent('shopify-popup'),
     image: ShopifyImg_3,
     alt: 'Shopify popup poster',
-    title: 'SHOPIFY | SUMMER BIZ CONNECT',
-    date: '07.21.2026',
-    description:
-      'Buenos Díaz served at Shopify NYs Summer Biz Connect, a networking mixer bringing together founders, merchants, and creators at their SoHo flagship on Greene Street. We poured our summer aguas frescas for a room full of builders and entrepreneurs, adding a taste of Mexican ingredients to an evening built on connection and collaboration.',
     gallery: [
       ShopifyRecap,
       ShopifyImg_1,
