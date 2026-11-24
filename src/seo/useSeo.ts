@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { canonicalFor, jsonLdFor, seoForPath } from './routes'
+import { canonicalOf, jsonLdFor, seoForPath } from './routes'
 import { SITE_NAME, SITE_URL } from './site'
 
 const JSON_LD_ATTR = 'data-seo-jsonld'
@@ -51,7 +51,7 @@ export const useSeo = () => {
 
   useEffect(() => {
     const seo = seoForPath(pathname)
-    const canonical = seo.noindex ? `${SITE_URL}${pathname}` : canonicalFor(seo.path)
+    const canonical = seo.noindex ? `${SITE_URL}${pathname}` : canonicalOf(seo)
 
     document.title = seo.title
     setMeta('name', 'description', seo.description)

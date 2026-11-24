@@ -1,7 +1,14 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import type { Plugin } from 'vite'
-import { canonicalFor, jsonLdFor, notFoundRoute, seoRoutes, type RouteSeo } from '../src/seo/routes'
+import {
+  canonicalFor,
+  canonicalOf,
+  jsonLdFor,
+  notFoundRoute,
+  seoRoutes,
+  type RouteSeo,
+} from '../src/seo/routes'
 import { SITE_NAME, SITE_URL } from '../src/seo/site'
 
 const escapeAttr = (value: string) =>
@@ -77,7 +84,7 @@ export const prerender = (): Plugin => {
       for (const route of seoRoutes) {
         const file = outputPath(root, route.path)
         await mkdir(dirname(file), { recursive: true })
-        await writeFile(file, render(template, route, canonicalFor(route.path)), 'utf8')
+        await writeFile(file, render(template, route, canonicalOf(route)), 'utf8')
       }
 
       await writeFile(

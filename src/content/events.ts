@@ -7,6 +7,13 @@ export interface EventContent {
 
 export const eventContent: EventContent[] = [
   {
+    id: 'reserve-padel',
+    title: 'RESERVE PADEL',
+    date: '11.07.2026',
+    description:
+      'Buenos Díaz joined Reserve Padel and Body Hot Pilates for a morning of movement, pouring specialty espresso for guests coming off a padel clinic and a yoga class. We brought our fall menu for the occasion, with seasonal flavors rooted in Chiapas to close out a day built around community and wellness.',
+  },
+  {
     id: 'remedy-popup',
     title: 'REMEDY PLACE',
     date: '09.06.2026',

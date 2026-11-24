@@ -10,6 +10,7 @@ export interface RouteSeo {
   noindex?: boolean
   jsonLd?: unknown[]
   sitemap?: boolean
+  canonical?: string
 }
 
 const titleCase = (value: string) =>
@@ -30,21 +31,25 @@ const base = (path: string, title: string, description: string): RouteSeo => ({
 
 export const staticRoutes: RouteSeo[] = [
   base('/', `${SITE_NAME} | ${SITE_TAGLINE}`, SITE_DESCRIPTION),
-  base(
-    '/menu',
-    `Menu | ${SITE_NAME}`,
-    'Our seasonal espresso, classics and non coffee menu, built on syrups we make in house from the flavors we grew up with.',
-  ),
+  {
+    ...base(
+      '/menu',
+      `Menu | ${SITE_NAME}`,
+      'Our seasonal espresso, classics and non coffee menu, built on syrups we make in house from the flavors we grew up with.',
+    ),
+    canonical: `${SITE_URL}/`,
+    sitemap: false,
+  },
   base(
     '/events',
-    `Events | ${SITE_NAME}`,
-    'Popups, weddings, brand activations and private events we have poured across New York City.',
+    'Events & Popups | Buenos Díaz Mexican Coffee Cart NYC',
+    "Where the Buenos Díaz espresso cart has poured across New York, from Remedy Place Flatiron to Shopify's SoHo flagship and Obscure Coffee in Bushwick.",
   ),
   {
     ...base(
       '/faq',
-      `FAQ | ${SITE_NAME}`,
-      'How booking works, what is included, how we build a menu for your event, and where to find us around New York City.',
+      'FAQ | Booking the Buenos Díaz Coffee Cart in NYC',
+      'Answers on booking the Buenos Díaz mobile espresso bar for New York events: what is included, custom menus, non coffee options, and how to request a quote.',
     ),
     jsonLd: [faqGraph()],
   },
@@ -75,6 +80,8 @@ export const seoRoutes: RouteSeo[] = [...staticRoutes, ...eventRoutes]
 export const jsonLdFor = (route: RouteSeo): unknown[] => [businessGraph(), ...(route.jsonLd ?? [])]
 
 export const canonicalFor = (path: string) => (path === '/' ? `${SITE_URL}/` : `${SITE_URL}${path}`)
+
+export const canonicalOf = (route: RouteSeo) => route.canonical ?? canonicalFor(route.path)
 
 export const seoForPath = (pathname: string): RouteSeo => {
   const trimmed =

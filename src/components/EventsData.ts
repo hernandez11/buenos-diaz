@@ -1,3 +1,9 @@
+import ReserveImg_1 from '@/assets/Events/Reserve/Reserve_gallery_1.webp'
+import ReserveImg_2 from '@/assets/Events/Reserve/Reserve_gallery_2.webp'
+import ReserveImg_3 from '@/assets/Events/Reserve/Reserve_gallery_3.webp'
+import ReserveImg_4 from '@/assets/Events/Reserve/Reserve_gallery_4.webp'
+import ReserveImg_5 from '@/assets/Events/Reserve/Reserve_gallery_5.webp'
+import ReserveImg_6 from '@/assets/Events/Reserve/Reserve_gallery_6.webp'
 import ObscureImg_1 from '@/assets/Events/Obscure/Obscure_gallery_1.webp'
 import ObscureImg_2 from '@/assets/Events/Obscure/Obscure_gallery_2.webp'
 import ObscureImg_3 from '@/assets/Events/Obscure/Obscure_gallery_3.webp'
@@ -39,6 +45,13 @@ export interface EventItem {
 
 export const events: EventItem[] = [
   {
+    ...findEventContent('reserve-padel'),
+    image: ReserveImg_1,
+    alt: 'Reserve Padel popup poster',
+    gallery: [ReserveImg_2, ReserveImg_3, ReserveImg_4, ReserveImg_5, ReserveImg_6],
+    layout: ['full', 'pair', 'pair'],
+  },
+  {
     ...findEventContent('remedy-popup'),
     image: RemedyImg_1,
     alt: 'Remedy popup poster',
@@ -72,15 +85,7 @@ export const events: EventItem[] = [
     ...findEventContent('shopify-popup'),
     image: ShopifyImg_3,
     alt: 'Shopify popup poster',
-    gallery: [
-      ShopifyRecap,
-      ShopifyImg_1,
-      ShopifyImg_2,
-      ShopifyImg_3,
-      ShopifyVid_3,
-      ShopifyImg_4,
-      ShopifyVid_2,
-    ],
+    gallery: [ShopifyRecap, ShopifyImg_1, ShopifyImg_2, ShopifyVid_3, ShopifyImg_4, ShopifyVid_2],
     layout: ['full', 'wide', 'wide', 'tall', 'pair'],
   },
 ]
